@@ -9,7 +9,7 @@ import {
   type Dispatch,
 } from "react";
 
-type UserStateType = "love" | "buddy";
+export type UserStateType = "love" | "buddy" | "lovuddy";
 
 interface UserContext {
   userState: string;

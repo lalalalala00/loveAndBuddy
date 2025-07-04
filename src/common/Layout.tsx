@@ -1,12 +1,15 @@
 import React from "react";
-import Header from "../components/header";
+import Header from "./header";
+import LayoutInitializer from "./LayoutInitializer";
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <Header />
-      <div>{children}</div>
-    </div>
+    <LayoutInitializer>
+      <div>
+        <Header />
+        <div>{children}</div>
+      </div>
+    </LayoutInitializer>
   );
 }
 
