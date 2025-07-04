@@ -3,11 +3,14 @@
 import { useRouter } from "next/navigation";
 import { UserStateType, useUserState } from "../context/useUserContext";
 import { useTypedRouter } from "@/hooks/userTypeRouter";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const router = useRouter();
   const { userState, setUserState } = useUserState();
   const { push } = useTypedRouter();
+
+  const [pendingType, setPendingType] = useState<UserStateType | null>(null);
 
   const currentUser = userType.find((u) => u.label === userState);
 
@@ -17,6 +20,18 @@ const Header = () => {
     { label: "mySchedule", url: "/mySchedule" },
     { label: "community", url: "/community" },
   ];
+
+  const handleTabClick = (type: UserStateType) => {
+    setUserState(type);
+    setPendingType(type);
+  };
+
+  useEffect(() => {
+    if (pendingType) {
+      router.push(`/?type=${pendingType}`);
+      setPendingType(null);
+    }
+  }, [userState]);
 
   return (
     <div className="flex mt-5 justify-between items-center">
@@ -36,10 +51,7 @@ const Header = () => {
         {userType.map((item, i) => (
           <button
             key={i}
-            onClick={() => {
-              setUserState(item.label);
-              push(`/`);
-            }}
+            onClick={() => handleTabClick(item.label)}
             className={` border-black border-r last:border-r-0 px-2 ${
               userState === item.label ? "bg-blue-200" : ""
             }`}

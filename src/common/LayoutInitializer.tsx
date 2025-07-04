@@ -18,8 +18,12 @@ export default function LayoutInitializer({
 
   useEffect(() => {
     const typeParam = searchParams.get("type");
-    if (typeParam && isUserStateType(typeParam.toLowerCase())) {
-      setUserState(typeParam.toLowerCase() as UserStateType);
+    const safeType = typeParam?.toLowerCase();
+
+    if (safeType && isUserStateType(safeType)) {
+      setUserState(safeType as UserStateType);
+    } else {
+      setUserState("love");
     }
   }, [searchParams]);
 
