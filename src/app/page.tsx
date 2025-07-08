@@ -1,7 +1,9 @@
+import Index from "@/components/home";
+
 export default function Home() {
   return (
     <div>
-      <h1>home</h1>
+      <Index />
     </div>
   );
 }

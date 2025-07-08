@@ -1,5 +1,5 @@
-import { Buddy } from "@/components/buddy";
+import Index from "./_components";
 
 export default function Page(): React.ReactNode {
-  return <Buddy />;
+  return <Index />;
 }
