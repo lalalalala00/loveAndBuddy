@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -29,10 +29,15 @@ interface SelectedDay {
 
 const daysOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
-const Calendar = () => {
+const Calendar = ({
+  setSelectedClose,
+}: {
+  setSelectedClose: (value: string) => void;
+}) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
+  const [calSize, setCalSize] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<SelectedDay>();
   const [currentDate, setCurrentDate] = useState(dayjs());
 
@@ -85,7 +90,25 @@ const Calendar = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 border">
+    <div
+      className={`my-2 mx-auto p-4`}
+      style={{
+        width: calSize ? "422px" : "844px",
+        height: calSize ? "504px" : "700px",
+      }}
+    >
+      <div className="flex justify-between">
+        <button
+          onClick={() => setSelectedClose("cal")}
+          className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
+        >
+          <span className="text-[12px]">X</span>
+        </button>
+        <button
+          onClick={() => setCalSize(!calSize)}
+          className="w-9 h-3 rounded-full bg-amber-500 cursor-pointer"
+        ></button>
+      </div>
       <div className="flex justify-between items-center mb-4">
         <button onClick={prevMonth}>&#60;</button>
         <h2 className="text-lg font-semibold">
@@ -122,16 +145,24 @@ const Calendar = () => {
           return (
             <div
               key={i}
-              className={`h-[60px] w-[60px] flex justify-start cursor-pointer p-1 flex-col m-1
-        ${date?.isSame(today, "day") ? "bg-blue-100 text-white font-bold" : ""}
+              className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1
+        ${
+          date?.isSame(today, "day")
+            ? "bg-blue-100 text-white font-bold -z-2"
+            : ""
+        }
         ${!date ? "" : "hover:bg-gray-200"}
       `}
+              style={{
+                minWidth: calSize ? "60px" : "100px",
+                minHeight: calSize ? "60px" : "100px",
+              }}
               onClick={() => date && handleDateClick(date)}
             >
-              <div className="text-center relative">
+              <div className="text-left relative">
                 <span>{date?.date()}</span>
                 {dayReservations.length > 0 && (
-                  <div className="w-2 h-2 mt-1 rounded-full bg-[#46FFFF] absolute -top-1 left-0" />
+                  <div className="w-9 h-5 bg-[#FFC5D0] absolute -top-0 -left-2 -z-1" />
                 )}
               </div>
 

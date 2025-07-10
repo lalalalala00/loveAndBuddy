@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-const WriteIndex = () => {
+const WriteIndex = ({
+  setSelectedClose,
+}: {
+  setSelectedClose: (value: string) => void;
+}) => {
   const [empty, setEmpty] = useState(true);
   const [imgs, setImgs] = useState<File[]>([]);
   const [content, setContent] = useState<string>("");
@@ -37,10 +41,16 @@ const WriteIndex = () => {
   console.log(content);
   return (
     <div
-      className={`border rounded-2xl w-full flex flex-col justify-between p-1 ${
+      className={`border rounded-2xl w-[422px] flex flex-col justify-between p-1 ${
         imgs.length > 0 ? "h-[180px]" : "h-[120px]"
       }`}
     >
+      <button
+        onClick={() => setSelectedClose("write")}
+        className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
+      >
+        <span className="text-[12px]">X</span>
+      </button>
       <div className="relative">
         <div className="flex">
           {imgs.map((img, i) => (

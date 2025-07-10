@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import { UserStateType, useUserState } from "../context/useUserContext";
 import { useTypedRouter } from "@/hooks/userTypeRouter";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
+import Modal from "./modal";
+import SignUp from "@/components/sign.up";
 
 const Header = () => {
   const router = useRouter();
@@ -11,6 +15,8 @@ const Header = () => {
   const { push } = useTypedRouter();
 
   const [pendingType, setPendingType] = useState<UserStateType | null>(null);
+  const [getUser, setGetUser] = useState<User | null>(null);
+  const [signUpModal, setSignUpModal] = useState<boolean>(false);
 
   const currentUser = userType.find((u) => u.label === userState);
 
@@ -25,6 +31,15 @@ const Header = () => {
     setUserState(type);
     setPendingType(type);
   };
+
+  useEffect(() => {
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setGetUser(user);
+    })();
+  }, []);
 
   useEffect(() => {
     if (pendingType) {
@@ -48,18 +63,39 @@ const Header = () => {
       </div>
 
       <div className="h-[30px] w-[200px]">
-        {userType.map((item, i) => (
-          <button
-            key={i}
-            onClick={() => handleTabClick(item.label)}
-            className={` border-black border-r last:border-r-0 px-2 ${
-              userState === item.label ? "bg-blue-200" : ""
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
+        {getUser === null ? (
+          <div className="flex justify-end">
+            <button
+              className="mr-3"
+              onClick={() => setSignUpModal(!signUpModal)}
+            >
+              signUp
+            </button>
+            <button>login</button>
+          </div>
+        ) : (
+          userType.map((item, i) => (
+            <button
+              key={i}
+              onClick={() => handleTabClick(item.label)}
+              className={` border-black border-r last:border-r-0 px-2 ${
+                userState === item.label ? "bg-blue-200" : ""
+              }`}
+            >
+              {item.label}
+            </button>
+          ))
+        )}
       </div>
+      <Modal
+        isOpen={signUpModal}
+        handleModalState={() => setSignUpModal(!signUpModal)}
+        width="500px"
+        height="500px"
+        title="loveAndbuddy 가입하기"
+      >
+        <SignUp />
+      </Modal>
     </div>
   );
 };

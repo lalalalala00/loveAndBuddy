@@ -60,7 +60,7 @@ const BuddyMessageRoom = ({
       supabase.removeChannel(channel);
     };
   }, [chatRoomId]);
-  console.log(users);
+
   useEffect(() => {
     const fetchUsers = async () => {
       const { data, error } = await supabase.from("users").select("id, name");
@@ -73,7 +73,7 @@ const BuddyMessageRoom = ({
 
     fetchUsers();
   }, []);
-  console.log(messages, users);
+
   return (
     <div className="w-full flex flex-col">
       <div className="h-[480px]">
