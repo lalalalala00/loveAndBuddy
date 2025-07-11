@@ -4,7 +4,7 @@ const CommunityList = ({
   setSelectedClose: (value: string) => void;
 }) => {
   return (
-    <div className="w-[422px] border">
+    <div className="w-[422px] h-[700px] border">
       <button
         onClick={() => setSelectedClose("comm")}
         className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"

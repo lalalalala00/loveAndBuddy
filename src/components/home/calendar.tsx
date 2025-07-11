@@ -40,6 +40,7 @@ const Calendar = ({
   const [calSize, setCalSize] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<SelectedDay>();
   const [currentDate, setCurrentDate] = useState(dayjs());
+  const [dayContents, setDayContents] = useState<boolean>(false);
 
   const [reservationModal, setReservationModal] = useState<boolean>(false);
 
@@ -91,61 +92,73 @@ const Calendar = ({
 
   return (
     <div
-      className={`my-2 mx-auto p-4`}
+      className={`my-2 mx-auto p-4 flex w-full`}
       style={{
-        width: calSize ? "422px" : "844px",
         height: calSize ? "504px" : "700px",
       }}
     >
-      <div className="flex justify-between">
-        <button
-          onClick={() => setSelectedClose("cal")}
-          className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
-        >
-          <span className="text-[12px]">X</span>
-        </button>
-        <button
-          onClick={() => setCalSize(!calSize)}
-          className="w-9 h-3 rounded-full bg-amber-500 cursor-pointer"
-        ></button>
-      </div>
-      <div className="flex justify-between items-center mb-4">
-        <button onClick={prevMonth}>&#60;</button>
-        <h2 className="text-lg font-semibold">
-          {currentDate.format("YYYY년 MM월")}
-        </h2>
-        <button onClick={nextMonth}> &#62;</button>
-      </div>
-      <div className="flex justify-center mb-4">
-        <button
-          onClick={() => setCurrentDate(dayjs())}
-          className="text-sm px-2 py-1 border rounded hover:bg-gray-100"
-        >
-          오늘
-        </button>
-      </div>
-
-      <div className="grid grid-cols-7 text-center text-sm text-gray-500">
-        {daysOfWeek.map((day) => (
-          <div key={day} className="first:text-red-500">
-            <p>{day}</p>
+      <div
+        style={{
+          width: calSize ? "422px" : "844px",
+          //   height: calSize ? "504px" : "700px",
+        }}
+      >
+        <div className="flex justify-between">
+          <button
+            onClick={() => setSelectedClose("cal")}
+            className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
+          >
+            <span className="text-[12px]">X</span>
+          </button>
+          <div>
+            <button
+              onClick={() => setDayContents(!dayContents)}
+              className="w-6 h-3 rounded-full bg-blue-200 cursor-pointer mr-3"
+            ></button>
+            <button
+              onClick={() => setCalSize(!calSize)}
+              className="w-9 h-3 rounded-full bg-amber-500 cursor-pointer"
+            ></button>
           </div>
-        ))}
-      </div>
+        </div>
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={prevMonth}>&#60;</button>
+          <h2 className="text-lg font-semibold">
+            {currentDate.format("YYYY년 MM월")}
+          </h2>
+          <button onClick={nextMonth}> &#62;</button>
+        </div>
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={() => setCurrentDate(dayjs())}
+            className="text-sm px-2 py-1 border rounded hover:bg-gray-100"
+          >
+            오늘
+          </button>
+        </div>
 
-      <div className="grid grid-cols-7 text-center mt-2">
-        {generateCalendar().map((date, i) => {
-          const clickedDateStr = date && date.format("YYYY-MM-DD");
+        <div className="grid grid-cols-7 text-center text-sm text-gray-500">
+          {daysOfWeek.map((day) => (
+            <div key={day} className="first:text-red-500">
+              <p>{day}</p>
+            </div>
+          ))}
+        </div>
 
-          const dayReservations = reservations.filter(
-            (r) =>
-              dayjs(r.date).utcOffset(9).format("YYYY-MM-DD") === clickedDateStr
-          );
+        <div className="grid grid-cols-7 text-center mt-2">
+          {generateCalendar().map((date, i) => {
+            const clickedDateStr = date && date.format("YYYY-MM-DD");
 
-          return (
-            <div
-              key={i}
-              className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1
+            const dayReservations = reservations.filter(
+              (r) =>
+                dayjs(r.date).utcOffset(9).format("YYYY-MM-DD") ===
+                clickedDateStr
+            );
+
+            return (
+              <div
+                key={i}
+                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1
         ${
           date?.isSame(today, "day")
             ? "bg-blue-100 text-white font-bold -z-2"
@@ -153,33 +166,44 @@ const Calendar = ({
         }
         ${!date ? "" : "hover:bg-gray-200"}
       `}
-              style={{
-                minWidth: calSize ? "60px" : "100px",
-                minHeight: calSize ? "60px" : "100px",
-              }}
-              onClick={() => date && handleDateClick(date)}
-            >
-              <div className="text-left relative">
-                <span>{date?.date()}</span>
-                {dayReservations.length > 0 && (
-                  <div className="w-9 h-5 bg-[#FFC5D0] absolute -top-0 -left-2 -z-1" />
-                )}
-              </div>
+                style={{
+                  minWidth: calSize ? "60px" : "100px",
+                  minHeight: calSize ? "60px" : "100px",
+                }}
+                onClick={() => date && handleDateClick(date)}
+              >
+                <div className="text-left relative">
+                  <span>{date?.date()}</span>
+                  {dayReservations.length > 0 && (
+                    <div className="w-9 h-5 bg-[#FFC5D0] absolute -top-0 -left-2 -z-1" />
+                  )}
+                </div>
 
-              <div className="flex flex-col items-start">
-                {dayReservations.length > 0 &&
-                  dayReservations.map((item, i) => (
-                    <div className="flex">
-                      <span className="text-[12px] text-nowrap">
-                        {item.buddy.name} buddy
-                      </span>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-start">
+                  {dayReservations.length > 0 &&
+                    dayReservations.map((item, i) => (
+                      <div className="flex">
+                        <span className="text-[12px] text-nowrap">
+                          {item.buddy.name} buddy
+                        </span>
+                      </div>
+                    ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
+      {dayContents && (
+        <div className="min-w-[422px] h-full p-4 border ml-5 rounded-2xl">
+          <div className="flex justify-between items-center border-b pb-1 mb-1">
+            <span>date.</span>
+            <span>{selectedDay?.day}</span>
+            <span>mon</span>
+          </div>
+        </div>
+      )}
+
       {reservationModal && selectedDay && (
         <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2  w-full h-full flex justify-center items-center bg-black/30">
           <div className=" flex-col w-1/3 h-1/4 border p-4 rounded-2xl bg-white">

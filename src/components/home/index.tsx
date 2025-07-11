@@ -28,6 +28,18 @@ const Index = () => {
     );
   };
 
+  const sizeMap: Record<string, { col: number; row: number }> = {
+    cal: { col: 2, row: 2 },
+    toki: { col: 1, row: 1 },
+    comm: { col: 1, row: 1 },
+    write: { col: 1, row: 1 },
+  };
+
+  const getGridSpanClass = (key: string) => {
+    const size = sizeMap[key] || { col: 1, row: 1 };
+    return `col-span-${size.col} row-span-${size.row}`;
+  };
+
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
@@ -87,6 +99,68 @@ const Index = () => {
               )}
               {provided.placeholder}
             </div>
+            // <div
+            //   className="columns-3 row-3 gap-1 w-full"
+            //   // style={{
+            //   //   gridTemplateColumns: "repeat(3, 1fr)",
+            //   //   // gridTemplateRows: "repeat(4, 1fr)",
+            //   //   gridAutoFlow: "dense",
+            //   //   gridAutoRows: "minmax(100px, auto)",
+            //   // }}
+            //   ref={provided.innerRef}
+            //   {...provided.droppableProps}
+            // >
+            //   {blocks.map((key, index) =>
+            //     selectedClose.includes(key) ? null : (
+            //       <Draggable key={key} draggableId={key} index={index}>
+            //         {(provided) => (
+            //           <div
+            //             className={`break-inside-avoid mb-2 min-h-[160px] border ${getGridSpanClass(
+            //               key
+            //             )}`}
+            //             ref={provided.innerRef}
+            //             {...provided.draggableProps}
+            //             {...provided.dragHandleProps}
+            //           >
+            //             {componentMap[key]}
+            //           </div>
+            //         )}
+            //       </Draggable>
+            //     )
+            //   )}
+            //   {provided.placeholder}
+            // </div>
+            // <div
+            //   className="grid gap-1 columns-3 row-4 w-full mx-auto"
+            //   style={{
+            //     gridTemplateColumns: "repeat(3, 1fr)",
+            //     // gridTemplateRows: "repeat(1, 1fr)",
+            //     gridAutoFlow: "dense",
+            //     gridAutoRows: "minmax(100px, auto)",
+            //   }}
+            //   ref={provided.innerRef}
+            //   {...provided.droppableProps}
+            // >
+            //   {blocks.map((key, index) =>
+            //     selectedClose.includes(key) ? null : (
+            //       <Draggable key={key} draggableId={key} index={index}>
+            //         {(provided) => (
+            //           <div
+            //             className={`border break-inside-avoid ${getGridSpanClass(
+            //               key
+            //             )} `}
+            //             ref={provided.innerRef}
+            //             {...provided.draggableProps}
+            //             {...provided.dragHandleProps}
+            //           >
+            //             {componentMap[key]}
+            //           </div>
+            //         )}
+            //       </Draggable>
+            //     )
+            //   )}
+            //   {provided.placeholder}
+            // </div>
           )}
         </Droppable>
       </DragDropContext>
