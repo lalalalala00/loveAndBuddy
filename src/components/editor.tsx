@@ -431,9 +431,9 @@ const EditorBox = () => {
     const data = imageData.data;
 
     for (let i = 0; i < data.length; i += 4) {
-      let r = data[i];
-      let g = data[i + 1];
-      let b = data[i + 2];
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
 
       const isSkin =
         r > 95 && g > 40 && b > 20 && r > g && r > b && Math.abs(r - g) > 15;
@@ -507,7 +507,7 @@ const EditorBox = () => {
                       key={idx}
                       src={src}
                       alt={`image-${idx}`}
-                      className="object-cover w-full h-[400px]"
+                      className="object-cover w-full h-[422px]"
                       style={computedFilter}
                     />
                   ))}

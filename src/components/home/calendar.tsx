@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -31,13 +31,15 @@ const daysOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 const Calendar = ({
   setSelectedClose,
+  setCalExtension
 }: {
   setSelectedClose: (value: string) => void;
+  setCalExtension: Dispatch<SetStateAction<number>>
 }) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
-  const [calSize, setCalSize] = useState<boolean>(false);
+  const [calSize, setCalSize] = useState<boolean>(true);
   const [selectedDay, setSelectedDay] = useState<SelectedDay>();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [dayContents, setDayContents] = useState<boolean>(false);
@@ -90,16 +92,26 @@ const Calendar = ({
     console.log(`[${clickedDateStr}] 예약 목록: `, dayReservations);
   };
 
+  useEffect(() => {
+  let width = 1;
+  if (calSize && !dayContents) width = 2;
+  else if (calSize && dayContents) width = 3;
+  else if (!calSize && dayContents) width = 2;
+  else if (!calSize && !dayContents) width = 1;
+
+  setCalExtension(width);
+}, [calSize, dayContents]);
+
   return (
     <div
       className={`my-2 mx-auto p-4 flex w-full`}
       style={{
-        height: calSize ? "504px" : "700px",
+        height: !calSize ? "504px" : "700px",
       }}
     >
       <div
         style={{
-          width: calSize ? "422px" : "844px",
+          width: !calSize ? "422px" : "800px",
           //   height: calSize ? "504px" : "700px",
         }}
       >
@@ -167,8 +179,8 @@ const Calendar = ({
         ${!date ? "" : "hover:bg-gray-200"}
       `}
                 style={{
-                  minWidth: calSize ? "60px" : "100px",
-                  minHeight: calSize ? "60px" : "100px",
+                  minWidth: !calSize ? "60px" : "100px",
+                  minHeight: !calSize ? "60px" : "100px",
                 }}
                 onClick={() => date && handleDateClick(date)}
               >
@@ -182,7 +194,7 @@ const Calendar = ({
                 <div className="flex flex-col items-start">
                   {dayReservations.length > 0 &&
                     dayReservations.map((item, i) => (
-                      <div className="flex">
+                      <div className="flex" key={i}>
                         <span className="text-[12px] text-nowrap">
                           {item.buddy.name} buddy
                         </span>
@@ -195,7 +207,7 @@ const Calendar = ({
         </div>
       </div>
       {dayContents && (
-        <div className="min-w-[422px] h-full p-4 border ml-5 rounded-2xl">
+        <div className="min-w-[360px] h-full p-4 border ml-5 rounded-2xl">
           <div className="flex justify-between items-center border-b pb-1 mb-1">
             <span>date.</span>
             <span>{selectedDay?.day}</span>
@@ -209,7 +221,7 @@ const Calendar = ({
           <div className=" flex-col w-1/3 h-1/4 border p-4 rounded-2xl bg-white">
             <span>{selectedDay?.day}</span>
             {selectedDay?.reservation.map((item, i) => (
-              <div>
+              <div key={i}>
                 <span>
                   {item.love.name} love 🩵{item.buddy.name} buddy
                 </span>

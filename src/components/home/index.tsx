@@ -1,25 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BuddyConnect from "../buddy.connect";
 import CommunityList from "../commu.list";
 import WriteIndex from "../commu.write.index";
 import Calendar from "./calendar";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "@hello-pangea/dnd";
 
-const Index = () => {
-  const [selectedClose, setSelectedClose] = useState<string[]>([]);
-  const [blocks, setBlocks] = useState<string[]>([
+import GridLayout from "react-grid-layout";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+
+
+const blocks = [
     "cal",
     "toki",
     "comm",
     "write",
-  ]);
+  ]
+const Index = () => {
+  const [selectedClose, setSelectedClose] = useState<string[]>([]);
+  const [calExtension, setCalExtension] = useState<number>(2)
+  const [layout, setLayout] = useState([
+  { i: "cal", x: 0, y: 0, w: 2, h: 2 },
+  { i: "write", x: 2, y: 3, w: 1, h: 1 },
+  { i: "comm", x: 2, y: 0, w: 1, h: 1 },
+  { i: "toki", x: 0, y: 4, w: 1, h: 1 },
+]);
+
+useEffect(() => {
+  setLayout((prev) =>
+    prev.map((item) =>
+      item.i === "cal" ? { ...item, w: calExtension } : item
+    )
+  );
+}, [calExtension]);
+console.log(calExtension)
 
   const toggleClose = (value: string) => {
     if (!value) return;
@@ -28,30 +43,8 @@ const Index = () => {
     );
   };
 
-  const sizeMap: Record<string, { col: number; row: number }> = {
-    cal: { col: 2, row: 2 },
-    toki: { col: 1, row: 1 },
-    comm: { col: 1, row: 1 },
-    write: { col: 1, row: 1 },
-  };
-
-  const getGridSpanClass = (key: string) => {
-    const size = sizeMap[key] || { col: 1, row: 1 };
-    return `col-span-${size.col} row-span-${size.row}`;
-  };
-
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-
-    const newOrder = Array.from(blocks);
-    const [moved] = newOrder.splice(result.source.index, 1);
-    newOrder.splice(result.destination.index, 0, moved);
-
-    setBlocks(newOrder);
-  };
-
   const componentMap: Record<string, React.ReactNode> = {
-    cal: <Calendar setSelectedClose={toggleClose} />,
+    cal: <Calendar setSelectedClose={toggleClose} setCalExtension={setCalExtension} />,
     toki: <BuddyConnect setSelectedClose={toggleClose} />,
     comm: <CommunityList setSelectedClose={toggleClose} />,
     write: <WriteIndex setSelectedClose={toggleClose} />,
@@ -73,97 +66,36 @@ const Index = () => {
           ))}
       </div>
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="component-droppable" direction="horizontal">
-          {(provided) => (
-            <div
-              className="w-full mx-auto flex flex-wrap justify-start gap-1"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {blocks.map((key, index) =>
-                selectedClose.includes(key) ? null : (
-                  <Draggable key={key} draggableId={key} index={index}>
-                    {(provided) => (
-                      <div
-                        className=""
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        {componentMap[key]}
-                      </div>
-                    )}
-                  </Draggable>
-                )
-              )}
-              {provided.placeholder}
-            </div>
-            // <div
-            //   className="columns-3 row-3 gap-1 w-full"
-            //   // style={{
-            //   //   gridTemplateColumns: "repeat(3, 1fr)",
-            //   //   // gridTemplateRows: "repeat(4, 1fr)",
-            //   //   gridAutoFlow: "dense",
-            //   //   gridAutoRows: "minmax(100px, auto)",
-            //   // }}
-            //   ref={provided.innerRef}
-            //   {...provided.droppableProps}
-            // >
-            //   {blocks.map((key, index) =>
-            //     selectedClose.includes(key) ? null : (
-            //       <Draggable key={key} draggableId={key} index={index}>
-            //         {(provided) => (
-            //           <div
-            //             className={`break-inside-avoid mb-2 min-h-[160px] border ${getGridSpanClass(
-            //               key
-            //             )}`}
-            //             ref={provided.innerRef}
-            //             {...provided.draggableProps}
-            //             {...provided.dragHandleProps}
-            //           >
-            //             {componentMap[key]}
-            //           </div>
-            //         )}
-            //       </Draggable>
-            //     )
-            //   )}
-            //   {provided.placeholder}
-            // </div>
-            // <div
-            //   className="grid gap-1 columns-3 row-4 w-full mx-auto"
-            //   style={{
-            //     gridTemplateColumns: "repeat(3, 1fr)",
-            //     // gridTemplateRows: "repeat(1, 1fr)",
-            //     gridAutoFlow: "dense",
-            //     gridAutoRows: "minmax(100px, auto)",
-            //   }}
-            //   ref={provided.innerRef}
-            //   {...provided.droppableProps}
-            // >
-            //   {blocks.map((key, index) =>
-            //     selectedClose.includes(key) ? null : (
-            //       <Draggable key={key} draggableId={key} index={index}>
-            //         {(provided) => (
-            //           <div
-            //             className={`border break-inside-avoid ${getGridSpanClass(
-            //               key
-            //             )} `}
-            //             ref={provided.innerRef}
-            //             {...provided.draggableProps}
-            //             {...provided.dragHandleProps}
-            //           >
-            //             {componentMap[key]}
-            //           </div>
-            //         )}
-            //       </Draggable>
-            //     )
-            //   )}
-            //   {provided.placeholder}
-            // </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <GridLayout
+  className="layout"
+  layout={layout.filter(item => !selectedClose.includes(item.i))}
+  cols={3}
+  maxRows={6}
+  rowHeight={180}
+  width={1280}
+  isDraggable
+  isResizable={false}
+  compactType={null}
+  preventCollision
+  draggableHandle=".drag-handle"
+  onLayoutChange={(newLayout) => setLayout(newLayout)} 
+>
+  {blocks.map(
+    (key) =>
+      !selectedClose.includes(key) && (
+        <div key={key} className=" bg-white">
+        <div className="drag-handle cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 hover:bg-red-200 rounded-2xl">
+
+  </div>
+          {componentMap[key]}
+        </div>
+      )
+  )}
+</GridLayout>
+
+
+
+      
     </div>
   );
 };
