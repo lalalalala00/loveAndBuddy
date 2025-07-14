@@ -33,7 +33,8 @@ useEffect(() => {
       item.i === "cal" ? { ...item, w: calExtension } : item
     )
   );
-}, [calExtension]);
+  
+}, [calExtension,selectedClose]);
 console.log(calExtension)
 
   const toggleClose = (value: string) => {

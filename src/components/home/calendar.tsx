@@ -84,13 +84,12 @@ const Calendar = ({
     setSelectedDay({ day: clickedDateStr, reservation: dayReservations });
     console.log(dayReservations.length, "dayReservations");
     if (dayReservations.length > 0) {
-      setReservationModal(true);
-    } else {
-      setReservationModal(false);
-    }
+      setDayContents(true);
+    } 
 
     console.log(`[${clickedDateStr}] 예약 목록: `, dayReservations);
   };
+
 
   useEffect(() => {
   let width = 1;
@@ -213,10 +212,19 @@ const Calendar = ({
             <span>{selectedDay?.day}</span>
             <span>mon</span>
           </div>
+           {selectedDay?.reservation.map((item, i) => (
+              <div key={i}>
+                <span>
+                  {item.love.name} love 🩵{item.buddy.name} buddy
+                </span>
+                <span>{item.date}</span>
+                <span>img</span>
+              </div>
+            ))}
         </div>
       )}
 
-      {reservationModal && selectedDay && (
+      {/* {reservationModal && selectedDay && (
         <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2  w-full h-full flex justify-center items-center bg-black/30">
           <div className=" flex-col w-1/3 h-1/4 border p-4 rounded-2xl bg-white">
             <span>{selectedDay?.day}</span>
@@ -230,7 +238,7 @@ const Calendar = ({
             ))}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

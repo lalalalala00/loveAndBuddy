@@ -22,8 +22,8 @@ const Header = () => {
 
   const typeMenu = [
     { label: "home", url: "/" },
-    { label: currentUser?.label, url: "/lovuddy" },
-    { label: "mySchedule", url: "/mySchedule" },
+    { label: currentUser?.menu, url: "/lovuddy" },
+    { label: "Dear Love", url: "/dearLove" },
     { label: "community", url: "/community" },
   ];
 
@@ -100,10 +100,10 @@ const Header = () => {
   );
 };
 
-const userType: { label: UserStateType; type: number }[] = [
-  { label: "love", type: 0 },
-  { label: "lovuddy", type: 2 },
-  { label: "buddy", type: 1 },
+const userType: { label: UserStateType; type: number,menu: string }[] = [
+  { label: "love", type: 0 ,menu: 'Find buddy'},
+  { label: "lovuddy", type: 2 ,menu: 'Find love & buddy'},
+  { label: "buddy", type: 1,menu: 'Find love' },
 ];
 
 export default Header;
