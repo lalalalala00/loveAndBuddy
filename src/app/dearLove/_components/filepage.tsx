@@ -8,28 +8,69 @@ const FilePage = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [randomNameBox, setRandomNameBox] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<number>(31);
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const years = [2025, 2024, 2023, 2022];
 
   const randomIndex = Math.floor(Math.random() * randomNameBox);
   // const randomIndex = Math.floor(Math.random() * (imgs.length + 1));
 
   return (
     <div className="flex w-full">
-      <div className="w-[200px] h-[70%] border-r border-black overflow-scroll flex flex-col items-center">
-        {months.map((month, i) => (
-          <button key={i} onClick={() => setSelectedMonth(month)}>
-            <File key={month} comment={month} />
+      <div className="w-[200px] h-[70%] rounded-2xl shadow overflow-hidden flex flex-col items-center py-3">
+        <div className="relative w-[160px] mb-4">
+          <button
+            onClick={() => setOpen(!open)}
+            className="font-bold h-[38px] w-full rounded-xl bg-blue-100 hover:bg-blue-200 text-[14px] flex justify-center items-center shadow"
+          >
+            {selectedYear}
           </button>
-        ))}
+
+          {open && (
+            <div className="absolute top-[42px] left-0 w-full bg-blue-100 rounded-xl shadow-md z-10 overflow-hidden">
+              {years.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => {
+                    setSelectedYear(year);
+                    setOpen(false);
+                  }}
+                  className={`w-full text-center py-2 hover:bg-blue-300 transition-all ${
+                    year === selectedYear ? "font-bold bg-blue-200" : ""
+                  }`}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="overflow-y-auto no-scrollbar flex flex-col items-center gap-1 px-1">
+          {months.map((month, i) => (
+            <button key={i} onClick={() => setSelectedMonth(month)}>
+              <File key={month} comment={month} />
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-col w-full px-6">
+
+      <div className="flex flex-col w-full pl-6 mt-6">
         <div className="flex items-center">
-          <h1 className="text-[28px] lowercase font-bold mr-5">{selectedMonth}</h1>
+          <h1 className="text-[26px] lowercase font-bold mr-5 min-w-[230px] border-b-2">
+            ˚₊·{selectedMonth}—̳͟͞͞♡˚₊·
+          </h1>
           <div className="flex w-full">
             {[1, 4, 9, 12, 24, 29, 31].map((item, i) => (
               <div key={i} className="">
                 <button
                   onClick={() => setSelectedDay(31)}
-                  className={`relative text-[18px] px-3 py-1 border mx-2 w-[60px] rounded-full ${item === selectedDay ? "font-bold border-2" : ""}`}
+                  className={`relative text-[18px] px-3 py-1 border mx-2 w-[60px] rounded-full ${
+                    item === selectedDay
+                      ? "bg-yellow-100 border-yellow-400 font-bold border-2"
+                      : "border-gray-200"
+                  } transition-all`}
                 >
                   <span className="absolute -top-6 left-1/2 -translate-x-1/2">mon</span>
                   {item}
@@ -47,15 +88,15 @@ const FilePage = () => {
           ))}
 
           <div className="col-span-4 p-4">
-            <span className="text-[14px]">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero id obcaecati, fuga ex,
-              nulla eligendi tempore ad tempora, cumque omnis minima laudantium. Excepturi
+            <span className="text-[16px] leading-relaxed text-gray-700 whitespace-pre-line">
+              ✎ꪑ Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero id obcaecati, fuga
+              ex, nulla eligendi tempore ad tempora, cumque omnis minima laudantium. Excepturi
               consequuntur omnis doloremque quis nam sint enim. Lorem ipsum dolor sit amet
               consectetur adipisicing elit. Vero id obcaecati, fuga ex, nulla eligendi tempore ad
               tempora, cumque omnis minima laudantium. Excepturi consequuntur omnis doloremque quis
               nam sint enim. Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero id
               obcaecati, fuga ex, nulla eligendi tempore ad tempora, cumque omnis minima laudantium.
-              Excepturi consequuntur omnis doloremque quis nam sint enim.
+              Excepturi consequuntur omnis doloremque quis nam sint enim. 𖤐
             </span>
           </div>
 

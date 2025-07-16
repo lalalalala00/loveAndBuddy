@@ -27,10 +27,18 @@ const FileNameBox = ({ bgImg, textColor }: { bgImg: string; textColor: string })
           Buddy_ᬏ᭄꙳⸌ <span className="font-semibold">cheeerry</span> ⛧*̩̩͙⸝⋆
         </span>
       </div>
-      <div className="mt-2">
-        <p className="text-[14px] font-semibold" style={{ color: textColor ? textColor : "#111" }}>
-          샤넬이와 놀이터에서 신나게 놀았어요!
-        </p>
+      <div className="mt-2 flex flex-col">
+        <span
+          className="text-[14px] font-semibold line-clamp-3"
+          style={{ color: textColor ? textColor : "#111" }}
+        >
+          샤넬이와 놀이터에서 신나게 놀았어요! 샤넬이와 놀이터에서 신나게 놀았어요! 샤넬이와
+          놀이터에서 신나게 놀았어요! 샤넬이와 놀이터에서 신나게 놀았어요! 샤넬이와 놀이터에서
+          신나게 놀았어요!
+        </span>
+        <span className="text-[10px] text-nowrap flex justify-center">
+          *･☪·̩͙ ⋰˚☆⋰˚★⋰˚☆⋰˚★⋰˚☆⋰˚★⋰˚☆⋰˚★ ·̩͙☪･*
+        </span>
       </div>
     </div>
   );
