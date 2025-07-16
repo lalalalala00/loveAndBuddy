@@ -1,9 +1,8 @@
-
 import FilePage from "./filepage";
 
 const Index = () => {
   return (
-    <div className="mt-10">
+    <div className="mt-20">
       <div className="flex justify-center">
         <FilePage />
       </div>
