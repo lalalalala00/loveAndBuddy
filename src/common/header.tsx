@@ -55,7 +55,8 @@ const Header = () => {
           <button
             key={i}
             onClick={() => router.push(item.url)}
-            className="w-[200px] rounded-md border border-black flex justify-center items-center text-[14px] h-[30px] mx-3"
+            className="w-[200px] neumorph-card flex justify-center items-center text-[14px] h-[30px] mx-3"
+            // className="w-[200px] rounded-md border border-black neumorph-card flex justify-center items-center text-[14px] h-[30px] mx-3"
           >
             {item.label}
           </button>
@@ -65,10 +66,7 @@ const Header = () => {
       <div className="h-[30px] w-[200px]">
         {getUser === null ? (
           <div className="flex justify-end">
-            <button
-              className="mr-3"
-              onClick={() => setSignUpModal(!signUpModal)}
-            >
+            <button className="mr-3" onClick={() => setSignUpModal(!signUpModal)}>
               signUp
             </button>
             <button>login</button>
@@ -78,7 +76,7 @@ const Header = () => {
             <button
               key={i}
               onClick={() => handleTabClick(item.label)}
-              className={` border-black border-r last:border-r-0 px-2 ${
+              className={` border-black border-r last:border-r-0 px-2  ${
                 userState === item.label ? "bg-blue-200" : ""
               }`}
             >
@@ -100,10 +98,10 @@ const Header = () => {
   );
 };
 
-const userType: { label: UserStateType; type: number,menu: string }[] = [
-  { label: "love", type: 0 ,menu: 'Find buddy'},
-  { label: "lovuddy", type: 2 ,menu: 'Find love & buddy'},
-  { label: "buddy", type: 1,menu: 'Find love' },
+const userType: { label: UserStateType; type: number; menu: string }[] = [
+  { label: "love", type: 0, menu: "Find buddy" },
+  { label: "lovuddy", type: 2, menu: "Find love & buddy" },
+  { label: "buddy", type: 1, menu: "Find love" },
 ];
 
 export default Header;

@@ -29,6 +29,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+
+  background: #f9fbfd;
+  /* background: #F4F7F9; */
 }
 
 .cormorant-cormorant {
@@ -53,3 +56,100 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+h1 {
+  font-size: 48px;
+  font-weight: 800;
+  color: #2f2f2f;
+  margin-bottom: 24px;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #a87e46;
+  margin-bottom: 32px;
+}
+
+p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #4a4a4a;
+  margin-bottom: 24px;
+}
+
+strong {
+  color: #2b2b2b;
+  font-weight: 600;
+}
+
+em {
+  color: #7a7a7a;
+  font-style: italic;
+}
+
+ul {
+  list-style: disc;
+  padding-left: 20px;
+}
+
+li {
+  font-size: 17px;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.neumorph-box {
+  background: #f4f9f5;
+  box-shadow:
+    6px 6px 12px rgba(180, 194, 129, 0.25),
+    -6px -6px 12px rgba(255, 255, 255, 1);
+  /* background: #f4f7f9;
+  box-shadow:
+    14px 14px 28px rgba(216, 225, 235, 0.5),
+    -14px -14px 28px rgba(255, 255, 255, 1); */
+}
+
+.text-soft-green {
+  color: #b4c281;
+}
+.text-soft-beige {
+  color: #e6d7b8;
+}
+.text-ivory {
+  color: #f3ebd2;
+}
+
+.neumorph-card {
+  background: #f4f9f5;
+  box-shadow:
+    6px 6px 12px rgba(180, 194, 129, 0.25),
+    -6px -6px 12px rgba(255, 255, 255, 1);
+  border-radius: 1rem;
+  color: #b2d2a4;
+  transition: all 0.2s ease-in-out;
+}
+
+.neumorph-card.selected,
+.selected-neumorph {
+  background: #ffffff;
+  box-shadow:
+    inset 6px 6px 12px #b2d2a46f,
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+  color: #3a650f;
+  font-weight: 700;
+}
+
+.text-soft-green {
+  color: #9cad4e;
+}
+
+/* 1	#E6D7B8	따뜻한 크림 베이지
+2	#F3EBD2	부드러운 파스텔 아이보리
+3	#B4C281	연녹색, 버디 캐릭터 느낌
+4	#B1A386	톤다운된 베이지 브라운
+5	#E2E6D4	연한 민트 화이트
+soft-leaf	#AFCB94	부드럽고 감성적인 연잎색 (자연 친화적)
+mossy-green	#9DBB80	따뜻하고 차분한 이끼색 (버디 이미지에서 추출)
+mint-sage	#C8D9B5	아주 연한 민트+세이지, 감성 강조용
+matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */

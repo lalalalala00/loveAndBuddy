@@ -68,7 +68,7 @@ const FilePage = () => {
                   onClick={() => setSelectedDay(31)}
                   className={`relative text-[18px] px-3 py-1 border mx-2 w-[60px] rounded-full ${
                     item === selectedDay
-                      ? "bg-yellow-100 border-yellow-400 font-bold border-2"
+                      ? "bg-blue-100 border-blue-400 font-bold border-2"
                       : "border-gray-200"
                   } transition-all`}
                 >
