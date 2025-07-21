@@ -6,7 +6,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <LayoutInitializer>
       <div>
-        <Header />
+        {/* <Header /> */}
         <div>{children}</div>
       </div>
     </LayoutInitializer>
