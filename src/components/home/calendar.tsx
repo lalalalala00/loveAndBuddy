@@ -31,10 +31,10 @@ const daysOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 const Calendar = ({
   setSelectedClose,
-  setCalExtension
+  setCalExtension,
 }: {
   setSelectedClose: (value: string) => void;
-  setCalExtension: Dispatch<SetStateAction<number>>
+  setCalExtension: Dispatch<SetStateAction<number>>;
 }) => {
   dayjs.extend(utc);
   dayjs.extend(timezone);
@@ -65,9 +65,7 @@ const Calendar = ({
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
-      calendar.push(
-        dayjs(new Date(currentDate.year(), currentDate.month(), d))
-      );
+      calendar.push(dayjs(new Date(currentDate.year(), currentDate.month(), d)));
     }
 
     return calendar;
@@ -85,25 +83,24 @@ const Calendar = ({
     console.log(dayReservations.length, "dayReservations");
     if (dayReservations.length > 0) {
       setDayContents(true);
-    } 
+    }
 
     console.log(`[${clickedDateStr}] 예약 목록: `, dayReservations);
   };
 
-
   useEffect(() => {
-  let width = 1;
-  if (calSize && !dayContents) width = 2;
-  else if (calSize && dayContents) width = 3;
-  else if (!calSize && dayContents) width = 2;
-  else if (!calSize && !dayContents) width = 1;
+    let width = 1;
+    if (calSize && !dayContents) width = 2;
+    else if (calSize && dayContents) width = 3;
+    else if (!calSize && dayContents) width = 2;
+    else if (!calSize && !dayContents) width = 1;
 
-  setCalExtension(width);
-}, [calSize, dayContents]);
+    setCalExtension(width);
+  }, [calSize, dayContents]);
 
   return (
     <div
-      className={`my-2 mx-auto p-4 flex w-full`}
+      className={`my-2 mx-auto p-4 flex w-full `}
       style={{
         height: !calSize ? "504px" : "700px",
       }}
@@ -134,9 +131,7 @@ const Calendar = ({
         </div>
         <div className="flex justify-between items-center mb-4">
           <button onClick={prevMonth}>&#60;</button>
-          <h2 className="text-lg font-semibold">
-            {currentDate.format("YYYY년 MM월")}
-          </h2>
+          <h2 className="text-lg font-semibold">{currentDate.format("YYYY년 MM월")}</h2>
           <button onClick={nextMonth}> &#62;</button>
         </div>
         <div className="flex justify-center mb-4">
@@ -161,20 +156,14 @@ const Calendar = ({
             const clickedDateStr = date && date.format("YYYY-MM-DD");
 
             const dayReservations = reservations.filter(
-              (r) =>
-                dayjs(r.date).utcOffset(9).format("YYYY-MM-DD") ===
-                clickedDateStr
+              (r) => dayjs(r.date).utcOffset(9).format("YYYY-MM-DD") === clickedDateStr
             );
 
             return (
               <div
                 key={i}
-                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1
-        ${
-          date?.isSame(today, "day")
-            ? "bg-blue-100 text-white font-bold -z-2"
-            : ""
-        }
+                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1 border border-amber-50
+        ${date?.isSame(today, "day") ? "bg-blue-100 text-white font-bold -z-2" : ""}
         ${!date ? "" : "hover:bg-gray-200"}
       `}
                 style={{
@@ -194,9 +183,7 @@ const Calendar = ({
                   {dayReservations.length > 0 &&
                     dayReservations.map((item, i) => (
                       <div className="flex" key={i}>
-                        <span className="text-[12px] text-nowrap">
-                          {item.buddy.name} buddy
-                        </span>
+                        <span className="text-[12px] text-nowrap">{item.buddy.name} buddy</span>
                       </div>
                     ))}
                 </div>
@@ -212,15 +199,15 @@ const Calendar = ({
             <span>{selectedDay?.day}</span>
             <span>mon</span>
           </div>
-           {selectedDay?.reservation.map((item, i) => (
-              <div key={i}>
-                <span>
-                  {item.love.name} love 🩵{item.buddy.name} buddy
-                </span>
-                <span>{item.date}</span>
-                <span>img</span>
-              </div>
-            ))}
+          {selectedDay?.reservation.map((item, i) => (
+            <div key={i}>
+              <span>
+                {item.love.name} love 🩵{item.buddy.name} buddy
+              </span>
+              <span>{item.date}</span>
+              <span>img</span>
+            </div>
+          ))}
         </div>
       )}
 

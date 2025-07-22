@@ -91,7 +91,8 @@ const Concept = () => {
               <strong>Love & Buddy</strong>라는 공간에서
               <strong>사람과 반려동물을 이어주는 동행자로 당신의 곁에 머무르고자 합니다.</strong>
               <br />
-              <strong>누구보다 깊은 공감으로 존재하는 조용한 동행자. </strong>
+              <strong>기억을 남기고, 마음을 이어주는 동행자.</strong>
+              {/* <strong>누구보다 깊은 공감으로 존재하는 든든한 동행자.</strong> */}
               <br /> 버디는 이곳에서 아이들과 보호자의 곁을 지키며, 따뜻한 교감을 전합니다.
             </p>
           </div>
