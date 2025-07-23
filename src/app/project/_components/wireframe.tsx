@@ -21,7 +21,7 @@ const Wireframe = () => {
       </div>
 
       <div className="py-5">
-        <h3 className="mb-5">{menu.find((v) => v.value === selectedMenu)?.label}</h3>
+        {/* <h3 className="mb-5">{menu.find((v) => v.value === selectedMenu)?.label}</h3> */}
         {selectedMenu === "home" && (
           <div className="flex flex-col">
             <div className="mb-3 flex">
