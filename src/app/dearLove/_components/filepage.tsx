@@ -154,6 +154,10 @@
 import { Fragment, useState } from "react";
 import FileNameBox from "./file.name.box";
 
+import PhotoModal from "./modal.photo";
+
+import ModalIos from "@/common/modal.ios";
+
 const FilePage = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("August");
   const [randomNameBox, setRandomNameBox] = useState<number>(0);
@@ -161,10 +165,17 @@ const FilePage = () => {
   const [selectedYear, setSelectedYear] = useState<number>(2025);
   const [open, setOpen] = useState<boolean>(false);
 
+  const [selectedPhoto, setSelectedPhoto] = useState<boolean>(false);
+  const [selectedPhotoList, setSelectedPhotoList] = useState<string[]>();
+
   const years = [2025, 2024, 2023, 2022];
 
   const randomIndex = Math.floor(Math.random() * randomNameBox);
   // const randomIndex = Math.floor(Math.random() * (imgs.length + 1));
+
+  const handlePhotoClick = (i: number) => {
+    setSelectedPhoto(!selectedPhoto);
+  };
 
   return (
     <div className="flex w-full">
@@ -256,7 +267,11 @@ const FilePage = () => {
             {imgs.slice(0, 7).map((item, i) => (
               <Fragment key={i}>
                 {i === randomIndex && <FileNameBox bgImg="/cha/bg.png" textColor="" />}
-                <img src={item.url} className="w-full h-[260px] object-cover" />
+                <img
+                  src={item.url}
+                  className="w-full h-[260px] object-cover cursor-pointer"
+                  onClick={() => handlePhotoClick(i)}
+                />
               </Fragment>
             ))}
 
@@ -279,6 +294,16 @@ const FilePage = () => {
           </div>
         </div>
       </div>
+      <ModalIos
+        isOpen={selectedPhoto}
+        handleModalState={() => setSelectedPhoto(!selectedPhoto)}
+        width="50%"
+        height="50%"
+        title={"title"}
+        leftComment="*⁀➷♥ Heart ⌁❤︎⌁﻿"
+      >
+        <PhotoModal handleModalState={() => setSelectedPhoto(!selectedPhoto)} />
+      </ModalIos>
     </div>
   );
 };
