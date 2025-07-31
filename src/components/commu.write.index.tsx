@@ -42,7 +42,7 @@ const WriteIndex = ({ setSelectedClose }: { setSelectedClose: (value: string) =>
         className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
       ></button>
       <div
-        className={`border rounded-2xl w-[422px] flex flex-col justify-between p-1 ${
+        className={`border rounded-2xl w-full flex flex-col justify-between p-1 ${
           imgs.length > 0 ? "h-[180px]" : "h-[120px]"
         }`}
       >

@@ -43,23 +43,24 @@ const Index = () => {
   };
 
   return (
-    <div className="mt-5">
-      <div className="bg-amber-100 w-full h-8 mb-5 flex items-center px-5 rounded-t-xl">
+    <div className="mt-5 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] rounded-b-2xl">
+      <div className="bg-[#f3f6f0] w-full h-10 flex items-center px-5 rounded-t-xl">
         {closeTap
           .filter((item) => selectedClose.includes(item.value))
           .map((item) => (
             <button
               key={item.value}
               onClick={() => toggleClose(item.value)}
-              className="flex justify-between items-center cursor-pointer mx-3 px-9 border border-amber-500 rounded-2xl text-amber-700 font-semibold hover:bg-amber-500 hover:text-white"
+              className="flex justify-between items-center cursor-pointer py-0.5 mx-3 px-8 bg-white/80 border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] font-semibold"
             >
+              <div className="bg-[#9dbb80] w-[22px] h-[8px] mr-2 rounded-2xl" />
               <span className="text-[12px]">{item.label}</span>
             </button>
           ))}
       </div>
 
       <GridLayout
-        className="layout"
+        className="layout bg-[#fefefe] pt-4 !h-[calc(100vh-250px)] rounded-b-2xl"
         layout={layout.filter((item) => !selectedClose.includes(item.i))}
         cols={3}
         maxRows={6}
@@ -75,8 +76,12 @@ const Index = () => {
         {blocks.map(
           (key) =>
             !selectedClose.includes(key) && (
-              <div key={key} className=" bg-white">
-                <div className="drag-handle react-grid-item cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 hover:bg-red-200 rounded-2xl"></div>
+              <div
+                key={key}
+                className="p-2 bg-white border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff] rounded-2xl"
+                // className="p-2 rounded-2xl shadow-[4px_4px_10px_#f8faf5,-4px_-4px_10px_#ffffff] h-full"
+              >
+                <div className="drag-handle react-grid-item cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 hover:bg-[#c8d9b5] rounded-2xl mb-2"></div>
                 {componentMap[key]}
               </div>
             )

@@ -13,6 +13,10 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        boxShadow: {
+          neumorphism: "4px 4px 10px #c5c5c5, -4px -4px 10px #ffffff",
+          "neumorphism-inset": "inset 4px 4px 10px #c5c5c5, inset -4px -4px 10px #ffffff",
+        },
       },
     },
   },

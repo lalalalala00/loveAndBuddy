@@ -100,14 +100,14 @@ const Calendar = ({
 
   return (
     <div
-      className={`my-2 mx-auto p-4 flex w-full `}
+      className={`mx-auto flex w-full ${!calSize ? "p-2" : "p-4 "}`}
       style={{
-        height: !calSize ? "504px" : "700px",
+        height: !calSize ? "600px" : "800px",
       }}
     >
       <div
         style={{
-          width: !calSize ? "422px" : "800px",
+          width: !calSize ? "420px" : "780px",
           //   height: calSize ? "504px" : "700px",
         }}
       >
@@ -129,7 +129,7 @@ const Calendar = ({
         </div>
         <div className="flex justify-between items-center mb-4">
           <button onClick={prevMonth}>&#60;</button>
-          <h2 className="text-lg font-semibold">{currentDate.format("YYYY년 MM월")}</h2>
+          <h3 className="text-xl font-semibold">{currentDate.format("YYYY년 MM월")}</h3>
           <button onClick={nextMonth}> &#62;</button>
         </div>
         <div className="flex justify-center mb-4">
@@ -160,7 +160,7 @@ const Calendar = ({
             return (
               <div
                 key={i}
-                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1 border border-amber-50
+                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1 border border-[#f7f9f6]
         ${date?.isSame(today, "day") ? "bg-blue-100 text-white font-bold -z-2" : ""}
         ${!date ? "" : "hover:bg-gray-200"}
       `}

@@ -25,7 +25,7 @@ const BuddyConnect = ({ setSelectedClose }: { setSelectedClose: (value: string) 
 
   return (
     <div
-      className={`my-2 w-[422px] border-2 rounded-2xl bg-amber-200 pt-3 pb-4 px-4 ${
+      className={` rounded-2xl bg-amber-200 pt-3 pb-4 px-4 w-[410px] ${
         buddyToki ? "h-[640px]" : ""
       }`}
     >
@@ -43,7 +43,7 @@ const BuddyConnect = ({ setSelectedClose }: { setSelectedClose: (value: string) 
         </div>
       </div>
       <div className="relative flex justify-between items-center">
-        <h1>buddyToki buddyConnect</h1>
+        <h4>buddyToki buddyConnect</h4>
         <div className="flex items-center">
           {/* <h1>stanley buddy</h1> */}
           <div className="rounded-full bg-red-600 w-3 h-3 ml-2" />

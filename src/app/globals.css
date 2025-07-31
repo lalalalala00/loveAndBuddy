@@ -144,6 +144,21 @@ li {
   color: #9cad4e;
 }
 
+.color- {
+  color: #e6d7b8;
+  color: #f3ebd2;
+  color: #b4c281;
+  color: #b1a386;
+  color: #e2e6d4;
+  color: #afcb94;
+  color: #9dbb80;
+  color: #c8d9b5;
+  color: #b2d2a4;
+  color: #f7f9f6;
+  color: #f3f6f0;
+  color: #eff2ed;
+}
+
 /* 1	#E6D7B8	따뜻한 크림 베이지
 2	#F3EBD2	부드러운 파스텔 아이보리
 3	#B4C281	연녹색, 버디 캐릭터 느낌
@@ -156,4 +171,6 @@ matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */
 
 .react-grid-item {
   transition: none !important;
+  width: auto !important;
+  height: auto !important;
 }
