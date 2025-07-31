@@ -166,7 +166,7 @@ const FilePage = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [selectedPhoto, setSelectedPhoto] = useState<boolean>(false);
-  const [selectedPhotoList, setSelectedPhotoList] = useState<string[]>();
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   const years = [2025, 2024, 2023, 2022];
 
@@ -175,6 +175,7 @@ const FilePage = () => {
 
   const handlePhotoClick = (i: number) => {
     setSelectedPhoto(!selectedPhoto);
+    setSelectedPhotoIndex(i);
   };
 
   return (
@@ -264,16 +265,19 @@ const FilePage = () => {
           </div>
 
           <div className="grid grid-cols-4 gap-1 py-6">
-            {imgs.slice(0, 7).map((item, i) => (
-              <Fragment key={i}>
-                {i === randomIndex && <FileNameBox bgImg="/cha/bg.png" textColor="" />}
-                <img
-                  src={item.url}
-                  className="w-full h-[260px] object-cover cursor-pointer"
-                  onClick={() => handlePhotoClick(i)}
-                />
-              </Fragment>
-            ))}
+            {imgs.slice(0, 7).map((item, i) => {
+              const actualIndex = i;
+              return (
+                <Fragment key={i}>
+                  {i === randomIndex && <FileNameBox bgImg="/cha/bg.png" textColor="" />}
+                  <img
+                    src={item.url}
+                    className="w-full h-[260px] object-cover cursor-pointer"
+                    onClick={() => handlePhotoClick(actualIndex)}
+                  />
+                </Fragment>
+              );
+            })}
 
             <div className="col-span-4 p-4">
               <span className="text-[16px] leading-relaxed text-gray-700 whitespace-pre-line">
@@ -288,9 +292,17 @@ const FilePage = () => {
               </span>
             </div>
 
-            {imgs.slice(8).map((item, i) => (
-              <img key={i} src={item.url} className="w-full h-[260px] object-cover" />
-            ))}
+            {imgs.slice(8).map((item, i) => {
+              const actualIndex = i + 8;
+              return (
+                <img
+                  key={actualIndex}
+                  src={item.url}
+                  className="w-full h-[260px] object-cover cursor-pointer"
+                  onClick={() => handlePhotoClick(actualIndex)}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
@@ -302,7 +314,11 @@ const FilePage = () => {
         title={"title"}
         leftComment="*⁀➷♥ Heart ⌁❤︎⌁﻿"
       >
-        <PhotoModal handleModalState={() => setSelectedPhoto(!selectedPhoto)} />
+        <PhotoModal
+          handleModalState={() => setSelectedPhoto(!selectedPhoto)}
+          images={imgs}
+          selectedIndex={selectedPhotoIndex}
+        />
       </ModalIos>
     </div>
   );
