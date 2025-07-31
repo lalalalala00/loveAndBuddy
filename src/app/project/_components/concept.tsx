@@ -88,7 +88,7 @@ const Concept = () => {
             </p>
             <p>
               이제 그는
-              <strong>Love & Buddy</strong>라는 공간에서
+              <strong>숨</strong>이라는 공간에서
               <strong>사람과 반려동물을 이어주는 동행자로 당신의 곁에 머무르고자 합니다.</strong>
               <br />
               <strong>기억을 남기고, 마음을 이어주는 동행자.</strong>
@@ -106,9 +106,7 @@ const Concept = () => {
       </section>
 
       <section className="mb-20 neumorph-box p-6 rounded-2xl">
-        <h3 className="text-2xl font-semibold text-soft-green">
-          Love & Buddy, 교감으로 연결되는 플랫폼
-        </h3>
+        <h3 className="text-2xl font-semibold text-soft-green">숨, 교감으로 연결되는 플랫폼</h3>
       </section>
     </div>
   );

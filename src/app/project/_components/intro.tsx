@@ -59,7 +59,12 @@ const Intro = () => {
   return (
     <div className="min-h-screen px-8 py-16 text-gray-800 rounded-xl">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Love & Buddy</h1>
+        <div className="mb-6 text-center">
+          <h1 className="text-4xl font-bold">About Soom</h1>
+          <p className="text-base text-gray-500 mt-2 tracking-wide">Meet Love & Buddy</p>
+          <p className="text-base text-gray-500 mt-2 tracking-wide">Soom, where Love meets Buddy</p>
+        </div>
+
         <h2 className="text-xl font-medium text-[#3a650f] mb-10">우리를 이어주는 공감의 공간</h2>
 
         <p className="mb-4 text-[17px]">

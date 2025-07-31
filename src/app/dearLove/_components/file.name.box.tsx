@@ -12,9 +12,9 @@ const FileNameBox = ({ bgImg, textColor }: { bgImg: string; textColor: string })
           {weather[0].label}
         </span>
         <div className="flex items-end">
-          <h1 className="text-2xl font-bold" style={{ color: textColor ? textColor : "#101828" }}>
+          <h4 className="text-2xl font-bold" style={{ color: textColor ? textColor : "#101828" }}>
             Monday
-          </h1>
+          </h4>
           <span className="ml-2 text-sm" style={{ color: textColor ? textColor : "#111" }}>
             ⪩July 14, 2025⪨
           </span>

@@ -18,7 +18,7 @@ const FilePage = () => {
 
   return (
     <div className="flex w-full">
-      <div className="w-[200px] h-[70%] rounded-2xl shadow overflow-hidden flex flex-col items-center py-3">
+      <div className="w-[200px] h-[70%] rounded-2xl shadow overflow-hidden flex flex-col items-center py-3 bg-white/20">
         <div className="relative w-[160px] mb-4">
           <button
             onClick={() => setOpen(!open)}
@@ -58,22 +58,29 @@ const FilePage = () => {
 
       <div className="flex flex-col w-full pl-6 mt-6">
         <div className="flex items-center">
-          <h1 className="text-[26px] lowercase font-bold mr-5 min-w-[230px] border-b-2">
+          <h4 className="text-[26px] lowercase font-bold mr-5 min-w-[230px] border-b-2">
             ˚₊·{selectedMonth}—̳͟͞͞♡˚₊·
-          </h1>
+          </h4>
           <div className="flex w-full">
             {[1, 4, 9, 12, 24, 29, 31].map((item, i) => (
               <div key={i} className="">
                 <button
                   onClick={() => setSelectedDay(31)}
-                  className={`relative text-[18px] px-3 py-1 border mx-2 w-[60px] rounded-full ${
+                  className={`relative text-[18px] px-3 py-1 border-double border-7 mx-2 w-[60px] h-[60px] rounded-full ${
                     item === selectedDay
-                      ? "bg-blue-100 border-blue-400 font-bold border-2"
+                      ? "bg-blue-100 border-blue-100 font-bold border-2"
                       : "border-gray-200"
                   } transition-all`}
+                  style={{
+                    backgroundImage: "url(/cha/1_3.png)",
+                    objectFit: "cover",
+                    backgroundSize: "60px",
+                  }}
                 >
-                  <span className="absolute -top-6 left-1/2 -translate-x-1/2">mon</span>
-                  {item}
+                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[12px]">
+                    title
+                  </span>
+                  {/* {item} */}
                 </button>
               </div>
             ))}

@@ -115,9 +115,7 @@ const Calendar = ({
           <button
             onClick={() => setSelectedClose("cal")}
             className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
-          >
-            <span className="text-[12px]">X</span>
-          </button>
+          ></button>
           <div>
             <button
               onClick={() => setDayContents(!dayContents)}

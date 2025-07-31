@@ -4,11 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BuddyMessageRoom from "./buddy.message.room";
 import { supabase } from "@/lib/supabaseClient";
 
-const BuddyConnect = ({
-  setSelectedClose,
-}: {
-  setSelectedClose: (value: string) => void;
-}) => {
+const BuddyConnect = ({ setSelectedClose }: { setSelectedClose: (value: string) => void }) => {
   const [buddyToki, setBuddyToki] = useState<boolean>(false);
 
   const userId = "6dc3998b-b201-4c89-bb1e-6400d92c79a5";
@@ -37,9 +33,7 @@ const BuddyConnect = ({
         <button
           onClick={() => setSelectedClose("toki")}
           className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
-        >
-          <span className="text-[12px]">X</span>
-        </button>
+        ></button>
         <div>
           <button
             onClick={() => setBuddyToki(!buddyToki)}

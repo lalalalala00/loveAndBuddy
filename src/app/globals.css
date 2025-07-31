@@ -153,3 +153,7 @@ soft-leaf	#AFCB94	부드럽고 감성적인 연잎색 (자연 친화적)
 mossy-green	#9DBB80	따뜻하고 차분한 이끼색 (버디 이미지에서 추출)
 mint-sage	#C8D9B5	아주 연한 민트+세이지, 감성 강조용
 matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */
+
+.react-grid-item {
+  transition: none !important;
+}

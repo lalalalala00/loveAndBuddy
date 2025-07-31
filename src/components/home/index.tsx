@@ -10,32 +10,23 @@ import GridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
-
-const blocks = [
-    "cal",
-    "toki",
-    "comm",
-    "write",
-  ]
+const blocks = ["cal", "toki", "comm", "write"];
 const Index = () => {
   const [selectedClose, setSelectedClose] = useState<string[]>([]);
-  const [calExtension, setCalExtension] = useState<number>(2)
+  const [calExtension, setCalExtension] = useState<number>(2);
   const [layout, setLayout] = useState([
-  { i: "cal", x: 0, y: 0, w: 2, h: 2 },
-  { i: "write", x: 2, y: 3, w: 1, h: 1 },
-  { i: "comm", x: 2, y: 0, w: 1, h: 1 },
-  { i: "toki", x: 0, y: 4, w: 1, h: 1 },
-]);
+    { i: "cal", x: 0, y: 0, w: 2, h: 2 },
+    { i: "write", x: 2, y: 3, w: 1, h: 1 },
+    { i: "comm", x: 2, y: 0, w: 1, h: 1 },
+    { i: "toki", x: 0, y: 4, w: 1, h: 1 },
+  ]);
 
-useEffect(() => {
-  setLayout((prev) =>
-    prev.map((item) =>
-      item.i === "cal" ? { ...item, w: calExtension } : item
-    )
-  );
-  
-}, [calExtension,selectedClose]);
-console.log(calExtension)
+  useEffect(() => {
+    setLayout((prev) =>
+      prev.map((item) => (item.i === "cal" ? { ...item, w: calExtension } : item))
+    );
+  }, [calExtension, selectedClose]);
+  console.log(calExtension);
 
   const toggleClose = (value: string) => {
     if (!value) return;
@@ -68,35 +59,29 @@ console.log(calExtension)
       </div>
 
       <GridLayout
-  className="layout"
-  layout={layout.filter(item => !selectedClose.includes(item.i))}
-  cols={3}
-  maxRows={6}
-  rowHeight={180}
-  width={1280}
-  isDraggable
-  isResizable={false}
-  compactType={null}
-  preventCollision
-  draggableHandle=".drag-handle"
-  onLayoutChange={(newLayout) => setLayout(newLayout)} 
->
-  {blocks.map(
-    (key) =>
-      !selectedClose.includes(key) && (
-        <div key={key} className=" bg-white">
-        <div className="drag-handle cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 hover:bg-red-200 rounded-2xl">
-
-  </div>
-          {componentMap[key]}
-        </div>
-      )
-  )}
-</GridLayout>
-
-
-
-      
+        className="layout"
+        layout={layout.filter((item) => !selectedClose.includes(item.i))}
+        cols={3}
+        maxRows={6}
+        rowHeight={180}
+        width={1280}
+        isDraggable
+        isResizable={false}
+        compactType={null}
+        preventCollision
+        draggableHandle=".drag-handle"
+        onLayoutChange={(newLayout) => setLayout(newLayout)}
+      >
+        {blocks.map(
+          (key) =>
+            !selectedClose.includes(key) && (
+              <div key={key} className=" bg-white">
+                <div className="drag-handle react-grid-item cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 hover:bg-red-200 rounded-2xl"></div>
+                {componentMap[key]}
+              </div>
+            )
+        )}
+      </GridLayout>
     </div>
   );
 };

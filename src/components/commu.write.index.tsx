@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const WriteIndex = ({
-  setSelectedClose,
-}: {
-  setSelectedClose: (value: string) => void;
-}) => {
+const WriteIndex = ({ setSelectedClose }: { setSelectedClose: (value: string) => void }) => {
   const [empty, setEmpty] = useState(true);
   const [imgs, setImgs] = useState<File[]>([]);
   const [content, setContent] = useState<string>("");
@@ -40,71 +36,69 @@ const WriteIndex = ({
   }, [imgs]);
   console.log(content);
   return (
-    <div
-      className={`border rounded-2xl w-[422px] flex flex-col justify-between p-1 ${
-        imgs.length > 0 ? "h-[180px]" : "h-[120px]"
-      }`}
-    >
+    <div>
       <button
         onClick={() => setSelectedClose("write")}
         className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
+      ></button>
+      <div
+        className={`border rounded-2xl w-[422px] flex flex-col justify-between p-1 ${
+          imgs.length > 0 ? "h-[180px]" : "h-[120px]"
+        }`}
       >
-        <span className="text-[12px]">X</span>
-      </button>
-      <div className="relative">
-        <div className="flex">
-          {imgs.map((img, i) => (
-            <div key={i}>
-              <img
-                src={URL.createObjectURL(img)}
-                alt="preview"
-                className="w-20 h-20 object-cover mr-2"
-              />
-              <button onClick={() => handleImgDel(i)}>x</button>
-            </div>
-          ))}
-        </div>
+        <div className="relative">
+          <div className="flex">
+            {imgs.map((img, i) => (
+              <div key={i}>
+                <img
+                  src={URL.createObjectURL(img)}
+                  alt="preview"
+                  className="w-20 h-20 object-cover mr-2"
+                />
+                <button onClick={() => handleImgDel(i)}>x</button>
+              </div>
+            ))}
+          </div>
 
-        <div
-          className="w-full h-[85px] p-3 outline-none overflow-scroll"
-          contentEditable
-          suppressContentEditableWarning
-          onInput={(e) => {
-            const target = e.currentTarget as HTMLElement;
-            const text = target.innerText;
+          <div
+            className="w-full h-[85px] p-3 outline-none overflow-scroll"
+            contentEditable
+            suppressContentEditableWarning
+            onInput={(e) => {
+              const target = e.currentTarget as HTMLElement;
+              const text = target.innerText;
 
-            if (text.length > 10) {
-              target.innerText = content;
+              if (text.length > 10) {
+                target.innerText = content;
 
-              const selection = window.getSelection();
-              const range = document.createRange();
-              range.selectNodeContents(target);
-              range.collapse(false);
-              if (selection) {
-                selection.removeAllRanges();
-                selection.addRange(range);
+                const selection = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(target);
+                range.collapse(false);
+                if (selection) {
+                  selection.removeAllRanges();
+                  selection.addRange(range);
+                }
+
+                setLimitNumber(true);
+              } else {
+                setLimitNumber(false);
+                setContent(text);
               }
 
-              setLimitNumber(true);
-            } else {
-              setLimitNumber(false);
-              setContent(text);
-            }
-
-            setEmpty(text.trim() === "");
-          }}
-        ></div>
-        {empty && (
-          <span className=" text-gray-400 pointer-events-none select-none">
-            샤네루와의 하루를 적어주세요!
-          </span>
-        )}
-        <div className="border w-full h-[20px] flex justify-between">
-          <input type="file" multiple accept="image/*" onChange={handleImgs} />
-          <div>
-            <span className={`${limitNumber ? "text-red-600" : ""}`}>
-              {content.length} / 10
+              setEmpty(text.trim() === "");
+            }}
+          ></div>
+          {empty && (
+            <span className=" text-gray-400 pointer-events-none select-none">
+              샤네루와의 하루를 적어주세요!
             </span>
+          )}
+          <div className="border w-full h-[20px] flex justify-between">
+            <input type="file" multiple accept="image/*" onChange={handleImgs} />
+            <div>
+              <span className={`${limitNumber ? "text-red-600" : ""}`}>{content.length} / 10</span>
+            </div>
           </div>
         </div>
       </div>

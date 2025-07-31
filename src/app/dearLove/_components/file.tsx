@@ -7,7 +7,7 @@ const File = ({ comment }: { comment: string }) => {
           clipPath: "polygon(0 0, 55% 0, 60% 10%, 100% 10%, 100% 100%, 0 100%)",
         }}
       />
-      <span className="text-[12px] font-semibold text-gray-700 ">{comment}</span>
+      <span className="text-[12px] font-semibold text-gray-700 ">{comment} [2]</span>
     </div>
   );
 };
