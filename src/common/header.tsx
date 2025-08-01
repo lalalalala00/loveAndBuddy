@@ -54,19 +54,19 @@ const Header = () => {
 
   return (
     <div>
-      <div className="mt-5 mx-auto w-full flex items-center justify-between rounded-3xl bg-white px-6 py-3 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
+      <div className="mt-5 mx-auto w-full flex items-center justify-between rounded-3xl bg-white px-6 py-3 border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
         <div className="flex items-center">
           <button
             onClick={() => router.push("/")}
-            className="relative cursor-pointer w-12 h-12 rounded-full bg-white shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] hover:scale-105 transition group overflow-hidden"
+            className="relative cursor-pointer w-16 h-12 rounded-full bg-white shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] hover:scale-105 transition group overflow-hidden"
           >
             <img
               src="/logo/soom_gr.png"
               alt="logo"
-              className="w-10 h-10 object-cover mx-auto my-auto group-hover:opacity-0 transition duration-300"
+              className="w-10 h-10 object-cover mx-auto my-auto opacity-0 group-hover:opacity-100 transition duration-300"
             />
 
-            <span className="absolute inset-0 flex items-center justify-center text-[#9dbb80] font-bold text-[14px] opacity-0 group-hover:opacity-100 transition duration-300">
+            <span className="absolute inset-0 flex items-center justify-center text-[#9dbb80] font-bold text-[14px] group-hover:opacity-0 transition duration-300">
               soom
             </span>
           </button>
@@ -86,7 +86,7 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="rounded-full bg-white p-3 shadow-[4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
+        <div className="rounded-full w-16 h-12 justify-center bg-white p-3 shadow-[4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
           {getUser === null ? (
             <button className="">
               <svg

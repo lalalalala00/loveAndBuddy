@@ -20,24 +20,28 @@ const PhotoModal = ({
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  console.log(images, selectedIndex);
+
   return (
     <div className="">
       <div className="relative overflow-hidden">
-        <img
-          src={images[currentIndex].url}
-          alt={`photo-${currentIndex}`}
-          className="max-w-full max-h-full object-contain"
-        />
+        <div className="flex justify-center">
+          <img
+            src={images[currentIndex].url}
+            alt={`photo-${currentIndex}`}
+            className="max-w-full max-h-full h-[690px] object-contain"
+          />
+        </div>
 
         <button
           onClick={prevImage}
-          className="absolute left-3 text-white text-3xl font-bold hover:scale-110 transition"
+          className="absolute left-3 top-1/2 text-4xl font-bold hover:scale-110 transition cursor-pointer"
         >
           ‹
         </button>
         <button
           onClick={nextImage}
-          className="absolute right-3 text-white text-3xl font-bold hover:scale-110 transition"
+          className="absolute right-3 top-1/2  text-4xl font-bold hover:scale-110 transition cursor-pointer"
         >
           ›
         </button>

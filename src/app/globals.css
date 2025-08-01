@@ -57,6 +57,19 @@ body {
   scrollbar-width: none;
 }
 
+.bubble::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #e7e7e7;
+}
+
+/* 
 h1 {
   font-size: 48px;
   font-weight: 800;
@@ -97,6 +110,22 @@ li {
   font-size: 17px;
   margin-bottom: 12px;
   color: #444;
+} */
+
+@layer utilities {
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
 }
 
 .neumorph-box {
