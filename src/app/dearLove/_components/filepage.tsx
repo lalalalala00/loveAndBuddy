@@ -271,7 +271,7 @@ const FilePage = () => {
                 );
               })}
 
-              <div className="col-span-4 flex w-full flex-col items-center mt-2 min-h-[200px]">
+              <div className="col-span-4 flex w-full flex-col items-center mt-4 min-h-[200px]">
                 <span className="text-[12px] text-[#8f8f8f] text-shadow-2xs">
                   8월 1일 (금) 오전 9:35
                 </span>

@@ -25,7 +25,7 @@ const ModalIos = ({
     isOpen && (
       <div className="fixed inset-0 z-[99] bg-black/40 backdrop-blur-[2px] flex justify-center items-center">
         <div
-          className={`bg-white rounded-3xl shadow-lg flex flex-col justify-between`}
+          className={`bg-white rounded-3xl shadow-2xl flex flex-col justify-between`}
           style={{ width, height }}
         >
           {title && (
