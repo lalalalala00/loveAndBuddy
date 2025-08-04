@@ -33,19 +33,12 @@ const BuddyProfileCard = () => {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
 
   const [hearts, setHearts] = useState(buddyData.hearts);
-  const [floatingHearts, setFloatingHearts] = useState<number[]>([]);
 
   const hasLiked = hearts > buddyData.hearts;
 
   const handleDoubleClick = () => {
     if (!hasLiked) {
       setHearts((prev) => prev + 1);
-      const id = Date.now();
-      setFloatingHearts((prev) => [...prev, id]);
-
-      setTimeout(() => {
-        setFloatingHearts((prev) => prev.filter((item) => item !== id));
-      }, 1000);
     } else {
       setHearts((prev) => prev - 1);
     }
@@ -66,7 +59,7 @@ const BuddyProfileCard = () => {
         className="w-[100px] h-[100px] rounded-full object-cover border border-[#e6e6e6] shadow-sm"
       />
       {hasLiked && (
-        <div className="absolute -top-1 -right-1 rotate-20">
+        <div className="absolute top-1 right-1 rotate-20">
           <span className="text-[20px] font-bold text-red-300 duration-150">ꯁꯧ</span>
         </div>
       )}

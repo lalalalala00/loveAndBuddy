@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LoveAndBuddy",
+  title: "soom",
   description: "기억을 남기고, 마음을 이어주는 동행자",
 };
 
