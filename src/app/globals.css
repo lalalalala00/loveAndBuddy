@@ -203,3 +203,47 @@ matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */
   width: auto !important;
   height: auto !important;
 }
+
+@keyframes heart-float {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.heart-float {
+  animation: heart-float 1.2s ease-in-out forwards;
+}
+
+.heart-pop {
+  animation: heart-pop 0.7s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(1.2);
+    opacity: 0;
+  }
+}

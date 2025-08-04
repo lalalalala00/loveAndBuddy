@@ -27,7 +27,7 @@ const DiaryMessage = ({ text }: { text: string }) => {
 
   return (
     <div className="w-full my-3 relative">
-      <div className="relative bg-white border border-[#e7e7e7] rounded-2xl px-4 py-3 shadow-inner max-w-full bubble">
+      <div className="relative bg-white border border-[#e7e7e7]  rounded-2xl px-4 py-3 shadow-inner max-w-full bubble">
         <p className="text-[16px] text-gray-700 font-sans whitespace-pre-wrap">
           ✎ꪑ
           {/* {displayedText} */}

@@ -158,6 +158,7 @@ import PhotoModal from "./modal.photo";
 
 import ModalIos from "@/common/modal.ios";
 import DiaryMessage from "./diary.message";
+import BuddyProfileCard from "@/common/buddy.profile.card";
 
 const FilePage = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("August");
@@ -241,8 +242,8 @@ const FilePage = () => {
                 <button
                   key={item}
                   onClick={() => setSelectedDay(item)}
-                  className={`relative text-[16px] px-2 py-1 rounded-full h-[60px]  w-[60px] border border-white/20 shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] ${
-                    item === selectedDay ? "font-bold  bg-[#e3ecdc]" : " bg-[#e7e7e7]"
+                  className={`relative text-[16px] px-2 py-1 rounded-full h-[60px]  w-[60px] border border-[#e6e6e67d] shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] ${
+                    item === selectedDay ? "font-bold  bg-[#e3ecdc] ]" : " bg-[#e7e7e7]"
                   } transition-all shadow-sm`}
                 >
                   <img
@@ -277,24 +278,7 @@ const FilePage = () => {
                 </span>
                 <div className="flex items-start w-full">
                   <div className="w-[14%] mt-2 flex flex-col items-center mr-3">
-                    <img
-                      src="/project/buddy_sit_1.png"
-                      className="w-[100px] h-[100px] rounded-full object-cover border border-[#e6e6e6] shadow-sm"
-                    />
-
-                    <div className="mt-1 text-center">
-                      <div className="text-gray-800 font-semibold text-[13px] leading-tight">
-                        cheeerry꒰⍢꒱ ༘*
-                      </div>
-                      <div className="flex justify-center gap-2 mt-0.5 text-[11px] text-[#666]">
-                        <span className="flex items-center gap-1">
-                          ꯁꯧ<span className="font-medium text-[12px]">2</span>
-                        </span>
-                        <span className="flex items-center gap-1">
-                          🌿 <span className="font-medium text-[12px]">5</span>
-                        </span>
-                      </div>
-                    </div>
+                    <BuddyProfileCard />
                   </div>
 
                   <div className="w-[88%]">
