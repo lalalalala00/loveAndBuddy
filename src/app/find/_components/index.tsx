@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import ListBox from "./list.box";
 import AsapBoxBuddy from "./asap.box.buddy";
+import AsapBoxLove from "./asap.box.love";
 
 const Index = () => {
   const [selectedType, setSelectedType] = useState<number>(1);
@@ -26,8 +27,8 @@ const Index = () => {
         〙 -`♥´-
       </div>
       <div className="flex px-5">
-        <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4">
-          <div className="relative mb-3 px-4 py-2 rounded-xl bg-gradient-to-br from-[#e3ecdc]/90 to-[#f3f7ee]/80 border border-[#d5e2c8] text-[#3c5732] text-center font-semibold text-[14px] tracking-tight shadow-[inset_2px_2px_5px_#ffffff,-2px_-2px_5px_#d5e2c8]">
+        <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4 min-w-[306px]">
+          <div className="relative mb-3 px-1 py-2 rounded-xl bg-gradient-to-br from-[#e3ecdc]/90 to-[#f3f7ee]/80 border border-[#d5e2c8] text-[#3c5732] text-center font-semibold text-[14px] tracking-tight shadow-[inset_2px_2px_5px_#ffffff,-2px_-2px_5px_#d5e2c8]">
             {selectedType === 0 ? (
               <span className="inline-flex items-center">
                 <div className="text-[18px] animate-pulse mr-2">📍</div>
@@ -36,8 +37,8 @@ const Index = () => {
               </span>
             ) : (
               <span className="inline-flex items-center text-nowrap">
-                <div className="text-[18px] animate-pulse mr-1">🍀</div>
-                인기가 좋은
+                <div className="text-[18px] animate-pulse mr-0.5">🍀</div>
+                신뢰도가 높은
                 <span className="decoration-[#9dbb80] ml-2">buddy</span>를 소개해드릴께요.
               </span>
             )}
@@ -45,7 +46,9 @@ const Index = () => {
 
           <div className="h-[800px] overflow-y-scroll no-scrollbar">
             {selectedType === 0 ? (
-              <div>love list</div>
+              <>
+                <AsapBoxLove />
+              </>
             ) : (
               <>
                 <AsapBoxBuddy />

@@ -22,13 +22,6 @@ const Header = () => {
 
   const currentUser = userType.find((u) => u.label === userState);
 
-  const typeMenu = [
-    // { label: "home", url: "/" },
-    { label: "find.MyDearDay", url: "/find" },
-    { label: "dear.Love", url: "/dearLove" },
-    { label: "daily.Moment", url: "/community" },
-  ];
-
   const isActive = (url: string) => pathname.includes(url);
 
   const handleTabClick = (type: UserStateType) => {
@@ -142,6 +135,13 @@ const Header = () => {
     </div>
   );
 };
+
+const typeMenu = [
+  // { label: "home", url: "/" },
+  { label: "find.MyDearDay", url: "/find" },
+  { label: "dear.Love", url: "/dearLove" },
+  { label: "our.dailyMoments", url: "/dailyMoments" },
+];
 
 const userType: { label: UserStateType; type: number; menu: string }[] = [
   { label: "love", type: 0, menu: "find buddy" },
