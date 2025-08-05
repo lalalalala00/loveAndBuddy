@@ -44,7 +44,7 @@ const Index = () => {
 
   return (
     <div className="mt-5 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] rounded-b-2xl">
-      <div className="bg-[#f3f6f0] w-full h-10 flex items-center px-5 rounded-t-xl shadow">
+      <div className="bg-[#f9fbf6] w-full h-10 flex items-center px-5 rounded-t-xl border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
         {closeTap
           .filter((item) => selectedClose.includes(item.value))
           .map((item) => (

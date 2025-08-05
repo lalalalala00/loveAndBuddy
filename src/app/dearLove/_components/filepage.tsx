@@ -193,13 +193,13 @@ const FilePage = () => {
           <div className="relative w-full mb-6">
             <button
               onClick={() => setOpen(!open)}
-              className="font-bold text-[16px] h-[40px] cursor-pointer w-full hover:bg-white/80 bg-[#e3ecdc] flex justify-center items-center border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]"
+              className="font-bold text-[16px] h-[40px] cursor-pointer w-full flex justify-center items-center custom-card-hover-bg-white"
               // className="font-bold h-[40px] w-full rounded-xl bg-white hover:bg-[#e3ecdc] text-[14px] flex justify-center items-center shadow-sm"
             >
               {selectedYear}
             </button>
             {open && (
-              <div className="absolute top-[44px] p-2 left-0 w-full bg-white border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]  z-10 overflow-hidden">
+              <div className="absolute top-[44px] p-2 left-0 w-full custom-card-bg-white rounded-2xl  z-10 overflow-hidden">
                 {years.map((year) => (
                   <button
                     key={year}
@@ -207,7 +207,7 @@ const FilePage = () => {
                       setSelectedYear(year);
                       setOpen(false);
                     }}
-                    className={`w-full text-center py-2 mb-1 hover:bg-[#dce9cd] rounded-xl hover:border hover:border-white/20  hover:shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] ${year === selectedYear ? "font-bold bg-[#e3ecdc]  border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]" : ""}`}
+                    className={`w-full text-center py-2 mb-1 rounded-xl custom-card-hover ${year === selectedYear ? "font-bold custom-card rounded-2xl" : ""}`}
                   >
                     {year}
                   </button>
@@ -242,7 +242,7 @@ const FilePage = () => {
                 <button
                   key={item}
                   onClick={() => setSelectedDay(item)}
-                  className={`relative text-[16px] px-2 py-1 rounded-full h-[60px]  w-[60px] border border-[#e6e6e67d] shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] ${
+                  className={`relative text-[16px] px-2 py-1 rounded-full h-[60px]  w-[60px] btn-card ${
                     item === selectedDay ? "font-bold  bg-[#e3ecdc] ]" : " bg-[#e7e7e7]"
                   } transition-all shadow-sm`}
                 >

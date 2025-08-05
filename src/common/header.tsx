@@ -24,9 +24,9 @@ const Header = () => {
 
   const typeMenu = [
     // { label: "home", url: "/" },
-    { label: currentUser?.menu, url: "/lovuddy" },
-    { label: "dear Love", url: "/dearLove" },
-    { label: "community", url: "/community" },
+    { label: "find.MyDearDay", url: "/find" },
+    { label: "dear.Love", url: "/dearLove" },
+    { label: "daily.Moment", url: "/community" },
   ];
 
   const isActive = (url: string) => pathname.includes(url);
@@ -54,11 +54,11 @@ const Header = () => {
 
   return (
     <div>
-      <div className="mt-5 mx-auto w-full flex items-center justify-between rounded-3xl bg-white px-6 py-3 border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
+      <div className="mt-5 mx-auto w-full flex items-center justify-between rounded-3xl bg-[#f9fbf6] px-6 py-3 border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
         <div className="flex items-center">
           <button
             onClick={() => router.push("/")}
-            className="relative cursor-pointer w-16 h-12 rounded-full bg-white shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] hover:scale-105 transition group overflow-hidden"
+            className="relative cursor-pointer w-16 h-12 rounded-full bg-white shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] hover:scale-105 transition group overflow-hidden"
           >
             <img
               src="/logo/soom_gr.png"
@@ -66,27 +66,35 @@ const Header = () => {
               className="w-10 h-10 object-cover mx-auto my-auto opacity-0 group-hover:opacity-100 transition duration-300"
             />
 
-            <span className="absolute inset-0 flex items-center justify-center text-[#9dbb80] font-bold text-[14px] group-hover:opacity-0 transition duration-300">
+            <span className="absolute inset-0 flex items-center justify-center text-[#9dbb80] font-bold text-[14px]  group-hover:opacity-0 transition duration-300">
               soom
             </span>
           </button>
 
-          <div className="flex ml-10 space-x-8">
-            {typeMenu.map((item) => (
-              <button
-                key={item.url}
-                onClick={() => router.push(item.url)}
-                className={`transition duration-200 cursor-pointer ${
-                  isActive(item.url) ? "text-[#9dbb80] font-semibold" : "text-gray-600"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
+          <div className="flex ml-10 space-x-6">
+            {typeMenu.map((item) => {
+              const isActiveMenu = isActive(item.url);
+              return (
+                <button
+                  key={item.url}
+                  onClick={() => router.push(item.url)}
+                  className={`relative px-3 py-2 text-[14px] font-semibold transition-all duration-200 cursor-pointer
+          ${isActiveMenu ? "text-[#7d9f68] scale-[1.02]" : "text-[#aec399] hover:text-[#94b973]"}
+          custom-card-hover-bg-white-only rounded-2xl
+        `}
+                >
+                  {item.label}
+
+                  {isActiveMenu && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[85%] h-[5px] bg-[#f1f9e9] rounded-full custom-card" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <div className="rounded-full w-16 h-12 justify-center bg-white p-3 shadow-[4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
+        <div className="rounded-full w-16 h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
           {getUser === null ? (
             <button className="">
               <svg
