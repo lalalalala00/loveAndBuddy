@@ -40,7 +40,9 @@ const BuddyNameTag = ({
             <path d="M9 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
           </svg>
         </div>
-        <div className={`${wFull ? "flex flex-col items-center w-full mr-3" : ""}`}>
+        <div
+          className={`${wFull ? "flex flex-col items-center w-full mr-3" : "flex flex-col items-start w-full"}`}
+        >
           <div className="text-gray-800 font-semibold text-[13px] leading-tight">
             {buddyData.nickname}꒰⍢꒱ ༘*
           </div>

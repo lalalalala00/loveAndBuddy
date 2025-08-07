@@ -5,6 +5,8 @@ import { useState } from "react";
 import ListBox from "./list.box";
 import AsapBoxBuddy from "./asap.box.buddy";
 import AsapBoxLove from "./asap.box.love";
+import ListBox2 from "./list.box2";
+import AsapBoxBuddy2 from "./asap.box.buddy2";
 
 const Index = () => {
   const [selectedType, setSelectedType] = useState<number>(1);
@@ -52,14 +54,15 @@ const Index = () => {
             ) : (
               <>
                 <AsapBoxBuddy />
-                <AsapBoxBuddy />
+                <AsapBoxBuddy2 />
                 <AsapBoxBuddy />
               </>
             )}
           </div>
         </div>
-        <div className="w-3/4">
+        <div className="w-3/4 grid grid-cols-3 gap-2">
           <ListBox />
+          <ListBox2 />
         </div>
       </div>
     </div>
