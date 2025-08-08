@@ -159,6 +159,7 @@ import PhotoModal from "./modal.photo";
 import ModalIos from "@/common/modal.ios";
 import DiaryMessage from "./diary.message";
 import BuddyProfileCard from "@/common/buddy.profile.card";
+import NameTag from "@/common/name.tag";
 
 const FilePage = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("August");
@@ -277,8 +278,9 @@ const FilePage = () => {
                   8월 1일 (금) 오전 9:35
                 </span>
                 <div className="flex items-start w-full">
-                  <div className="w-[14%] mt-2 flex flex-col items-center mr-3">
-                    <BuddyProfileCard />
+                  <div className="w-[14%] mt-2 flex flex-col items-center mr-3 bg-[rgb(246,246,246)] rounded-2xl shadow">
+                    {/* <BuddyProfileCard /> */}
+                    <NameTag imgCss="w-[90px] h-[90px] border border-[#e6e6e6] shadow-sm" />
                   </div>
 
                   <div className="w-[88%]">

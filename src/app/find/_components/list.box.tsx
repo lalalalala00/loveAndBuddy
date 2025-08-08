@@ -1,4 +1,5 @@
 import BuddyNameTag from "@/common/buddy.name.tag";
+import NameTag from "@/common/name.tag";
 
 const ListBox = () => {
   const buddy = {
@@ -16,9 +17,10 @@ const ListBox = () => {
         ꤶ 사진촬영동의 ꤶ 신원인증 ꤶ 인성검사완료
       </span>
       <img src="/project/buddy_sit_1.png" alt="" className="w-full h-[200px] object-cover" />
-
+      <NameTag imgCss="hidden" />
       <div className="p-2">
         <BuddyNameTag hearts={3} buddyData={buddy} wFull />
+
         <div className="flex flex-col text-[12px] items-start w-full px-1 my-2">
           <span>✰ 수의간호 교원자격증 보유</span>
           <span>✰ 애완동물관리 직무능력 인증서 보유</span>

@@ -29,10 +29,20 @@ const ListBox2 = () => {
           <div className="text-[12px] text-gray-500 ml-1 mt-2">
             📸 사진촬영동의 · 🪪 신원인증 · ✔️ 인성검사완료
           </div>
-          <span className="text-[12px] text-gray-600 flex justify-center my-2">
-            8월 예약 일정 확인하기
-          </span>
-          <span className="text-[12px]">이번주만 보여주고 열면 전체 스케쥴 확인가능하게</span>
+          <div>
+            <span className="text-[12px] text-gray-600 flex justify-center my-2">
+              8월 예약 일정 확인하기
+            </span>
+            <div className="grid grid-cols-7 text-[12px] border border-red-300 text-center">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+            </div>
+          </div>
           <div className="flex flex-col text-[12px] items-start w-full px-1 my-2">
             <span>✰ 수의간호 교원자격증 보유</span>
             <span>✰ 애완동물관리 직무능력 인증서 보유</span>
