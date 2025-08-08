@@ -10,13 +10,7 @@ type Message = {
   created_at: string;
 };
 
-const BuddyMessageRoom = ({
-  chatRoomId,
-  senderId,
-}: {
-  chatRoomId: string;
-  senderId: string;
-}) => {
+const BuddyMessageRoom = ({ chatRoomId, senderId }: { chatRoomId: string; senderId: string }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<Record<string, string>>({});
 
@@ -76,20 +70,15 @@ const BuddyMessageRoom = ({
 
   return (
     <div className="w-full flex flex-col">
-      <div className="h-[480px]">
+      <div className="h-[360px]">
         {messages.map((msg) => (
           <div key={msg.id}>
-            <span className="text-black">
-              {users[msg.sender_id] ?? msg.sender_id.slice(0, 4)}:
-            </span>
+            <span className="text-black">{users[msg.sender_id] ?? msg.sender_id.slice(0, 4)}:</span>
             {msg.content ?? ""}
           </div>
         ))}
       </div>
-      <BuddyMessageInput
-        chatRoomId="6e43ecea-3772-4926-983d-8688acc9fb8d"
-        senderId={senderId}
-      />
+      <BuddyMessageInput chatRoomId="6e43ecea-3772-4926-983d-8688acc9fb8d" senderId={senderId} />
     </div>
   );
 };

@@ -100,15 +100,16 @@ const Calendar = ({
 
   return (
     <div
-      className={`mx-auto flex w-full ${!calSize ? "p-2" : "p-4 "}`}
+      className={`mx-auto flex  ${!calSize ? "p-2" : "px-4"} ${!calSize && !dayContents && "w-[400px]"}`}
       style={{
-        height: !calSize ? "600px" : "800px",
+        height: !calSize ? "530px" : "730px",
+        // width: !calSize ? "400px" : "780px",
       }}
     >
       <div
         style={{
-          width: !calSize ? "420px" : "780px",
-          //   height: calSize ? "504px" : "700px",
+          width: !calSize ? "400px" : "790px",
+          // height: calSize ? "504px" : "700px",
         }}
       >
         <div className="flex justify-between">
@@ -127,15 +128,15 @@ const Calendar = ({
             ></button>
           </div>
         </div>
-        <div className="flex justify-between items-center mb-4">
-          <button onClick={prevMonth}>&#60;</button>
-          <h3 className="text-xl font-semibold">{currentDate.format("YYYY년 MM월")}</h3>
-          <button onClick={nextMonth}> &#62;</button>
-        </div>
-        <div className="flex justify-center mb-4">
+        <div className="relative flex justify-center  mb-6">
+          <div className="w-1/2 flex justify-between ">
+            <button onClick={prevMonth}>&#60;</button>
+            <h3 className="text-xl font-semibold">{currentDate.format("YYYY년 MM월")}</h3>
+            <button onClick={nextMonth}> &#62;</button>
+          </div>
           <button
             onClick={() => setCurrentDate(dayjs())}
-            className="text-sm px-2 py-1 border rounded hover:bg-gray-100"
+            className="absolute top-0 right-0 text-sm px-2 py-1 border rounded hover:bg-gray-100"
           >
             오늘
           </button>
@@ -165,13 +166,15 @@ const Calendar = ({
         ${!date ? "" : "hover:bg-gray-200"}
       `}
                 style={{
-                  minWidth: !calSize ? "60px" : "100px",
-                  minHeight: !calSize ? "60px" : "100px",
+                  minWidth: !calSize ? "" : "",
+                  minHeight: !calSize ? "60px" : "95px",
                 }}
                 onClick={() => date && handleDateClick(date)}
               >
                 <div className="text-left relative">
-                  <span>{date?.date()}</span>
+                  <span className={`${calSize ? "text-[16px]" : "text-[14px]"} `}>
+                    {date?.date()}
+                  </span>
                   {dayReservations.length > 0 && (
                     <div className="w-9 h-5 bg-[#FFC5D0] absolute -top-0 -left-2 -z-1" />
                   )}
@@ -191,7 +194,9 @@ const Calendar = ({
         </div>
       </div>
       {dayContents && (
-        <div className="min-w-[360px] h-full p-4 border ml-5 rounded-2xl">
+        <div
+          className={`${dayContents && calSize ? "min-w-[400px]" : "min-w-[385px]"}  h-full p-4 border ml-5 rounded-2xl`}
+        >
           <div className="flex justify-between items-center border-b pb-1 mb-1">
             <span>date.</span>
             <span>{selectedDay?.day}</span>

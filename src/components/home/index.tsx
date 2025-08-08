@@ -61,6 +61,7 @@ const Index = () => {
 
       <GridLayout
         className="layout bg-[#fefefe] pt-4 !h-[calc(100vh-250px)] rounded-b-2xl"
+        // style={{ backgroundImage: "url(/cha/1_11.png)", backgroundSize: "cover" }}
         layout={layout.filter((item) => !selectedClose.includes(item.i))}
         cols={3}
         maxRows={6}
@@ -78,10 +79,10 @@ const Index = () => {
             !selectedClose.includes(key) && (
               <div
                 key={key}
-                className="p-2 bg-white border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff] rounded-2xl"
+                className="bg-white backdrop-blur-3xl border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff] rounded-2xl"
                 // className="p-2 rounded-2xl shadow-[4px_4px_10px_#f8faf5,-4px_-4px_10px_#ffffff] h-full"
               >
-                <div className="drag-handle react-grid-item cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 hover:bg-[#c8d9b5] rounded-2xl mb-2"></div>
+                <div className="drag-handle react-grid-item cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200  custom-card rounded-2xl mb-1"></div>
                 {componentMap[key]}
               </div>
             )

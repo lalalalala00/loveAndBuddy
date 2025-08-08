@@ -36,7 +36,7 @@ const WriteIndex = ({ setSelectedClose }: { setSelectedClose: (value: string) =>
   }, [imgs]);
   console.log(content);
   return (
-    <div>
+    <div className="w-[400px]">
       <button
         onClick={() => setSelectedClose("write")}
         className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
