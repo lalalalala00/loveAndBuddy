@@ -13,7 +13,7 @@ const CompactBuddyCard = () => {
                 <span className="ml-3 font-semibold ">언제나 내 가족처럼 사랑할께요 ❣</span>
             </div>
 
-            <button className="mt-3 text-[12px] custom-card w-full px-4 py-1 rounded-2xl transition">
+            <button className="mt-3 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition">
                 📅 스케줄 확인하기
             </button>
         </div>

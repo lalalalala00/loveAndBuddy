@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import AsapBoxBuddy from './asap.box.buddy';
 import AsapBoxLove from './asap.box.love';
@@ -8,9 +8,19 @@ import ListBox2 from './list.box2';
 import AsapBoxBuddy2 from './asap.box.buddy2';
 import CompactBuddyCard from './compact.buddy.card';
 import PlaceSelectedBox from './place.selected.box';
+import ModalIos from '@/common/modal.ios';
+import { Option } from '@/common/selected.box';
 
 const Index = () => {
     const [selectedType, setSelectedType] = useState<number>(1);
+    const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+    const [selectedAddr, setSelectedAddr] = useState<Option[]>([]);
+
+    useEffect(() => {
+        if (isLocationModalOpen) {
+            setSelectedAddr([]);
+        }
+    }, [isLocationModalOpen]);
 
     return (
         <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
@@ -30,9 +40,27 @@ const Index = () => {
                 〙 -`♥´-
             </div>
             <div className="flex  justify-end items-center px-5 mb-3">
-                <div className="flex justify-between w-[900px]">
-                    <PlaceSelectedBox />
-                    <button className="text-[14px]"> 하트수 | 디얼러브 | 매너점수 | 인증완료 | 여성 | 남성</button>
+                <div className="flex items-center justify-between w-[920px]">
+                    {selectedAddr.length >= 1 ? (
+                        <div className="flex">
+                            {selectedAddr.map((item, i) => (
+                                <button
+                                    className="px-4 py-2 mr-3 rounded-full  
+                                btn-card text-[13px]"
+                                >
+                                    {item.name}
+                                </button>
+                            ))}
+                            <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
+                                <span className="text-[12px]">동네 변경하기</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
+                            <span>📍 동네가 설정되지 않았습니다. [설정하기]</span>
+                        </button>
+                    )}
+                    <button className="text-[14px]"> 하트수 | 디얼러브 | 매너점수 | 신뢰도 | 여성 | 남성</button>
                 </div>
             </div>
             <div className="flex px-5">
@@ -87,6 +115,17 @@ const Index = () => {
                     <ListBox2 />
                 </div>
             </div>
+            <ModalIos
+                isOpen={isLocationModalOpen}
+                handleModalState={() => setIsLocationModalOpen(!isLocationModalOpen)}
+                title="어느 동네에서 버디를 찾으시나요?"
+                width="50%"
+                height="50%"
+                leftComment="선택하기"
+                leftAction={() => setIsLocationModalOpen(!isLocationModalOpen)}
+            >
+                <PlaceSelectedBox setSelectedAddr={setSelectedAddr} />
+            </ModalIos>
         </div>
     );
 };

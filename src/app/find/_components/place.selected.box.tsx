@@ -1,13 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import Papa from 'papaparse';
+import SelectedBox from '@/common/selected.box';
+import SelectedBoxMulti from '@/common/selected.box.multi';
 
 type Option = { code: string; name: string };
 
 const CSV_PATH = '/lawd.csv';
 
-export default function KoreaLocationSelector_GlobalQuickSearch() {
+export default function KoreaLocationSelector_GlobalQuickSearch({
+    setSelectedAddr,
+}: {
+    setSelectedAddr: Dispatch<SetStateAction<Option[]>>;
+}) {
     const [names, setNames] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState<string | null>(null);
@@ -28,6 +34,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
     };
 
     const onChangeSido = (newSido: string) => {
+        console.log(newSido);
         setSido(newSido);
         setSigungu('');
         clearDongUI();
@@ -38,7 +45,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
         setSigungu(newSigungu);
         clearDongUI();
     };
-
+    console.log(selected);
     useEffect(() => {
         (async () => {
             try {
@@ -66,7 +73,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
                 if (!matrix.length) throw new Error('레코드를 읽지 못했습니다.');
 
                 const head = (matrix[0] || []).map((s) => (s ?? '').replace(/\ufeff/g, '').trim());
-                const hasHeader = head.some((c) => ['법정동명', '법정동 명', '명칭'].includes(c));
+                const hasHeader = head.some((c) => ['법정동명'].includes(c));
                 const rowsOnly = hasHeader ? matrix.slice(1) : matrix;
 
                 const NAME_COL = 1,
@@ -108,9 +115,9 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
         });
         return Array.from(set)
             .sort((a, b) => a.localeCompare(b, 'ko'))
-            .map((n) => ({ code: n, name: n }));
+            .map((n) => ({ name: n }));
     }, [names]);
-
+    console.log(sidoOptions, 'sidoOptions');
     const sigunguOptions: Option[] = useMemo(() => {
         if (!sido) return [];
         const set = new Set<string>();
@@ -120,7 +127,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
         });
         return Array.from(set)
             .sort((a, b) => a.localeCompare(b, 'ko'))
-            .map((n) => ({ code: n, name: n }));
+            .map((n) => ({ name: n }));
     }, [names, sido]);
 
     const dongOptions: Option[] = useMemo(() => {
@@ -179,6 +186,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
         if (selected.length >= 3) return;
         if (selected.some((x) => x.code === d.code)) return;
         setSelected((prev) => [...prev, d]);
+        setSelectedAddr((prev) => [...prev, d]);
     };
     const removeDong = (code: string) => setSelected((prev) => prev.filter((x) => x.code !== code));
 
@@ -188,7 +196,6 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
         const changingSgg = (p.sigungu || '') !== sigungu;
 
         if (changingSido) {
-            // ✅ 시/도 바뀌면 풀 리셋
             setSigungu('');
             setQuick('');
         }
@@ -210,123 +217,124 @@ export default function KoreaLocationSelector_GlobalQuickSearch() {
         clearDongUI();
     }, [sigungu]);
 
-    if (loading) return <div className="p-4 text-sm text-gray-600">데이터 불러오는 중…</div>;
-    if (err) return <div className="p-4 text-sm text-red-500">에러: {err}</div>;
-
     return (
-        <div className="flex flex-col gap-4 p-4">
-            <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-center gap-4 p-4 h-full">
+            <div className="relative">
                 <input
-                    className="border px-3 py-2 rounded w-80"
-                    placeholder="빠른 검색 (예: 천동, 관저동, 분당구 정자동)"
+                    className={[
+                        'px-4 py-2 w-80 h-12 rounded-2xl text-sm transition-all duration-150',
+                        'outline-none',
+                        'bg-[#f3f7ee]',
+                        'shadow-[8px_8px_16px_rgba(163,177,138,0.25),_-8px_-8px_16px_rgba(255,255,255,0.9)]',
+                        'placeholder:text-gray-400 text-[#374151]',
+                        'hover:shadow-[6px_6px_12px_rgba(163,177,138,0.22),_-6px_-6px_12px_rgba(255,255,255,0.95)] focus:shadow-inner',
+                    ].join(' ')}
+                    placeholder="빠른 검색"
                     value={quick}
                     onChange={(e) => setQuick(e.target.value)}
                 />
-                {quick && quickCandidates.length > 0 && (
-                    <div className="border rounded w-80 max-h-72 overflow-auto text-sm bg-white">
-                        {quickCandidates.map(({ full, p }) => (
-                            <button
-                                key={full}
-                                className="w-full text-left px-3 py-2 hover:bg-gray-50"
-                                onClick={() => pickFromQuick(full)}
-                                title="클릭하면 즉시 추가"
-                            >
-                                {p.sido} {p.sigungu && `${p.sigungu} `}
-                                {p.umd}
-                            </button>
-                        ))}
-                    </div>
-                )}
-                {quick && quickCandidates.length === 0 && <div className="text-xs text-gray-500">검색 결과 없음</div>}
-            </div>
 
-            <div className="flex items-center gap-2">
-                <label className="min-w-20 text-sm text-gray-600">시/도</label>
-                <select
-                    className="border px-3 py-2 rounded w-64"
-                    value={sido}
-                    onChange={(e) => onChangeSido(e.target.value)}
-                >
-                    <option value="">시/도 선택</option>
-                    {sidoOptions.map((s) => (
-                        <option key={s.code} value={s.code}>
-                            {s.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            {sigunguOptions.length > 0 && (
-                <div className="flex items-center gap-2">
-                    <label className="min-w-20 text-sm text-gray-600">시/군/구</label>
-                    <select
-                        className="border px-3 py-2 rounded w-64"
-                        value={sigungu}
-                        onChange={(e) => onChangeSigungu(e.target.value)}
-                        disabled={!sido}
+                <div className="flex flex-col gap-2 mt-2 absolute top-full left-0 mt-1 z-30">
+                    <div
+                        className={[
+                            'w-80 h-auto max-h-72 overflow-auto text-sm rounded-2xl',
+                            'bg-[#f3f7ee]',
+                            'shadow-[8px_8px_16px_rgba(163,177,138,0.25),_-8px_-8px_16px_rgba(255,255,255,0.9)]',
+                        ].join(' ')}
                     >
-                        <option value="">{sido ? '시/군/구 선택' : '시/도를 먼저 선택'}</option>
-                        {sigunguOptions.map((sg) => (
-                            <option key={sg.code} value={sg.code}>
-                                {sg.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
+                        {quick &&
+                            quickCandidates.length > 0 &&
+                            quickCandidates.map(({ full, p }) => (
+                                <button
+                                    key={full}
+                                    className={[
+                                        'w-full text-left px-3 py-2 rounded-xl transition-all',
+                                        'hover:shadow-inner hover:bg-white/50',
+                                    ].join(' ')}
+                                    onClick={() => pickFromQuick(full)}
+                                    title="클릭하면 즉시 추가"
+                                >
+                                    {p.sido} {p.sigungu && `${p.sigungu} `}
+                                    {p.umd}
+                                </button>
+                            ))}
 
-            {sido && (sigunguOptions.length === 0 || sigungu) && (
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-600">동 (최대 3개)</label>
-
-                    <div className="flex flex-wrap gap-2">
-                        {selected.map((d) => (
-                            <button
-                                key={d.code}
-                                onClick={() => removeDong(d.code)}
-                                className="px-3 py-1 rounded-full bg-green-100 text-sm hover:bg-green-200"
-                                title="클릭하면 삭제"
-                            >
-                                {d.name} ✕
-                            </button>
-                        ))}
+                        {quick && quickCandidates.length === 0 && (
+                            <div className="text-xs text-gray-500 p-2">검색 결과 없음</div>
+                        )}
                     </div>
+                </div>
+            </div>
 
-                    {selected.length < 3 && (
-                        <div className="flex items-center gap-3">
-                            <button
-                                className="border border-dashed border-gray-400 px-4 py-2 rounded-2xl text-sm hover:bg-gray-50"
-                                onClick={() => setAddOpen((v) => !v)}
-                                disabled={available.length === 0}
-                            >
-                                + 동네 추가하기
-                            </button>
+            <div className="flex flex-col gap-3 mt-2">
+                <div className="flex items-center gap-2">
+                    <SelectedBox
+                        comment="시/도 선택"
+                        list={sidoOptions}
+                        value={sido}
+                        onChange={(code) => onChangeSido(code)}
+                        className="w-80"
+                    />
+                </div>
 
-                            {addOpen && (
-                                <div className="flex flex-col gap-2">
-                                    <select
-                                        className="border px-3 py-2 rounded w-64"
-                                        size={6}
-                                        defaultValue=""
-                                        onChange={(e) => {
-                                            const code = e.target.value;
-                                            const found = filteredAvailable.find((d) => d.code === code);
-                                            if (found) addDong(found);
-                                        }}
+                <div className="flex items-center gap-2">
+                    <SelectedBox
+                        comment={
+                            sido
+                                ? sigunguOptions.length === 0
+                                    ? '시/군/구 불러오는 중…'
+                                    : '시/군/구 선택'
+                                : '시/도를 먼저 선택'
+                        }
+                        list={sigunguOptions}
+                        value={sigungu}
+                        onChange={(code) => onChangeSigungu(code)}
+                        disabled={!sido || sigunguOptions.length === 0}
+                        className="w-80"
+                    />
+                </div>
+
+                {sido && (sigunguOptions.length === 0 || sigungu) && (
+                    <div className="flex flex-col gap-2 mt-3">
+                        <div className="flex flex-wrap gap-2">
+                            {selected.map((d, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => removeDong(d.code)}
+                                    className="px-4 py-2 mr-1 rounded-full  
+                                    bg-[#f3f7ee]
+                                    shadow-[10px_10px_20px_rgba(163,177,138,0.25),_-10px_-10px_20px_rgba(255,255,255,0.9)]
+                                    border border-white/40 text-[15px] flex items-center"
+                                    title="클릭하면 삭제"
+                                >
+                                    {d.name} <span className="text-[12px] font-semibold ml-2"> ✕</span>
+                                </button>
+                            ))}
+
+                            {selected.length < 3 && (
+                                <div className="flex flex-col items-start gap-2">
+                                    <button
+                                        className="border border-dashed border-gray-400 px-4 py-2 rounded-2xl text-sm hover:bg-gray-50 disabled:opacity-50"
+                                        onClick={() => setAddOpen((v) => !v)}
+                                        disabled={available.length === 0}
                                     >
-                                        <option value="">동 선택</option>
-                                        {filteredAvailable.map((d) => (
-                                            <option key={d.code} value={d.code}>
-                                                {d.name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        + 동네 추가하기
+                                    </button>
                                 </div>
                             )}
                         </div>
-                    )}
-                </div>
-            )}
+                        {selected.length < 3 && addOpen && (
+                            <SelectedBoxMulti
+                                comment="동 선택"
+                                list={filteredAvailable}
+                                onPick={(opt) => addDong(opt)}
+                                className="w-full"
+                            />
+                        )}
+                        <label className="text-sm text-gray-600">동네 (최대 3개)</label>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
