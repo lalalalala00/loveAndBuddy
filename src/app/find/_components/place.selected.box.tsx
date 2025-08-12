@@ -117,7 +117,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch({
             .sort((a, b) => a.localeCompare(b, 'ko'))
             .map((n) => ({ name: n }));
     }, [names]);
-    console.log(sidoOptions, 'sidoOptions');
+
     const sigunguOptions: Option[] = useMemo(() => {
         if (!sido) return [];
         const set = new Set<string>();

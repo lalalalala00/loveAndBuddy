@@ -1,6 +1,11 @@
+import ModalIos from '@/common/modal.ios';
 import NameTag from '@/common/name.tag';
+import { useState } from 'react';
+import WeeklyCalendarCard from './weekly.calendar.card';
 
 const CompactBuddyCard = () => {
+    const [checkModal, setCheckModal] = useState<boolean>(false);
+
     return (
         <div className="relative w-full max-w-[280px] custom-card-bg-white px-2 py-1 rounded-2xl my-4 flex flex-col  text-[#444]">
             <NameTag imgCss="w-[64px] h-[64px]" find />
@@ -13,9 +18,23 @@ const CompactBuddyCard = () => {
                 <span className="ml-3 font-semibold ">언제나 내 가족처럼 사랑할께요 ❣</span>
             </div>
 
-            <button className="mt-3 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition">
+            <button
+                onClick={() => setCheckModal(!checkModal)}
+                className="mt-3 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition"
+            >
                 📅 스케줄 확인하기
             </button>
+            <ModalIos
+                isOpen={checkModal}
+                handleModalState={() => setCheckModal(!checkModal)}
+                title=""
+                width="30%"
+                height="40%"
+            >
+                <div className="flex items-center justify-center w-full h-full">
+                    <WeeklyCalendarCard modal />
+                </div>
+            </ModalIos>
         </div>
     );
 };

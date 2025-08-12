@@ -10,6 +10,7 @@ import CompactBuddyCard from './compact.buddy.card';
 import PlaceSelectedBox from './place.selected.box';
 import ModalIos from '@/common/modal.ios';
 import { Option } from '@/common/selected.box';
+import BuddyFilterBar from './buddy.filter.bar';
 
 const Index = () => {
     const [selectedType, setSelectedType] = useState<number>(1);
@@ -40,27 +41,37 @@ const Index = () => {
                 〙 -`♥´-
             </div>
             <div className="flex  justify-end items-center px-5 mb-3">
-                <div className="flex items-center justify-between w-[920px]">
-                    {selectedAddr.length >= 1 ? (
-                        <div className="flex">
-                            {selectedAddr.map((item, i) => (
-                                <button
-                                    className="px-4 py-2 mr-3 rounded-full  
+                <div className="flex flex-col w-[920px] items-end">
+                    <div>
+                        {selectedAddr.length >= 1 ? (
+                            <div className="flex">
+                                {selectedAddr.map((item, i) => (
+                                    <button
+                                        className="px-4 py-2 mr-3 rounded-full  
                                 btn-card text-[13px]"
-                                >
-                                    {item.name}
+                                    >
+                                        {item.name}
+                                    </button>
+                                ))}
+                                <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
+                                    <span className="text-[12px]">동네 변경하기</span>
                                 </button>
-                            ))}
+                            </div>
+                        ) : (
                             <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
-                                <span className="text-[12px]">동네 변경하기</span>
+                                <span className="text-[14px]">📍 동네가 설정되지 않았습니다.</span>
+                                <span className="btn-card text-[14px] px-2 py-1 rounded-xl ml-2">설정하기</span>
                             </button>
-                        </div>
-                    ) : (
-                        <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
-                            <span>📍 동네가 설정되지 않았습니다. [설정하기]</span>
-                        </button>
-                    )}
-                    <button className="text-[14px]"> 하트수 | 디얼러브 | 매너점수 | 신뢰도 | 여성 | 남성</button>
+                        )}
+                    </div>
+
+                    <BuddyFilterBar
+                        onFiltersChange={(f) => {
+                            // 여기서 f로 목록 쿼리/정렬 갱신
+                            // ex) refetch({ ...f })
+                            console.log('filters', f);
+                        }}
+                    />
                 </div>
             </div>
             <div className="flex px-5">
