@@ -75,7 +75,7 @@ const Index = () => {
                 </div>
             </div>
             <div className="flex px-5">
-                <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4 min-w-[306px]">
+                <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4 min-w-[306px] sticky top-4 h-[780px]">
                     <div className="relative mb-3 px-1 py-2 rounded-xl bg-gradient-to-br from-[#e3ecdc]/90 to-[#f3f7ee]/80 border border-[#d5e2c8] text-[#3c5732] text-center font-semibold text-[14px] tracking-tight shadow-[inset_2px_2px_5px_#ffffff,-2px_-2px_5px_#d5e2c8]">
                         {selectedType === 0 ? (
                             <span className="inline-flex items-center">
@@ -103,13 +103,15 @@ const Index = () => {
                         </span>
                     )}
 
-                    <div className="h-[800px] overflow-y-scroll no-scrollbar">
+                    <div className="h-[670px] overflow-y-scroll no-scrollbar">
                         {selectedType === 0 ? (
                             <>
                                 <AsapBoxLove />
                             </>
                         ) : (
                             <>
+                                <CompactBuddyCard />
+                                <CompactBuddyCard />
                                 <CompactBuddyCard />
 
                                 <AsapBoxBuddy />
@@ -119,8 +121,23 @@ const Index = () => {
                         )}
                     </div>
                 </div>
-                <div className="w-3/4 grid grid-cols-3 gap-2">
+                <div className="w-3/4 grid grid-cols-3 gap-2 h-full">
                     {/* <ListBox /> */}
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
+                    <ListBox2 />
                     <ListBox2 />
                     <ListBox2 />
                     <ListBox2 />

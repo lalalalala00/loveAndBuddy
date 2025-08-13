@@ -12,7 +12,7 @@ const ListBox2 = () => {
     };
 
     return (
-        <div className="rounded-2xl w-full h-full shadow">
+        <div className="rounded-2xl w-full h-auto shadow">
             <div className="flex flex-col items-center p-2 bg-[rgb(246,246,246)] border-b border-[rgb(227,227,227)] rounded-t-2xl">
                 <img src="/project/buddy_sit_1.png" alt="" className="w-[60px] h-[60px] object-cover rounded-full" />
                 <div className="flex items-center px-3 py-1 ">
