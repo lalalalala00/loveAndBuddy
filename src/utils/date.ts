@@ -12,6 +12,8 @@ export const at0 = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDat
 export const fmt = (d: Date) => `${d.getMonth() + 1}월 ${d.getDate()}일`;
 export const fmtRange = (s: Date, e: Date) =>
     s.getMonth() === e.getMonth() ? `${s.getMonth() + 1}월 ${s.getDate()}–${e.getDate()}일` : `${fmt(s)}–${fmt(e)}`;
+export const weekdayKo = (d: Date, style: 'short' | 'long' = 'short') =>
+    d.toLocaleDateString('ko-KR', { weekday: style }).replace('요일', '');
 
 // export const getThisWeekRange = (now = new Date()) => {
 //     const n = at0(now);

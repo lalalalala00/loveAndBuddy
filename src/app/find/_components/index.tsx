@@ -121,26 +121,12 @@ const Index = () => {
                         )}
                     </div>
                 </div>
-                <div className="w-3/4 grid grid-cols-3 gap-2 h-full">
-                    {/* <ListBox /> */}
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
-                    <ListBox2 />
+                <div className="w-3/4 columns-3 gap-2">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                        <div key={i} className="break-inside-avoid mb-3">
+                            <ListBox2 />
+                        </div>
+                    ))}
                 </div>
             </div>
             <ModalIos

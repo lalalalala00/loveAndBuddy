@@ -1,43 +1,126 @@
-import { at0, getThisWeekRange } from '@/utils/date';
-import { useState } from 'react';
+import { useBooking } from '@/context/useBookingContext';
+import { at0, getThisWeekRange, weekdayKo } from '@/utils/date';
+import { useMemo, useState } from 'react';
 
-export default function WeeklyCalendarCard({ modal }: { modal?: boolean }) {
+export type Availability = { startHour: number; endHour: number };
+
+export default function WeeklyCalendarCard({
+    modal,
+    availability = { startHour: 9, endHour: 22 },
+}: {
+    modal?: boolean;
+    availability?: Availability;
+}) {
+    const { setDate, setTime } = useBooking();
+
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
+    const [range, setRange] = useState<{ start: number | null; end: number | null }>({
+        start: null,
+        end: null,
+    });
     const today = new Date();
+    const t = at0(today);
+
+    const selectedDateObj = selectedDay !== null ? new Date(today.getFullYear(), today.getMonth(), selectedDay) : null;
 
     const getWeekDays = (date: Date) => {
         const day = date.getDay();
-        const monday = new Date(date);
-        monday.setDate(date.getDate() - ((day + 6) % 7));
+        const _day = new Date(date);
+        _day.setDate(date.getDate() - ((day + 6) % 7));
 
         return Array.from({ length: 7 }, (_, i) => {
-            const d = new Date(monday);
-            d.setDate(monday.getDate() + i);
+            const d = new Date(_day);
+            d.setDate(_day.getDate() + i);
             return d;
         });
     };
+
+    // const handleDate = (d: Date) => {
+    //     const isPast = at0(d) < t;
+    //     if (isPast) {
+    //         setSelectedDay(null);
+    //     } else {
+    //         setSelectedDay(d.getDate());
+    //     }
+    // };
 
     const handleDate = (d: Date) => {
         const isPast = at0(d) < t;
         if (isPast) {
             setSelectedDay(null);
-        } else {
-            setSelectedDay(d.getDate());
+            setRange({ start: null, end: null });
+            return;
         }
+        setSelectedDay(d.getDate());
+        setRange({ start: null, end: null });
+        setDate(d.toISOString().slice(0, 10));
     };
+
+    const timeSlots = useMemo(() => {
+        const arr: number[] = [];
+        for (let h = availability.startHour; h <= availability.endHour; h++) arr.push(h);
+        return arr;
+    }, [availability]);
+
+    const disabledHour = (hour: number) => {
+        if (selectedDay === null) return true;
+        const selected = new Date(today.getFullYear(), today.getMonth(), selectedDay);
+        const isToday = selected.toDateString() === today.toDateString();
+        if (!isToday) return false;
+        return hour <= today.getHours();
+    };
+
+    const fmtHour = (h: number) => `${String(h).padStart(2, '0')}:00`;
+
+    const onSelectTime = (h: number) => {
+        if (disabledHour(h)) return;
+        if (range.start === null || range.end === null) {
+            setRange({ start: h, end: h });
+            setTime(`${fmtHour(h)}~${fmtHour(h + 1)}`);
+            return;
+        }
+
+        let start = range.start;
+        let end = range.end;
+
+        if (h < start - 1) {
+            start = h;
+        } else if (h === start - 1) {
+            start = h;
+        } else if (h >= start && h <= end) {
+            start = h;
+            end = h;
+        } else if (h === end + 1) {
+            end = h;
+        } else if (h > end + 1) {
+            end = h;
+        }
+
+        setRange({ start, end });
+
+        setTime(`${fmtHour(start)}~${fmtHour(end + 1)}`);
+    };
+
+    const isActive = (h: number) => range.start !== null && range.end !== null && h >= range.start && h <= range.end;
+
+    const selectionLabel =
+        selectedDay === null || range.start === null || range.end === null
+            ? '-'
+            : range.start === range.end
+              ? `${fmtHour(range.start)} (1시간)`
+              : `${fmtHour(range.start)} ~ ${fmtHour(range.end + 1)} (${range.end - range.start + 1}시간)`;
 
     const weekDays = getWeekDays(today);
 
     const fullMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
-    const t = at0(today);
     console.log(selectedDay);
     return (
-        <div className={`${modal ? 'w-full' : ''} relative bg-[#f7f9f6ee] rounded-t-lg shadow`}>
+        <div className={`${modal ? 'w-full' : ''}  bg-[#f7f9f6ee] rounded-t-lg shadow`}>
             <div className="grid grid-cols-[1fr_auto_1fr] items-center pt-1 mt-2 pb-2">
                 <div />
-                <span className={`justify-self-center  text-gray-600 ${modal ? 'text-[16px] py-2' : 'text-[13px]'}`}>
+                <span className={`justify-self-center text-gray-600 ${modal ? 'text-[16px] py-2' : 'text-[13px]'}`}>
                     {t.getMonth() + 1}월 일정 확인하기
                 </span>
                 <button
@@ -158,9 +241,48 @@ export default function WeeklyCalendarCard({ modal }: { modal?: boolean }) {
                 )}
             </div>
             {selectedDay !== null && (
-                <div className="px-2 py-1">
+                <div className="px-2 py-2">
+                    <div className="flex flex-wrap gap-1">
+                        {timeSlots.map((h) => {
+                            const disabled = disabledHour(h);
+                            const active = isActive(h);
+                            return (
+                                <button
+                                    key={h}
+                                    onClick={() => onSelectTime(h)}
+                                    disabled={disabled}
+                                    className={[
+                                        'px-2 py-1 rounded-md text-[12px] border',
+                                        disabled
+                                            ? 'cursor-not-allowed text-gray-400 border-gray-200 bg-gray-50'
+                                            : active
+                                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                                              : 'border-gray-200 bg-white hover:border-emerald-300',
+                                    ].join(' ')}
+                                >
+                                    {fmtHour(h)}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {range.start !== null && (
+                        <button
+                            className="mt-2 text-[11px] text-gray-500 underline"
+                            onClick={() => {
+                                setRange({ start: null, end: null });
+                                setTime('');
+                            }}
+                        >
+                            선택 해제
+                        </button>
+                    )}
+                </div>
+            )}
+            {selectedDay !== null && (
+                <div className="px-2 py-1 flex justify-between">
                     <span className={`${modal ? 'text-[14px] p-2 inline-flex justify-start w-full' : 'text-[13px]'} `}>
-                        {selectedDay}일 - 모든 시간 예약 가능
+                        {selectedDay}일 ({weekdayKo(selectedDateObj!, 'short')}) {selectionLabel}
                     </span>
                 </div>
             )}
