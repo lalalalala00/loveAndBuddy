@@ -182,7 +182,7 @@ export default function BuddyFilterBar({ onFiltersChange }: { onFiltersChange?: 
 
                     <div className="flex items-center gap-2">
                         <div className="flex items-center bg-white rounded-full border border-gray-200 p-1">
-                            {(['trust', 'manner', 'heart', 'dearlove'] as Filters['sortKey'][]).map((k) => (
+                            {(['heart', 'manner', 'dearlove', 'trust'] as Filters['sortKey'][]).map((k) => (
                                 <button
                                     key={k}
                                     className={cx(

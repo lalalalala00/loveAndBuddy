@@ -24,7 +24,7 @@ const ModalIos = ({
     console.log(leftAction);
     return (
         isOpen && (
-            <div className="fixed inset-0 z-[99] bg-black/40 backdrop-blur-[2px] flex justify-center items-center">
+            <div className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-[2px] flex justify-center items-center">
                 <div
                     className={`bg-white rounded-3xl shadow-2xl flex flex-col justify-between`}
                     style={{ width, height }}

@@ -11,6 +11,8 @@ import PlaceSelectedBox from './place.selected.box';
 import ModalIos from '@/common/modal.ios';
 import { Option } from '@/common/selected.box';
 import BuddyFilterBar from './buddy.filter.bar';
+import LoveList from './list.love';
+import Tooltip from '@/common/tooltip';
 
 const Index = () => {
     const [selectedType, setSelectedType] = useState<number>(1);
@@ -24,7 +26,7 @@ const Index = () => {
     }, [isLocationModalOpen]);
 
     return (
-        <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
+        <div className="flex flex-col mt-5 mb-4 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-16 font-semibold text-gray-700">
                 -`♥´- find.MyDearDay_〘
                 <div className="px-2 flex items-center">
@@ -92,13 +94,12 @@ const Index = () => {
                         )}
                     </div>
                     {selectedType === 1 && (
-                        <span className=" text-[12px] flex justify-center">
-                            <span
-                                className="font-bold text-[#333] cursor-pointer mr-1 underline decoration-dotted"
-                                title="하트 20개 이상, 디얼러브 20장 이상, 매너점수 8점 이상, 수의 관련 자격증, 펫시터 교육 수료, 반려동물 경험 인증"
-                            >
-                                6가지 조건을 모두 만족한
-                            </span>
+                        <span className="text-[12px] flex justify-center">
+                            <Tooltip
+                                comment="6가지 조건을 모두 만족한"
+                                tooltip="하트 20개 이상, 디얼러브 20장 이상, 매너점수 8점 이상, 수의 관련 자격증, 펫시터 교육 수료, 반려동물 경험 인증"
+                                clickCss="font-bold text-[#333] cursor-pointer mr-1 underline decoration-dotted text-[12px]"
+                            />
                             믿을 수 있는 buddy예요.
                         </span>
                     )}
@@ -121,14 +122,25 @@ const Index = () => {
                         )}
                     </div>
                 </div>
-                <div className="w-3/4 columns-3 gap-2">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="break-inside-avoid mb-3">
-                            <ListBox2 />
-                        </div>
-                    ))}
-                </div>
+                {selectedType === 0 ? (
+                    <div className="w-3/4 columns-3 gap-2">
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <div key={i} className="break-inside-avoid mb-3">
+                                <LoveList />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="w-3/4 columns-3 gap-2">
+                        {Array.from({ length: 12 }).map((_, i) => (
+                            <div key={i} className="break-inside-avoid mb-3">
+                                <ListBox2 />
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
+
             <ModalIos
                 isOpen={isLocationModalOpen}
                 handleModalState={() => setIsLocationModalOpen(!isLocationModalOpen)}

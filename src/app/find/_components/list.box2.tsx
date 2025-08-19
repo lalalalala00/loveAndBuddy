@@ -3,6 +3,7 @@ import WeeklyCalendarCard from './weekly.calendar.card';
 import { useBooking } from '@/context/useBookingContext';
 import { useState } from 'react';
 import ModalIos from '@/common/modal.ios';
+import NameTag from '@/common/name.tag';
 
 const ListBox2 = () => {
     const { timeDate, state } = useBooking();
@@ -29,13 +30,8 @@ const ListBox2 = () => {
     console.log(timeDate);
     return (
         <div className="rounded-2xl w-full h-auto shadow">
-            <div className="flex flex-col items-center p-2 bg-[rgb(246,246,246)] border-b border-[rgb(227,227,227)] rounded-t-2xl">
-                <img src="/project/buddy_sit_1.png" alt="" className="w-[60px] h-[60px] object-cover rounded-full" />
-                <div className="flex items-center px-3 py-1 ">
-                    <span className="px-1 inline-block text-[12px] font-semibold">nickname</span>
-                    <span className="text-gray-400 text-[12px]">&#62;</span>
-                </div>
-                <div className="flex items-center gap-1 text-[12px] text-[#666]">ꯁꯧ3 · 🍃4 · 🪪28</div>
+            <div className="flex flex-col items-center bg-[rgb(246,246,246)] border-b border-[rgb(227,227,227)] rounded-t-2xl">
+                <NameTag imgCss="w-[60px] h-[60px]" find />
             </div>
             <div className="p-2 flex flex-col gap-2 min-h-[245px] overflow-visible">
                 <div className="">
@@ -43,7 +39,7 @@ const ListBox2 = () => {
                         📸 사진촬영동의 · 🪪 신원인증 · ✔️ 인성검사완료
                     </div>
                     <WeeklyCalendarCard availability={{ startHour: 9, endHour: 22 }} />
-                    <div className="flex flex-col text-[12px] items-start w-full px-2 my-2">
+                    <div className="flex flex-col text-[13px] items-start w-full px-2 my-2">
                         <span>✰ 수의간호 교원자격증 보유</span>
                         <span>✰ 애완동물관리 직무능력 인증서 보유</span>
                         <span>✰ 펫시터 전문가 교육 수료</span>
