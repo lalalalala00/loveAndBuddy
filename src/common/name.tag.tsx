@@ -112,7 +112,7 @@ const NameTag = ({
                             // onClick={() => router.push(`/buddy/${buddyData.buddyId}`)}
                             className="cursor-pointer w-full mt-2 custom-card-hover custom-card rounded-lg"
                         >
-                            <span className="text-[14px]">nickname {love ? '' : '버디'}룸 보러가기</span>
+                            <span className="text-[14px]"> {love ? '디얼러브' : 'nickname 버디룸'} 보러가기</span>
                         </button>
                     </div>
                 )}

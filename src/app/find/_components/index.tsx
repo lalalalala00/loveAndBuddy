@@ -26,8 +26,8 @@ const Index = () => {
     }, [isLocationModalOpen]);
 
     return (
-        <div className="flex flex-col mt-5 mb-4 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
-            <div className="flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-16 font-semibold text-gray-700">
+        <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
+            <div className="flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">
                 -`♥´- find.MyDearDay_〘
                 <div className="px-2 flex items-center">
                     {type.map((item, i) => (
@@ -69,8 +69,6 @@ const Index = () => {
 
                     <BuddyFilterBar
                         onFiltersChange={(f) => {
-                            // 여기서 f로 목록 쿼리/정렬 갱신
-                            // ex) refetch({ ...f })
                             console.log('filters', f);
                         }}
                     />
