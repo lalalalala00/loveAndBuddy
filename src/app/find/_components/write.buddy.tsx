@@ -16,14 +16,14 @@ const WriteBuddy = () => {
 
     return (
         <div className="flex h-full justify-between items-center flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
-            <div className="flex items-center w-full bg-gray-100 rounded-t-2xl">
+            <div className="flex items-center w-full rounded-t-2xl">
                 <NameTag find asap small />
                 <button>버디 정보 가져오기</button>
             </div>
-            <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-" />
-            <div className="flex flex-col items-center w-full justify-between mt-4 h-[600px]">
+            <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
+            <div className="flex flex-col items-center w-full justify-between mt-6 h-[600px]">
                 <div className="flex flex-col w-1/2">
-                    <div className="flex items-center rounded-xl p-3 mb-2 border border-gray-100 p-1 mb-2">
+                    <div className="flex items-center shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] p-1">
                         {[
                             { k: 'all', n: '전체' },
                             { k: 'dog', n: '강아지' },
@@ -33,7 +33,7 @@ const WriteBuddy = () => {
                             <button
                                 key={opt.k}
                                 className={cx(
-                                    'px-3 py-1.5 rounded-full text-[14px]',
+                                    'px-3 py-1.5 rounded-full text-[14px] cursor-pointer',
                                     species === (opt.k as Filters['species'])
                                         ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
                                         : 'text-gray-700',
@@ -46,10 +46,10 @@ const WriteBuddy = () => {
                         ))}
                     </div>
 
-                    <div className="h-[60px] shadow rounded-xl p-3 mb-2 bg-[#f3f7ee81] flex items-center">
+                    <div className="h-[60px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex items-center">
                         <SelectedPlace />
                     </div>
-                    <div className="h-[130px] shadow rounded-xl p-3 mb-2 bg-[#f3f7ee81]">
+                    <div className="h-[130px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81]">
                         <span>자격증 정보</span>
                         <div className="flex mt-2 px-1">
                             <div className="w-3/5 flex flex-col text-[14px]">
@@ -62,7 +62,7 @@ const WriteBuddy = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="h-[130px] shadow rounded-xl p-3 mb-2 bg-[#f3f7ee81] flex flex-col">
+                    <div className="h-[130px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex flex-col">
                         <span>❀ 00 버디의 한마디 -`♡´-</span>
                         <textarea
                             className="w-full h-[100px] bg-white rounded-xl shadow mt-2 border-0 resize-none p-2 focus:outline-0 px-3"

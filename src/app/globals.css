@@ -1,72 +1,76 @@
-@import url("https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* max-width: 1536px; */
-  max-width: 1280px;
-  margin: 0 auto;
+    --background: #ffffff;
+    --foreground: #171717;
+    /* max-width: 1536px; */
+    max-width: 1280px;
+    margin: 0 auto;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
 
-  background: #f9fbfd;
-  /* background: #F4F7F9; */
+    background: #f9fbfd;
+    /* background: #F4F7F9; */
+}
+
+button {
+    cursor: pointer;
 }
 
 .cormorant-cormorant {
-  font-family: "Cormorant", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    font-family: 'Cormorant', serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .roboto-roboto {
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
+    font-family: 'Roboto', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings: 'wdth' 100;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 .no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .bubble::before {
-  content: "";
-  position: absolute;
-  top: 30px;
-  left: -8px;
-  width: 0;
-  height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid #e7e7e7;
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #e7e7e7;
 }
 
 /* 
@@ -113,98 +117,98 @@ li {
 } */
 
 @layer utilities {
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
+    @keyframes blink {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
     }
-    50% {
-      opacity: 0;
-    }
-  }
 
-  .animate-blink {
-    animation: blink 1s step-end infinite;
-  }
+    .animate-blink {
+        animation: blink 1s step-end infinite;
+    }
 }
 
 .neumorph-box {
-  background: #f4f9f5;
-  box-shadow:
-    6px 6px 12px rgba(180, 194, 129, 0.25),
-    -6px -6px 12px rgba(255, 255, 255, 1);
-  /* background: #f4f7f9;
+    background: #f4f9f5;
+    box-shadow:
+        6px 6px 12px rgba(180, 194, 129, 0.25),
+        -6px -6px 12px rgba(255, 255, 255, 1);
+    /* background: #f4f7f9;
   box-shadow:
     14px 14px 28px rgba(216, 225, 235, 0.5),
     -14px -14px 28px rgba(255, 255, 255, 1); */
 }
 
 .text-soft-green {
-  color: #b4c281;
+    color: #b4c281;
 }
 .text-soft-beige {
-  color: #e6d7b8;
+    color: #e6d7b8;
 }
 .text-ivory {
-  color: #f3ebd2;
+    color: #f3ebd2;
 }
 
 .neumorph-card {
-  background: #f4f9f5;
-  box-shadow:
-    6px 6px 12px rgba(180, 194, 129, 0.25),
-    -6px -6px 12px rgba(255, 255, 255, 1);
-  border-radius: 1rem;
-  color: #b2d2a4;
-  transition: all 0.2s ease-in-out;
+    background: #f4f9f5;
+    box-shadow:
+        6px 6px 12px rgba(180, 194, 129, 0.25),
+        -6px -6px 12px rgba(255, 255, 255, 1);
+    border-radius: 1rem;
+    color: #b2d2a4;
+    transition: all 0.2s ease-in-out;
 }
 
 .neumorph-card.selected,
 .selected-neumorph {
-  background: #ffffff;
-  box-shadow:
-    inset 6px 6px 12px #b2d2a46f,
-    inset -6px -6px 12px rgba(255, 255, 255, 1);
-  color: #3a650f;
-  font-weight: 700;
+    background: #ffffff;
+    box-shadow:
+        inset 6px 6px 12px #b2d2a46f,
+        inset -6px -6px 12px rgba(255, 255, 255, 1);
+    color: #3a650f;
+    font-weight: 700;
 }
 
 .text-soft-green {
-  color: #9cad4e;
+    color: #9cad4e;
 }
 
 .custom-card {
-  @apply bg-[#e3ecdc] border border-white/20 shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
+    @apply bg-[#e3ecdc] border border-white/20 shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 .custom-card-bg-white {
-  @apply bg-[#fff] border border-white/20 shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
+    @apply bg-[#fff] border border-white/20 shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 .custom-card-hover-bg-white {
-  @apply hover:bg-white/80 bg-[#e3ecdc] border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
+    @apply hover:bg-white/80 bg-[#e3ecdc] border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 .custom-card-hover-bg-white-only {
-  @apply hover:bg-white/80 hover:shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
+    @apply hover:bg-white/80 hover:shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 .custom-card-hover {
-  @apply hover:bg-[#dce9cd] hover:border hover:border-white/20  hover:shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
+    @apply hover:bg-[#dce9cd] hover:border hover:border-white/20  hover:shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 .btn-card {
-  @apply border border-[#e6e6e67d] shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
+    @apply border border-[#e6e6e67d] shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 
 .color- {
-  color: #e6d7b8;
-  color: #f3ebd2;
-  color: #b4c281;
-  color: #b1a386;
-  color: #e2e6d4;
-  color: #afcb94;
-  color: #9dbb80;
-  color: #c8d9b5;
-  color: #b2d2a4;
-  color: #f7f9f6;
-  color: #f3f6f0;
-  color: #eff2ed;
+    color: #e6d7b8;
+    color: #f3ebd2;
+    color: #b4c281;
+    color: #b1a386;
+    color: #e2e6d4;
+    color: #afcb94;
+    color: #9dbb80;
+    color: #c8d9b5;
+    color: #b2d2a4;
+    color: #f7f9f6;
+    color: #f3f6f0;
+    color: #eff2ed;
 }
 
 /* 1	#E6D7B8	따뜻한 크림 베이지
@@ -218,51 +222,51 @@ mint-sage	#C8D9B5	아주 연한 민트+세이지, 감성 강조용
 matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */
 
 .react-grid-item {
-  transition: none !important;
-  width: auto !important;
-  height: auto !important;
+    transition: none !important;
+    width: auto !important;
+    height: auto !important;
 }
 
 @keyframes heart-float {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) scale(1.8);
-    opacity: 0;
-  }
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(1.8);
+        opacity: 0;
+    }
 }
 
 @keyframes heart-pop {
-  0% {
-    transform: scale(0.5);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
 }
 
 .heart-float {
-  animation: heart-float 1.2s ease-in-out forwards;
+    animation: heart-float 1.2s ease-in-out forwards;
 }
 
 .heart-pop {
-  animation: heart-pop 0.7s ease-out forwards;
+    animation: heart-pop 0.7s ease-out forwards;
 }
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(0.8);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-80px) scale(1.2);
-    opacity: 0;
-  }
+    0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-80px) scale(1.2);
+        opacity: 0;
+    }
 }
