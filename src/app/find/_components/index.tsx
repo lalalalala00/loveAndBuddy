@@ -13,21 +13,16 @@ import { Option } from '@/common/selected.box';
 import BuddyFilterBar from './buddy.filter.bar';
 import LoveList from './list.love';
 import Tooltip from '@/common/tooltip';
+import { useRouter } from 'next/navigation';
+import SelectedPlace from '@/common/selected.place';
 
 const Index = () => {
+    const router = useRouter();
     const [selectedType, setSelectedType] = useState<number>(1);
-    const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-    const [selectedAddr, setSelectedAddr] = useState<Option[]>([]);
-
-    useEffect(() => {
-        if (isLocationModalOpen) {
-            setSelectedAddr([]);
-        }
-    }, [isLocationModalOpen]);
 
     return (
         <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
-            <div className="flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">
+            <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">
                 -`♥´- find.MyDearDay_〘
                 <div className="px-2 flex items-center">
                     {type.map((item, i) => (
@@ -41,31 +36,17 @@ const Index = () => {
                     ))}
                 </div>
                 〙 -`♥´-
+                <div className="absolute top-1/2 right-0">
+                    {selectedType === 0 ? (
+                        <button onClick={() => router.push('/find/write/love')}>버디 요청하기</button>
+                    ) : (
+                        <button onClick={() => router.push('/find/write/buddy')}>버디 소개 올리기</button>
+                    )}
+                </div>
             </div>
             <div className="flex  justify-end items-center px-5 mb-3">
                 <div className="flex flex-col w-[920px] items-end">
-                    <div>
-                        {selectedAddr.length >= 1 ? (
-                            <div className="flex">
-                                {selectedAddr.map((item, i) => (
-                                    <button
-                                        className="px-4 py-2 mr-3 rounded-full  
-                                btn-card text-[13px]"
-                                    >
-                                        {item.name}
-                                    </button>
-                                ))}
-                                <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
-                                    <span className="text-[12px]">동네 변경하기</span>
-                                </button>
-                            </div>
-                        ) : (
-                            <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
-                                <span className="text-[14px]">📍 동네가 설정되지 않았습니다.</span>
-                                <span className="btn-card text-[14px] px-2 py-1 rounded-xl ml-2">설정하기</span>
-                            </button>
-                        )}
-                    </div>
+                    <SelectedPlace />
 
                     <BuddyFilterBar
                         onFiltersChange={(f) => {
@@ -138,18 +119,6 @@ const Index = () => {
                     </div>
                 )}
             </div>
-
-            <ModalIos
-                isOpen={isLocationModalOpen}
-                handleModalState={() => setIsLocationModalOpen(!isLocationModalOpen)}
-                title="어느 동네에서 버디를 찾으시나요?"
-                width="50%"
-                height="50%"
-                leftComment="선택하기"
-                leftAction={() => setIsLocationModalOpen(!isLocationModalOpen)}
-            >
-                <PlaceSelectedBox setSelectedAddr={setSelectedAddr} />
-            </ModalIos>
         </div>
     );
 };

@@ -1,7 +1,5 @@
+import WriteBuddy from '../../_components/write.buddy';
+
 export default function Page(): React.ReactNode {
-    return (
-        <div>
-            <h1>buddy</h1>
-        </div>
-    );
+    return <WriteBuddy />;
 }
