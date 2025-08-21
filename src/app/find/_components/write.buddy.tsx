@@ -57,7 +57,7 @@ const WriteBuddy = () => {
                                 <span>✰ 애완동물관리 직무능력 인증서 보유</span>
                                 <span>✰ 펫시터 전문가 교육 수료</span>
                             </div>
-                            <div className="w-2/5 bg-white rounded-xl ml-2 p-2 flex items-center justify-center shadow cursor-pointer hover:border-2 hover:border-dashed hover:border-gray-200">
+                            <div className="w-2/5 bg-white border-2 border-dashed border-gray-200 rounded-xl ml-2 p-2 flex items-center justify-center shadow cursor-pointer hover:border-2 hover:border-dashed hover:border-gray-200">
                                 <button className="text-[13px]">+ 자격증 추가하기</button>
                             </div>
                         </div>

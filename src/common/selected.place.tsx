@@ -30,7 +30,9 @@ const SelectedPlace = () => {
             ) : (
                 <button onClick={() => setIsLocationModalOpen(!isLocationModalOpen)}>
                     <span className="text-[14px]">📍 동네가 설정되지 않았습니다.</span>
-                    <span className="btn-card text-[14px] px-2 py-1 rounded-xl ml-2">설정하기</span>
+                    <span className="border-2 border-dashed border-gray-200 text-[14px] px-2 py-1 rounded-xl ml-2">
+                        설정하기
+                    </span>
                 </button>
             )}
 
