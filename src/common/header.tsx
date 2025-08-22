@@ -9,6 +9,7 @@ import { User } from '@supabase/supabase-js';
 import Modal from './modal';
 import SignUp from '@/components/sign.up';
 import SignUpModal from '@/components/sign.up';
+import LoginModal from '@/components/sign.login';
 
 const Header = () => {
     const router = useRouter();
@@ -20,6 +21,7 @@ const Header = () => {
     const [pendingType, setPendingType] = useState<UserStateType | null>(null);
     const [getUser, setGetUser] = useState<User | null>(null);
     const [signUpModal, setSignUpModal] = useState<boolean>(false);
+    const [signModal, setSignModal] = useState<boolean>(false);
 
     const currentUser = userType.find((u) => u.label === userState);
 
@@ -45,6 +47,11 @@ const Header = () => {
             setPendingType(null);
         }
     }, [userState]);
+
+    const handleSignUp = () => {
+        setSignModal(false);
+        setSignUpModal(true);
+    };
 
     return (
         <div>
@@ -90,7 +97,7 @@ const Header = () => {
 
                 <div className="rounded-full w-16 h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
                     {getUser === null ? (
-                        <button onClick={() => setSignUpModal(!signUpModal)} className="">
+                        <button onClick={() => setSignModal(!signModal)} className="">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-4 h-4 stroke-black group-hover:stroke-amber-500 transition"
@@ -124,6 +131,7 @@ const Header = () => {
                 </div>
             </div>
             <SignUpModal isOpen={signUpModal} onClose={() => setSignUpModal(!signUpModal)} />
+            <LoginModal isOpen={signModal} onClose={() => setSignModal(!signModal)} onOpenSignUp={handleSignUp} />
         </div>
     );
 };

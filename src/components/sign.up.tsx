@@ -1,9 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import { Animal } from '@/common/animal.card.vertical';
+import AnimalsForm, { AnimalForm, defaultAnimal } from './sign.animals.form';
+import CertificateField from './sign.certificateField';
+import CertificatesForm, { CertificateItem } from './sign.certificateField.form';
 
 type Role = 'love' | 'buddy' | 'lovuddy';
 
@@ -56,6 +59,10 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState('');
     const [justSaved, setJustSaved] = useState(false);
+
+    const [animalsForm, setAnimalsForm] = useState<AnimalForm[]>([defaultAnimal(true)]);
+
+    const [certs, setCerts] = useState<CertificateItem[]>([]);
 
     const isBuddy = v.type === 'buddy';
     const isLove = v.type === 'love';
@@ -176,12 +183,11 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             handleModalState={onClose}
             title="회원가입"
             width="560px"
-            height="78%"
-            leftComment={loading ? '처리 중…' : '가입하기'}
-            leftAction={handleSignUp}
+            height="970px"
+            // leftComment={loading ? '처리 중…' : '가입하기'}
+            // leftAction={handleSignUp}
         >
-            <div className="p-3 space-y-4">
-                {/* 기본 정보 */}
+            <div className="p-3 space-y-4 overflow-scroll h-[850px]">
                 <div className="grid grid-cols-1 gap-3">
                     <label className="text-[13px] text-gray-600">이메일</label>
                     <input
@@ -257,118 +263,26 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         </p>
 
                         {(isLove || isLovuddy) && (
-                            <div className="space-y-2">
-                                <div className="grid grid-cols-3 gap-2">
-                                    <input
-                                        name="animal.name"
-                                        placeholder="반려동물 이름"
-                                        value={v.animal.name}
-                                        onChange={onChange}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
-                                    />
-                                    <select
-                                        name="animal.type"
-                                        value={v.animal.type}
-                                        onChange={onChange}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
-                                    >
-                                        <option value="dog">강아지</option>
-                                        <option value="cat">고양이</option>
-                                        <option value="others">기타</option>
-                                    </select>
-                                    <input
-                                        type="number"
-                                        min={0}
-                                        name="animal.age"
-                                        placeholder="나이"
-                                        value={v.animal.age}
-                                        onChange={onChange}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-3 gap-2">
-                                    <input
-                                        name="animal.variety"
-                                        placeholder="품종 (예: 스피츠)"
-                                        value={v.animal.variety}
-                                        onChange={onChange}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
-                                    />
-                                    <input
-                                        name="animal.color"
-                                        placeholder="색상 (예: white)"
-                                        value={v.animal.color}
-                                        onChange={onChange}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
-                                    />
-                                    <select
-                                        name="animal.personality"
-                                        value={v.animal.personality}
-                                        onChange={onChange}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
-                                    >
-                                        <option value="extrovert">외향적</option>
-                                        <option value="introvert">내향적</option>
-                                    </select>
-                                </div>
-
-                                <div className="grid grid-cols-3 gap-2">
-                                    <div>
-                                        <input
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            name="animal.level"
-                                            placeholder="활동 레벨 (1~10)"
-                                            value={v.animal.level}
-                                            onChange={onChange}
-                                            className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
-                                        />
-                                        <span>/10</span>
-                                    </div>
-
-                                    <input
-                                        name="animal.img"
-                                        placeholder="이미지 URL (선택)"
-                                        value={v.animal.img}
-                                        onChange={onChange}
-                                        className="col-span-2 px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
-                                    />
-                                </div>
-
-                                <textarea
-                                    name="animal.comment"
-                                    placeholder="코멘트 (예: 흙냄새 풀냄새 좋아해요!)"
-                                    value={v.animal.comment}
-                                    onChange={onChange}
-                                    className="w-full px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] focus:outline-none"
-                                    rows={3}
-                                />
-                            </div>
+                            <AnimalsForm value={animalsForm} onChange={setAnimalsForm} maxCount={5} className="mt-4" />
                         )}
 
-                        {/* buddy/lovuddy → 자격증 */}
                         {(isBuddy || isLovuddy) && (
-                            <div className="flex flex-col gap-2">
-                                <input
-                                    type="text"
-                                    name="certificate_url"
-                                    placeholder="자격증 URL 또는 설명"
-                                    value={v.certificate_url ?? ''}
-                                    onChange={onChange}
-                                    className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
-                                />
-                                <span className="text-[12px] text-gray-500">
-                                    * 일부 정보는 나중에 추가 가능하지만, 버디 활동 시 자격증 정보가 없으면 등록이
-                                    제한돼요.
-                                </span>
-                            </div>
+                            <CertificatesForm
+                                value={certs}
+                                onChange={setCerts}
+                                allowUpload
+                                minCount={0}
+                                className="mt-3"
+                            />
                         )}
                     </div>
                 )}
+                {(isBuddy || isLovuddy) && (
+                    <span className="text-[12px] text-gray-500 px-3 mb-2 inline-flex">
+                        * 일부 정보는 나중에 추가 가능하지만, 버디 활동 시 자격증 정보가 없으면 등록이 제한돼요.
+                    </span>
+                )}
 
-                {/* 메시지/액션 */}
                 {err && <p className="text-[12px] text-red-500">{err}</p>}
                 {justSaved && <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>}
 
