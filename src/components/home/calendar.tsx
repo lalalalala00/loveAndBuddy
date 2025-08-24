@@ -6,7 +6,9 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
 import { PanelRightOpen, PanelRightClose, Maximize2, Minimize2 } from 'lucide-react';
-import NameTag from '@/common/name.tag';
+
+import CalendarSideContent from '../calendar.side';
+import { formatDateLongEn } from '@/utils/date';
 
 interface Buddy {
     name: string;
@@ -19,13 +21,13 @@ interface Love {
     profileImg: string;
 }
 
-interface Reservation {
+export interface Reservation {
     buddy: Buddy;
     date: number;
     love: Love;
 }
 
-interface SelectedDay {
+export interface SelectedDay {
     day: string;
     reservation: Array<Reservation>;
 }
@@ -105,19 +107,14 @@ const Calendar = ({
 
     return (
         <div
-            className={`mx-auto flex  ${!calSize ? 'p-2' : 'px-4'} ${!calSize && !dayContents && 'w-[400px]'}`}
+            className={`mx-auto flex  ${!calSize ? 'px-2' : 'px-4'} ${!calSize && !dayContents && 'w-[400px]'} ${!calSize && dayContents && 'w-[830px]'}`}
             style={{
                 height: !calSize ? '530px' : '730px',
                 // width: !calSize ? "400px" : "780px",
             }}
         >
-            <div
-                style={{
-                    width: !calSize ? '400px' : '790px',
-                    // height: calSize ? "504px" : "700px",
-                }}
-            >
-                <div className="flex justify-between items-center">
+            <div className={`${!calSize ? 'w-full min-w-0' : 'w-[790px] min-w-[790px]'}`}>
+                <div className="flex justify-between items-center w-full">
                     <button
                         onClick={() => setSelectedClose('cal')}
                         className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
@@ -156,8 +153,8 @@ const Calendar = ({
                         </button>
                     </div>
                 </div>
-                <div className="relative flex justify-center  mb-6">
-                    <div className="w-1/2 flex justify-between ">
+                <div className={`relative flex justify-center ${calSize ? 'mb-6' : 'mb-4 mt-1.5'} `}>
+                    <div className="w-1/2 flex justify-between items-center">
                         <button
                             onClick={prevMonth}
                             className="px-2 py-1 rounded-lg hover:bg-[#f8fbf4] border border-transparent hover:border-[#e3ecdc]"
@@ -165,7 +162,9 @@ const Calendar = ({
                         >
                             ‹
                         </button>
-                        <h3 className="text-lg sm:text-xl font-semibold">{currentDate.format('YYYY년 MM월')}</h3>
+                        <h3 className={`${calSize ? 'text-lg' : 'text-[15px] mt-1'} font-semibold`}>
+                            {currentDate.format('YYYY년 MM월')}
+                        </h3>
                         <button
                             onClick={nextMonth}
                             className="px-2 py-1 rounded-lg hover:bg-[#f8fbf4] border border-transparent hover:border-[#e3ecdc]"
@@ -176,7 +175,7 @@ const Calendar = ({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-7 text-center text-sm text-gray-500">
+                <div className="grid grid-cols-7 text-center text-sm text-gray-500 w-full">
                     {daysOfWeek.map((day) => (
                         <div key={day} className="first:text-red-500">
                             <p>{day}</p>
@@ -184,7 +183,7 @@ const Calendar = ({
                     ))}
                 </div>
 
-                <div className="grid grid-cols-7 text-center mt-2">
+                <div className="grid grid-cols-7 text-center mt-2 w-full">
                     {generateCalendar().map((date, i) => {
                         const clickedDateStr = date && date.format('YYYY-MM-DD');
 
@@ -195,13 +194,14 @@ const Calendar = ({
                         return (
                             <div
                                 key={i}
-                                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col m-1 border border-[#f7f9f6]
+                                className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col border border-[#f7f9f6]
         ${date?.isSame(today, 'day') ? 'bg-[#c8d9b5b4] text-white font-bold hover:text-[#9dbb80]' : ''}
         ${!date ? '' : 'hover:bg-[#f7f9f6]'}
       `}
                                 style={{
                                     minWidth: !calSize ? '' : '',
-                                    minHeight: !calSize ? '60px' : '90px',
+                                    minHeight: !calSize ? '66px' : '100px',
+                                    height: !calSize ? '66px' : '100px',
                                 }}
                                 onClick={() => date && handleDateClick(date)}
                             >
@@ -229,55 +229,20 @@ const Calendar = ({
             </div>
             {dayContents && (
                 <div
-                    className={`${dayContents && calSize ? 'min-w-[400px] ml-6' : 'min-w-[385px] ml-4'}  h-[95%] p-4 border border-[#e3ecdc] ml-4 rounded-2xl`}
+                    className={`${dayContents && calSize ? 'min-w-[400px] ml-6' : 'min-w-[385px] ml-4'}  h-[95%] border border-[#e3ecdc] ml-4 rounded-2xl`}
                 >
-                    <div className="flex justify-between items-center border-b-2 border-[#e3ecdc] pb-2 mb-1 text-[14px]">
+                    <div className="flex justify-between items-center border-b-2 border-[#e3ecdc]  px-4 py-3 text-[14px]">
                         <span className="text-[#9dbb80]">date.</span>
-                        <span className="text-[#2d3f1e] font-sembold">{selectedDay?.day}</span>
-                        <span className="text-[#9dbb80]">{day}</span>
+                        <span className="font-sembold"> {formatDateLongEn(selectedDay?.day)}</span>
+                        <span className="text-[#9dbb80] lowercase">{day}</span>
                     </div>
-
-                    {selectedDay?.reservation.map((item, i) => (
-                        <div key={i}>
-                            <div className="flex flex-col">
-                                <span className="text-[14px] text-center mt-2">
-                                    -`♥´- dear.Love_〘 {item.love.name} 〙 -`♥´-
-                                </span>
-                                <span className="text-[13px] text-end">with {item.buddy.name} 💚 buddy</span>
-                            </div>
-                            <div
-                                className={`border border-gray-200 rounded-xl text-[13px] line-2 p-2 ${dayContents && calSize ? 'w-[375px]' : 'w-[360px]'}`}
-                            >
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi harum a voluptatum.
-                                Quibusdam, dignissimos! Quia inventore obcaecati, mollitia earum voluptatem doloribus
-                                unde asperiores maxime quasi rem eum, error tenetur numquam!
-                            </div>
-
-                            <div>
-                                <img src="/cha/1_5.png" alt="" className="w-20 h-20 object-cover" />
-                                <img src="/cha/1_5.png" alt="" className="w-20 h-20 object-cover" />
-                                <img src="/cha/1_5.png" alt="" className="w-20 h-20 object-cover" />
-                            </div>
-                        </div>
-                    ))}
+                    <div
+                        className={`${selectedDay && selectedDay?.reservation.length >= 1 ? '' : 'bg-[#f3f7ee]'} h-[calc(100%-47px)] rounded-b-2xl`}
+                    >
+                        <CalendarSideContent item={selectedDay} dayContents={dayContents} calSize={calSize} />
+                    </div>
                 </div>
             )}
-
-            {/* {reservationModal && selectedDay && (
-        <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2  w-full h-full flex justify-center items-center bg-black/30">
-          <div className=" flex-col w-1/3 h-1/4 border p-4 rounded-2xl bg-white">
-            <span>{selectedDay?.day}</span>
-            {selectedDay?.reservation.map((item, i) => (
-              <div key={i}>
-                <span>
-                  {item.love.name} love 🩵{item.buddy.name} buddy
-                </span>
-                <span>img</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
         </div>
     );
 };

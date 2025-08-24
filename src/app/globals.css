@@ -196,6 +196,10 @@ li {
     @apply border border-[#e6e6e67d] shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
 }
 
+.shadow-inset {
+    @apply shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] bg-[#fff];
+}
+
 .color- {
     color: #e6d7b8;
     color: #f3ebd2;

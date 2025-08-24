@@ -1,13 +1,12 @@
 'use client';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import FileNameBox from './file.name.box';
 
 import PhotoModal from './modal.photo';
 
 import ModalIos from '@/common/modal.ios';
 import DiaryMessage from './diary.message';
-import BuddyProfileCard from '@/common/buddy.profile.card';
 import NameTag from '@/common/name.tag';
 
 const FilePage = () => {
@@ -29,8 +28,6 @@ const FilePage = () => {
         setSelectedPhoto(!selectedPhoto);
         setSelectedPhotoIndex(i);
     };
-
-    const fullText = ` Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero id obcaecati, fuga ex, nulla eligendi tempore...`;
 
     return (
         <div className="flex w-full flex-col">
@@ -79,12 +76,12 @@ const FilePage = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col pl-8">
+                <div className="flex flex-col pl-8 ">
                     <div className="mt-2 mb-4">
                         <h4 className="text-[28px] font-bold lowercase text-[#5b7551]">˚₊· {selectedMonth} —̳͟͞͞♡ ˚₊·</h4>
                     </div>
 
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full ">
                         <div className="flex gap-4 mb-4">
                             {[1, 4, 9, 12, 24, 29, 31].map((item) => (
                                 <button
@@ -120,7 +117,7 @@ const FilePage = () => {
                                 );
                             })}
 
-                            <div className="col-span-4 flex w-full flex-col items-center mt-4 min-h-[200px]">
+                            <div className="col-span-4 flex w-full flex-col items-center px-4 my-4 rounded-xl min-h-[200px] bg-[#f3f6f0]">
                                 <span className="text-[12px] text-[#8f8f8f] text-shadow-2xs">
                                     8월 1일 (금) 오전 9:35
                                 </span>
@@ -145,13 +142,6 @@ const FilePage = () => {
                                 </div>
                             </div>
 
-                            {/* <div className="col-span-4 p-4 border border-[#e3ecdc] bg-white rounded-xl">
-              <p className="text-[16px] leading-relaxed text-gray-700 whitespace-pre-wrap font-sans">
-                ✎ꪑ{displayedText} 𖤐
-                <span className="animate-blink text-[#9dbb80] font-bold ml-1">|</span>
-              </p>
-            </div> */}
-
                             {imgs.slice(3).map((item, i) => {
                                 const actualIndex = i + 8;
                                 return (
@@ -174,6 +164,7 @@ const FilePage = () => {
                 height="800px"
                 title={'title'}
                 leftComment="*⁀➷♥ Heart ⌁❤︎⌁﻿"
+                leftAction={() => console.log('heart')}
             >
                 <PhotoModal
                     handleModalState={() => setSelectedPhoto(!selectedPhoto)}

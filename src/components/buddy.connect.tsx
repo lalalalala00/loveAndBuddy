@@ -113,7 +113,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                 </div>
             )}
 
-            <div className="w-full flex items-center p-2">
+            <div className="w-full flex items-center py-2 px-3">
                 <div className="flex-1 flex justify-start">
                     <button
                         onClick={() => setSelectedClose('toki')}
@@ -131,7 +131,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                         onClick={handleResize}
                         aria-label={expanded ? '축소' : '확장'}
                         className={[
-                            'w-[52px] h-[16px] rounded-2xl transition shadow-sm',
+                            'w-[40px] h-[12px] rounded-2xl transition shadow-sm',
                             inRoom ? 'bg-gray-200 cursor-not-allowed' : 'bg-amber-300 hover:brightness-95',
                         ].join(' ')}
                     />
@@ -161,7 +161,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                     </div>
                 </div>
             ) : (
-                <div className="border-t border-[#e3ecdc] w-full px-1 py-2 bg-[#fafdf4]">
+                <div className="border-t border-[#e3ecdc] w-full p-2 bg-[#fafdf4]">
                     <div
                         className={[
                             'no-scrollbar flex flex-col items-start w-full overflow-y-auto',
@@ -194,7 +194,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                                 <button
                                     key={it.roomId}
                                     onClick={() => openRoom(it)}
-                                    className="w-full p-2 rounded-xl border-[#f7f9f6] border hover:border-[#e3ecdc] transition text-left bg-white"
+                                    className="w-full p-2 rounded-xl border border-[#e3ecdc] transition text-left bg-white mb-2"
                                 >
                                     <div className="flex items-center gap-2">
                                         <img

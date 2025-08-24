@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export type Filters = {
     dateKey: 'today' | 'tomorrow' | 'weekend' | 'thisweek' | 'custom' | 'none';
     dateFrom?: string;
@@ -82,4 +84,10 @@ export const buildDateLabel = (key: Filters['dateKey'], from?: string, to?: stri
         default:
             return '날짜';
     }
+};
+
+export const formatDateLongEn = (dateStr?: string) => {
+  if (!dateStr) return '';
+  const d = dayjs(dateStr); 
+  return d.isValid() ? d.locale('en').format('MMMM D, YYYY') : dateStr;
 };

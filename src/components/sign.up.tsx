@@ -187,7 +187,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             // leftComment={loading ? '처리 중…' : '가입하기'}
             // leftAction={handleSignUp}
         >
-            <div className="p-3 space-y-4 overflow-scroll h-[850px]">
+            <div className="p-3 space-y-4 overflow-scroll h-[850px] no-scrollbar">
                 <div className="grid grid-cols-1 gap-3">
                     <label className="text-[13px] text-gray-600">이메일</label>
                     <input
