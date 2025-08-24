@@ -5,11 +5,16 @@ import { UserStateType, useUserState } from '../context/useUserContext';
 import { useTypedRouter } from '@/hooks/userTypeRouter';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { User } from '@supabase/supabase-js';
-import Modal from './modal';
-import SignUp from '@/components/sign.up';
+
 import SignUpModal from '@/components/sign.up';
 import LoginModal from '@/components/sign.login';
+import { UsersRow } from '@/utils/type';
+
+const ROLE_META = {
+    love: { label: 'love', emoji: '💚' },
+    buddy: { label: 'buddy', emoji: '🐾' },
+    lovuddy: { label: 'lovuddy', emoji: '🌿' },
+} as const;
 
 const Header = () => {
     const router = useRouter();
@@ -19,7 +24,7 @@ const Header = () => {
     const { push } = useTypedRouter();
 
     const [pendingType, setPendingType] = useState<UserStateType | null>(null);
-    const [getUser, setGetUser] = useState<User | null>(null);
+    const [getUser, setGetUser] = useState<UsersRow | null>(null);
     const [signUpModal, setSignUpModal] = useState<boolean>(false);
     const [signModal, setSignModal] = useState<boolean>(false);
 
@@ -31,13 +36,29 @@ const Header = () => {
         setUserState(type);
         setPendingType(type);
     };
+    console.log(getUser, 'get');
 
     useEffect(() => {
         (async () => {
             const {
                 data: { user },
             } = await supabase.auth.getUser();
-            setGetUser(user);
+            if (!user?.id) {
+                setGetUser(null);
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('users')
+                .select('id,email,name,type,avatar_url,certificate_url,created_at,updated_at')
+                .eq('id', user.id)
+                .maybeSingle();
+            if (error) {
+                console.error('users select error:', error);
+                setGetUser(null);
+                return;
+            }
+            setGetUser(data ?? null);
         })();
     }, []);
 
@@ -114,19 +135,11 @@ const Header = () => {
                             </svg>
                         </button>
                     ) : (
-                        userType.map((item, i) => (
-                            <button
-                                key={i}
-                                onClick={() => handleTabClick(item.label)}
-                                className={`rounded-xl px-3 py-2 transition shadow-[4px_8px_10px_#f3faea,-4px_-4px_10px_#ffffff] ${
-                                    userState === item.label
-                                        ? 'bg-blue-200 text-gray-800'
-                                        : 'bg-[#f0f0f0] text-gray-600'
-                                }`}
-                            >
-                                {item.label}
-                            </button>
-                        ))
+                        <button className="rounded-xl px-3 py-2 text-sm shadow-[4px_8px_10px_#f3faea,-4px_-4px_10px_#ffffff]">
+                            <span className="inline-flex items-center gap-1">{ROLE_META[getUser.type]?.emoji}</span>
+                            <span className="text-[12px]">{getUser.type}</span>
+                            <span className="text-[12px]">{getUser.name}</span>
+                        </button>
                     )}
                 </div>
             </div>

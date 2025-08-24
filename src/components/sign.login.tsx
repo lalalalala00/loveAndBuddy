@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import SignUpModal from './sign.up';
+import { useUserState } from '@/context/useUserContext';
 
 const GUEST_ROUTE = process.env.NEXT_PUBLIC_GUEST_ROUTE || '/';
 
@@ -17,6 +18,7 @@ export default function LoginModal({
     onClose: () => void;
     onOpenSignUp?: () => void;
 }) {
+    const { setUserState } = useUserState();
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
@@ -64,9 +66,7 @@ export default function LoginModal({
     };
 
     const continueAsGuest = () => {
-        try {
-            localStorage.setItem('guest_mode', '1');
-        } catch {}
+        setUserState('guest');
         onClose();
         router.push(GUEST_ROUTE);
     };

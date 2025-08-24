@@ -167,7 +167,6 @@ export default function AnimalsForm({
                         </div>
                     </div>
 
-                    {/* 폼 바디 */}
                     <div className="space-y-2">
                         <div className="grid grid-cols-3 gap-2">
                             <input
@@ -188,7 +187,7 @@ export default function AnimalsForm({
                             <input
                                 type="number"
                                 min={0}
-                                placeholder="나이"
+                                placeholder="출생년도 (예: 2012)"
                                 value={a.age}
                                 onChange={(e) => updateAt(idx, { age: e.target.value })}
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
@@ -203,7 +202,7 @@ export default function AnimalsForm({
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
                             />
                             <input
-                                placeholder="색상 (예: white)"
+                                placeholder="색상 (예: 하얀색)"
                                 value={a.color}
                                 onChange={(e) => updateAt(idx, { color: e.target.value })}
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"

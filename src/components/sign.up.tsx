@@ -7,6 +7,7 @@ import { Animal } from '@/common/animal.card.vertical';
 import AnimalsForm, { AnimalForm, defaultAnimal } from './sign.animals.form';
 import CertificateField from './sign.certificateField';
 import CertificatesForm, { CertificateItem } from './sign.certificateField.form';
+import Modal from '@/common/modal';
 
 type Role = 'love' | 'buddy' | 'lovuddy';
 
@@ -70,12 +71,15 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
     const canSubmit = useMemo(() => {
         if (!v.email || !v.password || v.password.length < 6 || !v.name || !v.type) return false;
-        if (!isLove && !isLovuddy) {
-            return true;
+
+        if (v.type === 'love' || v.type === 'lovuddy') {
+            const owner = animalsForm.find((a) => a.owner) ?? animalsForm[0];
+            if (!owner) return false;
+            return !!owner.name && !!owner.age && !!owner.type;
         }
-        if (!v.animal.name || !v.animal.age || !v.animal.type) return false;
+
         return true;
-    }, [v, isLove, isLovuddy]);
+    }, [v.email, v.password, v.name, v.type, animalsForm]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -90,28 +94,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
     const selectRole = (r: Role) => setV((prev) => ({ ...prev, type: r }));
 
-    const toAnimalRecord = (userId: string, nickname: string): Animal => {
-        const age = Number(v.animal.age || 0);
-        const level = Math.min(10, Math.max(1, Number(v.animal.level || 5)));
-        const uuid = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : String(Date.now());
-
-        return {
-            ownerNickname: nickname,
-            ownerId: userId,
-            animalId: uuid,
-            name: v.animal.name,
-            age,
-            level,
-            type: v.animal.type,
-            variety: v.animal.variety || '',
-            color: v.animal.color || '',
-            comment: v.animal.comment || '',
-            owner: true, // 최초 등록은 대표로
-            img: v.animal.img || '',
-            personality: v.animal.personality,
-        };
-    };
-
     const handleSignUp = async () => {
         if (!canSubmit || loading) return;
         setLoading(true);
@@ -121,48 +103,65 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             const { data: signUpData, error: authError } = await supabase.auth.signUp({
                 email: v.email,
                 password: v.password,
-                options: {
-                    // emailRedirectTo: `${window.location.origin}/auth/callback`,
-                },
             });
             if (authError) throw authError;
 
-            const userId = signUpData.user?.id;
-            if (!userId) throw new Error('회원가입은 되었지만 사용자 ID를 찾을 수 없습니다.');
+            const accessToken =
+                signUpData.session?.access_token || (await supabase.auth.getSession()).data.session?.access_token;
 
-            // users 테이블
-            const { error: uerr } = await supabase.from('users').insert([
-                {
-                    id: userId,
-                    name: v.name,
-                    type: v.type, // 'love' | 'buddy' | 'lovuddy'
-                    certificate_url: v.certificate_url ?? null,
+            const animalsPayload = animalsForm.map((a) => ({
+                name: a.name,
+                age: Number(a.age || 0),
+                type: a.type,
+                variety: a.variety,
+                color: a.color,
+                personality: a.personality,
+                level: Number(a.level || 5),
+                comment: a.comment,
+                img: a.img || '', // 현재는 blob: 프리뷰일 수 있으니 서버에서 무시하거나 추후 업로드로 대체
+                owner: !!a.owner,
+            }));
+
+            const certsPayload = certs.map(({ file, preview, ...rest }) => ({ ...rest })); // 파일/프리뷰 제거
+
+            if (!accessToken) {
+                // 테스트 중이라면: Supabase 대시보드 > Auth > Email > Confirm email을 잠시 OFF 추천
+                // 또는 아래처럼 임시 저장 후 첫 로그인에 재전송하도록 처리(선택)
+                try {
+                    localStorage.setItem(
+                        'pendingSignUp',
+                        JSON.stringify({
+                            name: v.name,
+                            type: v.type,
+                            certificate_url: v.certificate_url ?? null,
+                            animals: animalsPayload,
+                            certs: certsPayload,
+                            email: v.email,
+                        }),
+                    );
+                } catch {}
+                setJustSaved(true);
+                return;
+            }
+
+            const res = await fetch('/api/sign-up', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
                 },
-            ]);
-            if (uerr) throw uerr;
+                body: JSON.stringify({
+                    name: v.name,
+                    type: v.type,
+                    certificate_url: v.certificate_url ?? null,
+                    animals: animalsPayload,
+                    certs: certsPayload,
+                }),
+            });
 
-            // love/lovuddy → animals 테이블에 대표 동물 추가
-            if (v.type === 'love' || v.type === 'lovuddy') {
-                const animal = toAnimalRecord(userId, v.name);
-                // 컬럼명이 DB에서 snake_case라면 아래처럼 매핑하세요.
-                // const payload = {
-                //   owner_nickname: animal.ownerNickname,
-                //   owner_id: animal.ownerId,
-                //   animal_id: animal.animalId,
-                //   name: animal.name,
-                //   age: animal.age,
-                //   level: animal.level,
-                //   type: animal.type,
-                //   variety: animal.variety,
-                //   color: animal.color,
-                //   comment: animal.comment,
-                //   owner: animal.owner,
-                //   img: animal.img,
-                //   personality: animal.personality,
-                // };
-                const payload = animal; // ⬅️ DB가 camelCase면 이대로 사용
-                const { error: aerr } = await supabase.from('animals').insert([payload]);
-                if (aerr) throw aerr;
+            if (!res.ok) {
+                const { error } = await res.json().catch(() => ({ error: '서버 오류' }));
+                throw new Error(error || '서버에 저장하는 중 문제가 발생했어요.');
             }
 
             setJustSaved(true);
@@ -298,11 +297,15 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         justSaved ? 'ring-2 ring-[#c8d9b5]' : '',
                     ].join(' ')}
                 >
-                    {loading
-                        ? '처리 중…'
-                        : v.type
-                          ? `${ROLES.find((r) => r.value === v.type)?.label}로 가입하기!`
-                          : '가입하기'}
+                    {loading ? (
+                        '처리 중…'
+                    ) : v.type ? (
+                        `${ROLES.find((r) => r.value === v.type)?.label}로 가입하기!`
+                    ) : justSaved ? (
+                        <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>
+                    ) : (
+                        '가입하기'
+                    )}
                 </button>
 
                 <p className="text-[11px] text-gray-400 text-center">
