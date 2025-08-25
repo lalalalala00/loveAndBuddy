@@ -16,7 +16,7 @@ type SignUpFormValues = {
     password: string;
     name: string;
     type: Role | null;
-
+    avatar_url: string;
     animal: {
         name: string;
         age: string;
@@ -43,6 +43,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         password: '',
         name: '',
         type: null,
+        avatar_url: '',
         animal: {
             name: '',
             age: '',
@@ -118,15 +119,13 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 personality: a.personality,
                 level: Number(a.level || 5),
                 comment: a.comment,
-                img: a.img || '', // 현재는 blob: 프리뷰일 수 있으니 서버에서 무시하거나 추후 업로드로 대체
+                img: a.img || '',
                 owner: !!a.owner,
             }));
 
-            const certsPayload = certs.map(({ file, preview, ...rest }) => ({ ...rest })); // 파일/프리뷰 제거
+            const certsPayload = certs.map(({ file, preview, ...rest }) => ({ ...rest }));
 
             if (!accessToken) {
-                // 테스트 중이라면: Supabase 대시보드 > Auth > Email > Confirm email을 잠시 OFF 추천
-                // 또는 아래처럼 임시 저장 후 첫 로그인에 재전송하도록 처리(선택)
                 try {
                     localStorage.setItem(
                         'pendingSignUp',

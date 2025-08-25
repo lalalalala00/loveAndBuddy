@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 
 export type AnimalForm = {
+    id: string;
     name: string;
     age: string;
     type: 'dog' | 'cat' | 'others';
@@ -18,6 +19,7 @@ export type AnimalForm = {
 };
 
 export const defaultAnimal = (owner = false): AnimalForm => ({
+    id: '',
     name: '',
     age: '',
     type: 'dog',

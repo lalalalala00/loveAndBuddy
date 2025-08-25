@@ -9,6 +9,8 @@ import { supabase } from '@/lib/supabaseClient';
 import SignUpModal from '@/components/sign.up';
 import LoginModal from '@/components/sign.login';
 import { UsersRow } from '@/utils/type';
+import SettingModal from '@/components/setting.modal';
+import Tooltip from './tooltip';
 
 const ROLE_META = {
     love: { label: 'love', emoji: '💚' },
@@ -27,6 +29,8 @@ const Header = () => {
     const [getUser, setGetUser] = useState<UsersRow | null>(null);
     const [signUpModal, setSignUpModal] = useState<boolean>(false);
     const [signModal, setSignModal] = useState<boolean>(false);
+
+    const [settingModal, setSettingModal] = useState<boolean>(false);
 
     const currentUser = userType.find((u) => u.label === userState);
 
@@ -59,6 +63,7 @@ const Header = () => {
                 return;
             }
             setGetUser(data ?? null);
+            setUserState(data.type);
         })();
     }, []);
 
@@ -116,9 +121,9 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div className="rounded-full w-16 h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
+                <div className="rounded-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
                     {getUser === null ? (
-                        <button onClick={() => setSignModal(!signModal)} className="">
+                        <button onClick={() => setSignModal(!signModal)} className="w-16">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-4 h-4 stroke-black group-hover:stroke-amber-500 transition"
@@ -135,16 +140,22 @@ const Header = () => {
                             </svg>
                         </button>
                     ) : (
-                        <button className="rounded-xl px-3 py-2 text-sm shadow-[4px_8px_10px_#f3faea,-4px_-4px_10px_#ffffff]">
-                            <span className="inline-flex items-center gap-1">{ROLE_META[getUser.type]?.emoji}</span>
-                            <span className="text-[12px]">{getUser.type}</span>
-                            <span className="text-[12px]">{getUser.name}</span>
-                        </button>
+                        <div className="flex">
+                            <button className="rounded-xl px-3 py-2 text-sm shadow-[4px_8px_10px_#f3faea,-4px_-4px_10px_#ffffff]">
+                                <span className="inline-flex items-center gap-1">{ROLE_META[getUser.type]?.emoji}</span>
+                                <span className="text-[12px]">{getUser.type}</span>
+                                <span className="text-[12px]">{getUser.name}</span>
+                            </button>
+                            <button onClick={() => setSettingModal(!settingModal)}>
+                                <Tooltip tooltip="내 정보 수정하기" comment="⚙️" />
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
             <SignUpModal isOpen={signUpModal} onClose={() => setSignUpModal(!signUpModal)} />
             <LoginModal isOpen={signModal} onClose={() => setSignModal(!signModal)} onOpenSignUp={handleSignUp} />
+            <SettingModal isOpen={settingModal} handleModalState={() => setSettingModal(!settingModal)} />
         </div>
     );
 };

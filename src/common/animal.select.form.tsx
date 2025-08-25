@@ -81,7 +81,7 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
     );
 };
 
-const animal: Animal[] = [
+export const animal: Animal[] = [
     {
         ownerNickname: '',
         ownerId: '',

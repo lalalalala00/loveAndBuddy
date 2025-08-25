@@ -40,6 +40,7 @@ export default function LoginModal({
         if (!canSubmit || loading) return;
         setLoading(true);
         setErr('');
+
         try {
             const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
             if (error) throw error;
@@ -81,7 +82,7 @@ export default function LoginModal({
                         placeholder="you@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                     />
 
                     <label className="text-[13px] text-gray-600 mt-2">비밀번호</label>
@@ -90,7 +91,7 @@ export default function LoginModal({
                         placeholder="••••••••"
                         value={pw}
                         onChange={(e) => setPw(e.target.value)}
-                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                     />
 
                     <div className="flex items-center justify-between text-[12px] mt-1">
