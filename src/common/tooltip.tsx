@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const Tooltip = ({
     comment,
@@ -9,7 +9,7 @@ const Tooltip = ({
     onClick,
     clickCss,
 }: {
-    comment: string;
+    comment: string | React.ReactNode;
     tooltip: string;
     click?: boolean;
     onClick?: () => void;

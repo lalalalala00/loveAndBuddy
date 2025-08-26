@@ -63,6 +63,7 @@ const Header = () => {
                 return;
             }
             setGetUser(data ?? null);
+
             setUserState(data.type);
         })();
     }, []);
@@ -121,9 +122,11 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div className="rounded-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2">
+                <div
+                    className={`rounded-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2 ${getUser === null ? 'w-16' : ''}`}
+                >
                     {getUser === null ? (
-                        <button onClick={() => setSignModal(!signModal)} className="w-16">
+                        <button onClick={() => setSignModal(!signModal)} className="">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-4 h-4 stroke-black group-hover:stroke-amber-500 transition"

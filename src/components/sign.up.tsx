@@ -8,6 +8,7 @@ import AnimalsForm, { AnimalForm, defaultAnimal } from './sign.animals.form';
 import CertificateField from './sign.certificateField';
 import CertificatesForm, { CertificateItem } from './sign.certificateField.form';
 import Modal from '@/common/modal';
+import Tooltip from '@/common/tooltip';
 
 type Role = 'love' | 'buddy' | 'lovuddy';
 
@@ -64,6 +65,9 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
     const [animalsForm, setAnimalsForm] = useState<AnimalForm[]>([defaultAnimal(true)]);
 
+    const [profilePreview, setProfilePreview] = useState<string>(''); // 미리보기
+    const [profileFile, setProfileFile] = useState<File | null>(null);
+
     const [certs, setCerts] = useState<CertificateItem[]>([]);
 
     const isBuddy = v.type === 'buddy';
@@ -94,6 +98,35 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
     };
 
     const selectRole = (r: Role) => setV((prev) => ({ ...prev, type: r }));
+
+    const onSelectProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setProfileFile(file);
+        const reader = new FileReader();
+        reader.onload = () => setProfilePreview(reader.result as string);
+        reader.readAsDataURL(file);
+    };
+
+    const clearProfile = () => {
+        setProfileFile(null);
+        setProfilePreview('');
+        setV((prev) => ({ ...prev, profileImg: '' }));
+    };
+
+    const uploadProfileAndGetUrl = async (userId: string) => {
+        if (!profileFile) return '';
+        const ext = profileFile.name.split('.').pop() || 'jpg';
+        const path = `${userId}/profile_${Date.now()}_.${ext}`;
+
+        const { error: upErr } = await supabase.storage
+            .from('avatars')
+            .upload(path, profileFile, { cacheControl: '3600', upsert: true });
+        if (upErr) throw upErr;
+
+        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+        return data.publicUrl || '';
+    };
 
     const handleSignUp = async () => {
         if (!canSubmit || loading) return;
@@ -132,6 +165,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         JSON.stringify({
                             name: v.name,
                             type: v.type,
+                            avatar_url: v.avatar_url || '',
                             certificate_url: v.certificate_url ?? null,
                             animals: animalsPayload,
                             certs: certsPayload,
@@ -152,6 +186,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 body: JSON.stringify({
                     name: v.name,
                     type: v.type,
+                    avatar_url: v.avatar_url,
                     certificate_url: v.certificate_url ?? null,
                     animals: animalsPayload,
                     certs: certsPayload,
@@ -207,15 +242,57 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         className="w-full px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                     />
 
-                    <label className="text-[13px] text-gray-600 mt-2">닉네임</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="닉네임"
-                        value={v.name}
-                        onChange={onChange}
-                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
-                    />
+                    <div className="flex items-end gap-6">
+                        <div className="flex flex-col w-1/2">
+                            <label className="text-[13px] text-gray-600 mb-1">닉네임</label>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="최대 7자"
+                                value={v.name}
+                                onChange={onChange}
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner 
+                 focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
+                            />
+                        </div>
+
+                        <div className="flex flex-col  w-1/2">
+                            <div className="flex items-end gap-3">
+                                {profilePreview || v.avatar_url ? (
+                                    <Tooltip
+                                        comment={
+                                            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#e3ecdc] bg-white shadow-inner">
+                                                <img
+                                                    src={profilePreview || v.avatar_url}
+                                                    alt="profile"
+                                                    className="w-full h-full object-cover cursor-pointer hover:opacity-40 hover:border hover:border-red-400"
+                                                    onClick={clearProfile}
+                                                />
+                                            </div>
+                                        }
+                                        tooltip="삭제"
+                                    />
+                                ) : (
+                                    <></>
+                                )}
+
+                                <div className="flex flex-col gap-1">
+                                    <label
+                                        className="px-3 py-2 rounded-xl border-2 border-dashed border-gray-200 h-full bg-white shadow 
+                          cursor-pointer text-[13px]"
+                                    >
+                                        + 프로필 이미지 선택
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={onSelectProfile}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="space-y-2">
