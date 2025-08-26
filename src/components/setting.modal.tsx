@@ -5,6 +5,7 @@ import AnimalsForm, { AnimalForm, defaultAnimal } from './sign.animals.form';
 import { useState } from 'react';
 import AnimalCardVertical, { Animal } from '@/common/animal.card.vertical';
 import Tooltip from '@/common/tooltip';
+import { getMannerEmoji } from '@/common/buddy.name.tag';
 
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
     const { userState } = useUserState();
@@ -66,7 +67,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
         >
             <div className="p-2 overflow-y-scroll no-scrollbar h-[685px]">
                 <div className="p-2 rounded-xl shadow mb-3 flex">
-                    <div className="flex flex-col items-center  w-1/3 bg-[#f3f7ee] border border-[#e3ecdc] rounded-xl mr-2 p-2">
+                    <div className="flex flex-col items-center justify-end  w-1/3 bg-[#f3f7ee] border border-[#e3ecdc] rounded-xl p-2">
                         <div className="flex items-center justify-center gap-3 flex-col ">
                             {profilePreview || animalsForm?.avatar_url ? (
                                 <Tooltip
@@ -86,7 +87,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                                 <></>
                             )}
 
-                            <div className="flex flex-col gap-1">
+                            <div className="flex gap-1 justify-end">
                                 <label
                                     className="px-3 py-2 rounded-xl border-2 border-dashed border-gray-200 h-full bg-white shadow 
                           cursor-pointer text-[13px]"
@@ -97,9 +98,28 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                             </div>
                         </div>
                     </div>
-                    <div className="flex">
-                        <input type="text" placeholder="nickname" />
-                        <button>닉네임 변경하기</button>
+                    <div className="flex flex-col justify-between w-2/3 bg-[#f3f7ee] border border-[#e3ecdc] rounded-xl p-2 ml-2">
+                        <div className="px-2 flex">
+                            <p className="text-[12px] text-gray-600">
+                                ꯁꯧ 마음: <span className="font-medium">3</span>
+                            </p>
+                            <p className="text-[12px] text-gray-600 mx-3">
+                                {getMannerEmoji(4)} 매너 점수: <span className="font-medium">8 점</span>
+                            </p>
+                            <p className="text-[12px] text-gray-600">
+                                ✎ꪑ 디얼 러브: <span className="font-medium">34 장</span>
+                            </p>
+                        </div>
+                        <div className="flex items-end w-full">
+                            <input
+                                type="text"
+                                placeholder="닉네임 7자리"
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px] w-2/3"
+                            />
+                            <button className="text-[12px] ml-2 custom-card p-2 rounded-xl w-1/3">
+                                닉네임 변경하기
+                            </button>
+                        </div>
                     </div>
                 </div>
 
