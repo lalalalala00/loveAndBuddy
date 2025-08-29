@@ -157,7 +157,7 @@ const Calendar = ({
                     <div className="w-1/2 flex justify-between items-center">
                         <button
                             onClick={prevMonth}
-                            className="px-2 py-1 rounded-lg hover:bg-[#f8fbf4] border border-transparent hover:border-[#e3ecdc]"
+                            className="px-3 py-1 rounded-lg hover:bg-[#f8fbf4] border border-[#e3ecdc]"
                             aria-label="이전 달"
                         >
                             ‹
@@ -167,7 +167,7 @@ const Calendar = ({
                         </h3>
                         <button
                             onClick={nextMonth}
-                            className="px-2 py-1 rounded-lg hover:bg-[#f8fbf4] border border-transparent hover:border-[#e3ecdc]"
+                            className="px-3 py-1 rounded-lg hover:bg-[#f8fbf4] border border-[#e3ecdc]"
                             aria-label="다음 달"
                         >
                             ›
