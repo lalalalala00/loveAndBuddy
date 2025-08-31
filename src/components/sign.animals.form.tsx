@@ -1,42 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { Animal, EMPTY_ANIMAL } from '@/utils/sign';
+import React, { useEffect, useRef, useState } from 'react';
 
-export type AnimalForm = {
-    id: string;
-    name: string;
-    age: string;
-    type: 'dog' | 'cat' | 'others';
-    variety: string;
-    color: string;
-    personality: 'introvert' | 'extrovert';
-    level: string; // "1"~"10"
-    comment: string;
-    img: string;
-    owner: boolean;
-    file?: File | null;
-    preview?: string;
-};
-
-export const defaultAnimal = (owner = false): AnimalForm => ({
-    id: '',
-    name: '',
-    age: '',
-    type: 'dog',
-    variety: '',
-    color: '',
-    personality: 'extrovert',
-    level: '5',
-    comment: '',
-    img: '',
-    owner,
-    file: null,
-    preview: '',
+export const defaultAnimal = (first = false): Animal => ({
+    ...EMPTY_ANIMAL,
+    first,
 });
 
 type Props = {
-    value: AnimalForm[];
-    onChange: (next: AnimalForm[]) => void;
+    value: Animal[];
+    onChange: (next: Animal[]) => void;
     title?: string;
     minCount?: number;
     maxCount?: number;
@@ -51,7 +25,10 @@ export default function AnimalsForm({
     maxCount,
     className = '',
 }: Props) {
-    const updateAt = (idx: number, patch: Partial<AnimalForm>) => {
+    const [files, setFiles] = useState<Record<number, File | null>>({});
+    const createdUrlsRef = useRef<Set<string>>(new Set());
+
+    const updateAt = (idx: number, patch: Partial<Animal>) => {
         const next = [...value];
         next[idx] = { ...next[idx], ...patch };
         onChange(next);
@@ -69,40 +46,66 @@ export default function AnimalsForm({
 
     const removeAt = (idx: number) => {
         if (value.length <= (minCount ?? 1)) return;
-        const wasOwner = value[idx].owner;
+        const wasOwner = value[idx].first;
+
+        const img = value[idx]?.img;
+        if (img?.startsWith('blob:') && createdUrlsRef.current.has(img)) {
+            URL.revokeObjectURL(img);
+            createdUrlsRef.current.delete(img);
+        }
+
         const next = value.filter((_, i) => i !== idx);
 
-        if (wasOwner || !next.some((a) => a.owner)) {
-            next[0] = { ...next[0], owner: true };
+        if (wasOwner || !next.some((a) => a.first)) {
+            if (next[0]) next[0] = { ...next[0], first: true };
             for (let i = 1; i < next.length; i++) {
-                if (next[i].owner) next[i] = { ...next[i], owner: false };
+                if (next[i].first) next[i] = { ...next[i], first: false };
             }
         }
         onChange(next);
+
+        setFiles((prev) => {
+            const copy = { ...prev };
+            delete copy[idx];
+
+            return copy;
+        });
     };
 
     const onPickImgAt = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !file.type.startsWith('image/')) return;
+
+        const prevImg = value[idx]?.img;
+        if (prevImg?.startsWith('blob:') && createdUrlsRef.current.has(prevImg)) {
+            URL.revokeObjectURL(prevImg);
+            createdUrlsRef.current.delete(prevImg);
+        }
+
         const url = URL.createObjectURL(file);
-        const prev = value[idx];
-        if (prev.preview?.startsWith('blob:')) URL.revokeObjectURL(prev.preview);
-        updateAt(idx, { file, preview: url, img: url });
+        createdUrlsRef.current.add(url);
+
+        setFiles((prev) => ({ ...prev, [idx]: file }));
+        updateAt(idx, { img: url });
     };
 
     const clearImgAt = (idx: number) => {
-        const prev = value[idx];
-        if (prev.preview?.startsWith('blob:')) URL.revokeObjectURL(prev.preview);
-        updateAt(idx, { file: null, preview: '', img: '' });
+        const prevImg = value[idx]?.img;
+
+        if (prevImg?.startsWith('blob:') && createdUrlsRef.current.has(prevImg)) {
+            URL.revokeObjectURL(prevImg);
+            createdUrlsRef.current.delete(prevImg);
+        }
+
+        setFiles((prev) => ({ ...prev, [idx]: null }));
+        updateAt(idx, { img: '' });
     };
 
     useEffect(() => {
         return () => {
-            value.forEach((a) => {
-                if (a.preview?.startsWith('blob:')) URL.revokeObjectURL(a.preview);
-            });
+            createdUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
+            createdUrlsRef.current.clear();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const canAdd = maxCount === undefined || value.length < maxCount;
@@ -132,14 +135,13 @@ export default function AnimalsForm({
                     key={idx}
                     className={[
                         'rounded-2xl p-3 border transition',
-                        a.owner ? 'bg-[#f3f7ee] border-[#e3ecdc] shadow' : 'bg-[#f3f7ee23] border-[#e3ecdc]',
+                        a.first ? 'bg-[#f3f7ee] border-[#e3ecdc] shadow' : 'bg-[#f3f7ee23] border-[#e3ecdc]',
                     ].join(' ')}
                 >
-                    {/* 헤더 */}
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <span className="text-[14px] font-medium">{a.name || `반려동물 ${idx + 1}`}</span>
-                            {a.owner && (
+                            {a.first && (
                                 <span className="px-2 py-0.5 text-[11px] rounded-lg bg-white text-[#51683b] shadow">
                                     대표
                                 </span>
@@ -179,7 +181,7 @@ export default function AnimalsForm({
                             />
                             <select
                                 value={a.type}
-                                onChange={(e) => updateAt(idx, { type: e.target.value as AnimalForm['type'] })}
+                                onChange={(e) => updateAt(idx, { type: e.target.value as Animal['type'] })}
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
                             >
                                 <option value="dog">강아지</option>
@@ -190,8 +192,8 @@ export default function AnimalsForm({
                                 type="number"
                                 min={0}
                                 placeholder="출생년도 (예: 2012)"
-                                value={a.age}
-                                onChange={(e) => updateAt(idx, { age: e.target.value })}
+                                value={a.birth_year || 0}
+                                onChange={(e) => updateAt(idx, { birth_year: Number(e.target.value || 0) })}
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
                             />
                         </div>
@@ -212,7 +214,7 @@ export default function AnimalsForm({
                             <select
                                 value={a.personality}
                                 onChange={(e) =>
-                                    updateAt(idx, { personality: e.target.value as AnimalForm['personality'] })
+                                    updateAt(idx, { personality: e.target.value as Animal['personality'] })
                                 }
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
                             >
@@ -229,7 +231,7 @@ export default function AnimalsForm({
                                         type="number"
                                         min={1}
                                         max={10}
-                                        value={a.level}
+                                        value={a.level || 0}
                                         onChange={(e) => updateAt(idx, { level: e.target.value })}
                                         className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] w-[50px] mr-2"
                                     />
@@ -238,11 +240,11 @@ export default function AnimalsForm({
                             </div>
 
                             <div className="col-span-2">
-                                {a.preview || a.img ? (
+                                {a.img ? (
                                     <div className="relative rounded-xl border border-[#e3ecdc] bg-white p-2">
                                         <img
-                                            src={a.preview || a.img}
-                                            alt="animal preview"
+                                            src={a.img}
+                                            alt="animal"
                                             onClick={() => clearImgAt(idx)}
                                             className="w-full h-40 object-cover rounded-lg ring-1 ring-[#e3ecdc] shadow-inner hover:opacity-50 hover:border hover:border-red-400 cursor-pointer"
                                         />

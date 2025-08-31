@@ -1,36 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
-import { Animal } from '@/common/animal.card.vertical';
-import AnimalsForm, { AnimalForm, defaultAnimal } from './sign.animals.form';
-import CertificateField from './sign.certificateField';
+import AnimalsForm from './sign.animals.form';
+
 import CertificatesForm, { CertificateItem } from './sign.certificateField.form';
-import Modal from '@/common/modal';
+
 import Tooltip from '@/common/tooltip';
-
-type Role = 'love' | 'buddy' | 'lovuddy';
-
-type SignUpFormValues = {
-    email: string;
-    password: string;
-    name: string;
-    type: Role | null;
-    avatar_url: string;
-    animal: {
-        name: string;
-        age: string;
-        type: Animal['type'];
-        variety: string;
-        color: string;
-        personality: Animal['personality'];
-        level: string; // 1~10
-        comment: string;
-        img: string;
-    };
-    certificate_url?: string | null;
-};
+import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues } from '@/utils/sign';
 
 const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }> = [
     { label: '러브', value: 'love', icon: '💚', comment: '믿을 수 있는 펫시터를 찾고 있어요!' },
@@ -39,33 +17,16 @@ const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }
 ];
 
 export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-    const [v, setV] = useState<SignUpFormValues>({
-        email: '',
-        password: '',
-        name: '',
-        type: null,
-        avatar_url: '',
-        animal: {
-            name: '',
-            age: '',
-            type: 'dog',
-            variety: '',
-            color: '',
-            personality: 'extrovert',
-            level: '5',
-            comment: '',
-            img: '',
-        },
-        certificate_url: null,
-    });
+    const [v, setV] = useState<SignUpFormValues>(EMPTY_SIGNUP_FORM);
 
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState('');
-    const [justSaved, setJustSaved] = useState(false);
 
-    const [animalsForm, setAnimalsForm] = useState<AnimalForm[]>([defaultAnimal(true)]);
+    const [success, setSuccess] = useState<boolean>(false);
 
-    const [profilePreview, setProfilePreview] = useState<string>(''); // 미리보기
+    const [animalsForm, setAnimalsForm] = useState<Animal[]>([EMPTY_ANIMAL]);
+
+    const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
 
     const [certs, setCerts] = useState<CertificateItem[]>([]);
@@ -88,9 +49,9 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        if (name.startsWith('animal.')) {
-            const key = name.replace('animal.', '') as keyof SignUpFormValues['animal'];
-            setV((prev) => ({ ...prev, animal: { ...prev.animal, [key]: value } }));
+        if (name.startsWith('animals')) {
+            const key = name.replace('animals.', '') as keyof SignUpFormValues['animals'];
+            setV((prev) => ({ ...prev, animals: { ...prev.animals, [key]: value } }));
         } else {
             setV((prev) => ({ ...prev, [name]: value }));
         }
@@ -114,100 +75,16 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         setV((prev) => ({ ...prev, profileImg: '' }));
     };
 
-    const uploadProfileAndGetUrl = async (userId: string) => {
-        if (!profileFile) return '';
-        const ext = profileFile.name.split('.').pop() || 'jpg';
-        const path = `${userId}/profile_${Date.now()}_.${ext}`;
-
-        const { error: upErr } = await supabase.storage
-            .from('avatars')
-            .upload(path, profileFile, { cacheControl: '3600', upsert: true });
-        if (upErr) throw upErr;
-
-        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-        return data.publicUrl || '';
-    };
-
     const handleSignUp = async () => {
-        if (!canSubmit || loading) return;
+        if (!v.email || !v.password || !v.name || !v.type) {
+            setErr('필수 값을 입력해주세요.');
+            return;
+        }
+
         setLoading(true);
         setErr('');
 
-        try {
-            const { data: signUpData, error: authError } = await supabase.auth.signUp({
-                email: v.email,
-                password: v.password,
-            });
-            if (authError) throw authError;
-
-            const accessToken =
-                signUpData.session?.access_token || (await supabase.auth.getSession()).data.session?.access_token;
-
-            const animalsPayload = animalsForm.map((a) => ({
-                name: a.name,
-                age: Number(a.age || 0),
-                type: a.type,
-                variety: a.variety,
-                color: a.color,
-                personality: a.personality,
-                level: Number(a.level || 5),
-                comment: a.comment,
-                img: a.img || '',
-                owner: !!a.owner,
-            }));
-
-            const certsPayload = certs.map(({ file, preview, ...rest }) => ({ ...rest }));
-
-            if (!accessToken) {
-                try {
-                    localStorage.setItem(
-                        'pendingSignUp',
-                        JSON.stringify({
-                            name: v.name,
-                            type: v.type,
-                            avatar_url: v.avatar_url || '',
-                            certificate_url: v.certificate_url ?? null,
-                            animals: animalsPayload,
-                            certs: certsPayload,
-                            email: v.email,
-                        }),
-                    );
-                } catch {}
-                setJustSaved(true);
-                return;
-            }
-
-            const res = await fetch('/api/sign-up', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
-                    name: v.name,
-                    type: v.type,
-                    avatar_url: v.avatar_url,
-                    certificate_url: v.certificate_url ?? null,
-                    animals: animalsPayload,
-                    certs: certsPayload,
-                }),
-            });
-
-            if (!res.ok) {
-                const { error } = await res.json().catch(() => ({ error: '서버 오류' }));
-                throw new Error(error || '서버에 저장하는 중 문제가 발생했어요.');
-            }
-
-            setJustSaved(true);
-            setTimeout(() => {
-                setJustSaved(false);
-                onClose();
-            }, 900);
-        } catch (e: any) {
-            setErr(e?.message ?? '회원가입 중 오류가 발생했어요.');
-        } finally {
-            setLoading(false);
-        }
+        setSuccess(false);
     };
 
     return (
@@ -359,7 +236,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 )}
 
                 {err && <p className="text-[12px] text-red-500">{err}</p>}
-                {justSaved && <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>}
+                {success && <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>}
 
                 <button
                     type="button"
@@ -370,14 +247,14 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         canSubmit && !loading
                             ? 'custom-card custom-card-hover'
                             : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed',
-                        justSaved ? 'ring-2 ring-[#c8d9b5]' : '',
+                        success ? 'ring-2 ring-[#c8d9b5]' : '',
                     ].join(' ')}
                 >
                     {loading ? (
                         '처리 중…'
                     ) : v.type ? (
                         `${ROLES.find((r) => r.value === v.type)?.label}로 가입하기!`
-                    ) : justSaved ? (
+                    ) : success ? (
                         <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>
                     ) : (
                         '가입하기'

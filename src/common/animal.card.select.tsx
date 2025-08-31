@@ -1,8 +1,8 @@
+import { Animal } from '@/utils/sign';
 import { useState } from 'react';
-import { Animal } from './animal.card.vertical';
 
 export function sortWithOwnerFirst(list: Animal[]) {
-    return [...list].sort((a, b) => Number(b.owner) - Number(a.owner));
+    return [...list].sort((a, b) => Number(b.first) - Number(a.first));
 }
 
 export default function AnimalSelect({
@@ -14,12 +14,12 @@ export default function AnimalSelect({
 }) {
     const [items, setItems] = useState<Animal[]>(() => sortWithOwnerFirst(initial));
 
-    const initialOwnerId = initial.find((a) => a.owner)?.animalId ?? initial[0]?.animalId ?? '';
+    const initialOwnerId = initial.find((a) => a.first)?.animal_uuid ?? initial[0]?.animal_uuid ?? '';
     const [selected, setSelected] = useState<Set<string>>(() => new Set(initialOwnerId ? [initialOwnerId] : []));
 
     const setAsOwner = (targetId: string) => {
         setItems((prev) => {
-            const next = prev.map((a) => ({ ...a, owner: a.animalId === targetId }));
+            const next = prev.map((a) => ({ ...a, owner: a.animal_uuid === targetId }));
             const sorted = sortWithOwnerFirst(next);
             onChange?.(sorted);
             return sorted;
@@ -29,11 +29,11 @@ export default function AnimalSelect({
 
     const toggleSelect = (item: Animal) => {
         setSelected((prev) => {
-            if (item.owner) return prev;
+            if (item.first) return prev;
             const next = new Set(prev);
-            next.has(item.animalId) ? next.delete(item.animalId) : next.add(item.animalId);
+            next.has(item.animal_uuid) ? next.delete(item.animal_uuid) : next.add(item.animal_uuid);
 
-            const selectedList = items.filter((a) => next.has(a.animalId) || a.owner);
+            const selectedList = items.filter((a) => next.has(a.animal_uuid) || a.first);
             onChange?.(sortWithOwnerFirst(selectedList));
             return next;
         });
@@ -45,7 +45,7 @@ export default function AnimalSelect({
 
             <div className="flex flex-col overflow-y-scroll h-[470px] no-scrollbar">
                 {items.map((item, i) => {
-                    const isSelected = selected.has(item.animalId);
+                    const isSelected = selected.has(item.animal_uuid);
                     return (
                         <div
                             key={i}
@@ -53,8 +53,8 @@ export default function AnimalSelect({
                             className={[
                                 'relative rounded-2xl p-2 mb-2 cursor-pointer transition',
                                 'border shadow',
-                                item.owner ? 'bg-[#f3f7ee]' : 'bg-white',
-                                isSelected || item.owner
+                                item.first ? 'bg-[#f3f7ee]' : 'bg-white',
+                                isSelected || item.first
                                     ? 'border-dashed border-2 border-[#afcb94]'
                                     : 'border-[#e3ecdc]',
                             ].join(' ')}
@@ -76,7 +76,7 @@ export default function AnimalSelect({
                                                 </span>
                                             </div>
                                             <div className="mt-1 flex flex-wrap gap-1.5 text-[11px]">
-                                                <Chip>{item.age}살</Chip>
+                                                <Chip>{item.birth_year}살</Chip>
                                                 <Chip>{item.color}</Chip>
                                                 <Chip>
                                                     {item.personality === 'extrovert' ? '🌼 외향적' : '🌙 내향적'}
@@ -85,7 +85,7 @@ export default function AnimalSelect({
                                         </div>
 
                                         <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
-                                            {item.owner ? (
+                                            {item.first ? (
                                                 <button
                                                     disabled
                                                     className="px-3 py-1.5 text-[12px] rounded-lg shadow text-[#51683b] bg-white cursor-default"
@@ -95,7 +95,7 @@ export default function AnimalSelect({
                                                 </button>
                                             ) : (
                                                 <button
-                                                    onClick={() => setAsOwner(item.animalId)}
+                                                    onClick={() => setAsOwner(item.animal_uuid)}
                                                     className="px-2 py-1.5 text-[12px] rounded-lg shadow text-[#51683b] bg-[#f3f7ee] custom-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                                                 >
                                                     대표로 설정
@@ -112,7 +112,7 @@ export default function AnimalSelect({
                                         <div className="w-full h-2.5 rounded-full bg-[#e6efe0] overflow-hidden shadow-inner">
                                             <div
                                                 className="h-full rounded-full bg-gradient-to-r from-[#f3ebd2] to-[#b2d2a4] transition-[width]"
-                                                style={{ width: `${(item.level / 10) * 100}%` }}
+                                                style={{ width: `${(+item.level / 10) * 100}%` }}
                                             />
                                         </div>
                                     </div>
@@ -135,7 +135,7 @@ export function Chip({ children }: { children: React.ReactNode }) {
 }
 
 export function RepresentativePreview({ items, selected }: { items: Animal[]; selected: number }) {
-    const rep = items.find((a) => a.owner);
+    const rep = items.find((a) => a.first);
     if (!rep) return null;
     return (
         <div className="flex items-center gap-2 p-2 rounded-xl bg-white/70 border border-[#e3ecdc] w-full">

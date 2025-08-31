@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
-import SignUpModal from './sign.up';
+
 import { useUserState } from '@/context/useUserContext';
 
 const GUEST_ROUTE = process.env.NEXT_PUBLIC_GUEST_ROUTE || '/';

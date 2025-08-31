@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import AnimalSelect, { RepresentativePreview } from './animal.card.select';
-import AnimalCardVertical, { Animal } from './animal.card.vertical';
+import AnimalCardVertical from './animal.card.vertical';
 import ModalIos from './modal.ios';
+import { Animal } from '@/utils/sign';
 
 const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
     const [addAnimal, setAddAnimal] = useState<boolean>(false);
     const [draftAnimals, setDraftAnimals] = useState<Animal[]>([]);
 
-    const getRepresentative = (list: Animal[]) => list.find((v) => v.owner) ?? list[0];
+    const getRepresentative = (list: Animal[]) => list.find((v) => v.first) ?? list[0];
 
     const rep = getRepresentative(animal);
     const displayList = draftAnimals.length > 0 ? draftAnimals : rep ? [rep] : [];
@@ -20,19 +21,19 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
         setDraftAnimals((prev) => {
             if (prev.length <= 1) return prev;
 
-            const wasOwner = prev.find((a) => a.animalId === id)?.owner;
-            const next = prev.filter((a) => a.animalId !== id);
+            const wasOwner = prev.find((a) => a.animal_uuid === id)?.first;
+            const next = prev.filter((a) => a.animal_uuid !== id);
 
             if (next.length === 1) {
-                if (!next[0].owner) next[0] = { ...next[0], owner: true };
+                if (!next[0].first) next[0] = { ...next[0], first: true };
                 return next;
             }
 
-            if (wasOwner || !next.some((a) => a.owner)) {
-                next[0] = { ...next[0], owner: true };
+            if (wasOwner || !next.some((a) => a.first)) {
+                next[0] = { ...next[0], first: true };
 
                 for (let i = 1; i < next.length; i++) {
-                    if (next[i].owner) next[i] = { ...next[i], owner: false };
+                    if (next[i].first) next[i] = { ...next[i], first: false };
                 }
             }
 
@@ -83,62 +84,62 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
 
 export const animal: Animal[] = [
     {
-        ownerNickname: '',
-        ownerId: '',
-        animalId: '1',
+        owner_nickname: '',
+        owner_uuid: '',
+        animal_uuid: '1',
         name: '샤넬',
-        age: 12,
-        level: 9,
+        birth_year: 2012,
+        level: '9',
         type: 'dog',
         variety: 'spitz',
         color: 'white',
         comment: '흙냄새 풀냄새 좋아해요! 나가면 신나게 뛰어놀아요!',
-        owner: true,
+        first: true,
         img: '/cha/1_10.png',
         personality: 'introvert',
     },
     {
-        ownerNickname: '',
-        ownerId: '',
-        animalId: '2',
+        owner_nickname: '',
+        owner_uuid: '',
+        animal_uuid: '2',
         name: '돌멩',
-        age: 6,
-        level: 3,
+        birth_year: 2018,
+        level: '3',
         type: 'cat',
         variety: 'koreanShortHair',
         color: 'cow',
         comment: '마따따비를 가져오거라.',
-        owner: false,
+        first: false,
         img: '/love/meng.png',
         personality: 'extrovert',
     },
     {
-        ownerNickname: '',
-        ownerId: '',
-        animalId: '3',
+        owner_nickname: '',
+        owner_uuid: '',
+        animal_uuid: '3',
         name: '룽지',
-        age: 1,
-        level: 1,
+        birth_year: 2025,
+        level: '1',
         type: 'cat',
         variety: 'BritishShorthair',
         color: 'cheeze',
         comment: '츄르를 내노라냥 ~',
-        owner: false,
+        first: false,
         img: '/love/rungji.jpeg',
         personality: 'extrovert',
     },
     {
-        ownerNickname: '',
-        ownerId: '',
-        animalId: '4',
+        owner_nickname: '',
+        owner_uuid: '',
+        animal_uuid: '4',
         name: '도도',
-        age: 1,
-        level: 2,
+        birth_year: 2025,
+        level: '2',
         type: 'cat',
         variety: 'AmericanShorthair',
         color: 'black&sliver',
         comment: '안녕 나는 도도냥! 완전 개냥이다냥',
-        owner: false,
+        first: false,
         img: '/love/IMG_1659.JPG',
         personality: 'extrovert',
     },

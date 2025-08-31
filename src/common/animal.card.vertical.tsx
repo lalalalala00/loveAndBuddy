@@ -1,21 +1,5 @@
-import { useState } from 'react';
-import { Chip, RepresentativePreview, sortWithOwnerFirst } from './animal.card.select';
-
-export type Animal = {
-    ownerNickname: string;
-    ownerId: string;
-    animalId: string;
-    name: string;
-    age: number;
-    level: number;
-    type: 'dog' | 'cat' | 'others';
-    variety: string;
-    color: string;
-    comment: string;
-    owner: boolean;
-    img: string;
-    personality: 'introvert' | 'extrovert';
-};
+import { Chip, sortWithOwnerFirst } from './animal.card.select';
+import { Animal } from '@/utils/sign';
 
 export default function AnimalCardVertical({
     initial,
@@ -31,12 +15,12 @@ export default function AnimalCardVertical({
             <div className="grid grid-cols-3 gap-2">
                 {list.map((item, i) => (
                     <div
-                        key={item.animalId}
-                        onClick={() => onDelete?.(item.animalId)}
+                        key={i}
+                        onClick={() => onDelete?.(item.animal_uuid)}
                         className={[
                             'relative rounded-2xl p-2 mb-2',
                             ' border border-[#e3ecdc] shadow',
-                            `${item.owner ? 'bg-[#f3f7ee]' : 'bg-[#f3f7ee23]'}`,
+                            `${item.first ? 'bg-[#f3f7ee]' : 'bg-[#f3f7ee23]'}`,
 
                             `${list.length >= 2 ? 'hover:opacity-50 cursor-pointer hover:border hover:border-red-300' : ''}`,
                         ].join(' ')}
@@ -62,13 +46,13 @@ export default function AnimalCardVertical({
 
                                     <div className="mt-1 flex flex-wrap gap-1.5 text-[11px]">
                                         {/* <Chip>{item.type === 'dog' ? '🐶 dog' : '🐱 cat'}</Chip> */}
-                                        <Chip>{item.age}살</Chip>
+                                        <Chip>{item.birth_year}살</Chip>
                                         <Chip>{item.color}</Chip>
                                         <Chip>{item.personality === 'extrovert' ? '🌼 외향적' : '🌙 내향적'}</Chip>
                                     </div>
                                 </div>
 
-                                {item.owner && (
+                                {item.first && (
                                     <button
                                         disabled
                                         className="absolute top-2 left-2 px-3 py-1.5 text-[12px] rounded-lg shadow text-[#51683b] bg-white cursor-default"
@@ -86,7 +70,7 @@ export default function AnimalCardVertical({
                                     <div className="w-full h-2.5 rounded-full bg-[#e6efe0] overflow-hidden shadow-inner">
                                         <div
                                             className="h-full rounded-full bg-gradient-to-r from-[#f3ebd2] to-[#b2d2a4] transition-[width]"
-                                            style={{ width: `${(item.level / 10) * 100}%` }}
+                                            style={{ width: `${(+item.level / 10) * 100}%` }}
                                         />
                                     </div>
                                 </div>
