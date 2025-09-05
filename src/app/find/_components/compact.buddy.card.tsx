@@ -28,11 +28,18 @@ const CompactBuddyCard = () => {
                 isOpen={checkModal}
                 handleModalState={() => setCheckModal(!checkModal)}
                 title=""
-                width="30%"
-                height="40%"
+                width="480px"
+                height="640px"
+                leftAction={() => console.log('hi')}
+                leftComment="예약 요청 보내기"
             >
-                <div className="flex items-center justify-center w-full h-full">
+                <div className="flex flex-col items-start justify-center w-full h-full">
                     <WeeklyCalendarCard modal />
+                    <div className="px-4 py-2 flex flex-col">
+                        <span>location</span>
+                        <span>location</span>
+                        <span>location</span>
+                    </div>
                 </div>
             </ModalIos>
         </div>

@@ -1,7 +1,7 @@
 import AnimalSelectedForm, { animal } from '@/common/animal.select.form';
 import ModalIos from '@/common/modal.ios';
 import { useUserState } from '@/context/useUserContext';
-import AnimalsForm, { AnimalForm, defaultAnimal } from './sign.animals.form';
+import AnimalsForm, { defaultAnimal } from './sign.animals.form';
 import { useState } from 'react';
 import AnimalCardVertical, { Animal } from '@/common/animal.card.vertical';
 import Tooltip from '@/common/tooltip';
@@ -9,7 +9,7 @@ import { getMannerEmoji } from '@/common/buddy.name.tag';
 
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
     const { userState } = useUserState();
-    const [animalsForm, setAnimalsForm] = useState<AnimalForm[]>([defaultAnimal(true)]);
+    const [animalsForm, setAnimalsForm] = useState<Animal[]>([defaultAnimal(true)]);
 
     const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animal);
 

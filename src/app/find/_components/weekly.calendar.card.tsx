@@ -177,8 +177,8 @@ export default function WeeklyCalendarCard({
                     </div>
                 ) : (
                     <div
-                        className="grid grid-cols-7 text-[12px] text-center rounded-b-lg border border-[#fff] bg-white py-2
-                  divide-x divide-[#f3f6f0]"
+                        className={`grid grid-cols-7 text-[12px] text-center rounded-b-lg border border-[#fff] bg-white py-2
+                  divide-x divide-[#f3f6f0] `}
                     >
                         {(() => {
                             const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -209,7 +209,7 @@ export default function WeeklyCalendarCard({
                                             else setSelectedDay(day);
                                         }}
                                         className={[
-                                            'cursor-pointer flex justify-end flex-col items-center h-8',
+                                            `cursor-pointer flex justify-end flex-col items-center ${modal ? 'h-12' : 'h-8'}`,
                                             isPast ? 'cursor-not-allowed ' : '',
                                             isToday ? 'bg-[#f3f6f0]' : '',
                                             isSelected ? 'border border-black rounded-sm' : '',
