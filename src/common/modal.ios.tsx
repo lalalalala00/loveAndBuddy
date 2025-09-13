@@ -21,7 +21,6 @@ const ModalIos = ({
     leftComment?: string;
     leftAction?: () => void;
 }) => {
-    console.log(leftAction);
     return (
         isOpen && (
             <div className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-[2px] flex justify-center items-center">

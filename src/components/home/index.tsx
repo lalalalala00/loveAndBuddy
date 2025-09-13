@@ -60,7 +60,7 @@ const Index = () => {
             </div>
 
             <GridLayout
-                className="layout bg-[#fefefe] pt-4 h-full rounded-b-2xl"
+                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh]"
                 // style={{ backgroundImage: "url(/cha/1_11.png)", backgroundSize: "cover" }}
                 layout={layout.filter((item) => !selectedClose.includes(item.i))}
                 cols={3}

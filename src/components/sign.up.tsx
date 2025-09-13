@@ -4,11 +4,9 @@ import { useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import AnimalsForm from './sign.animals.form';
-
-import CertificatesForm, { CertificateItem } from './sign.certificateField.form';
-
+import CertificatesForm from './sign.certificateField.form';
 import Tooltip from '@/common/tooltip';
-import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues } from '@/utils/sign';
+import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal, Certificate } from '@/utils/sign';
 
 const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }> = [
     { label: '러브', value: 'love', icon: '💚', comment: '믿을 수 있는 펫시터를 찾고 있어요!' },
@@ -18,43 +16,38 @@ const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }
 
 export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const [v, setV] = useState<SignUpFormValues>(EMPTY_SIGNUP_FORM);
-
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState('');
-
     const [success, setSuccess] = useState<boolean>(false);
 
+    // 폼 하위 컴포넌트 상태
     const [animalsForm, setAnimalsForm] = useState<Animal[]>([EMPTY_ANIMAL]);
+    const [certs, setCerts] = useState<Certificate[]>([]);
 
+    // 프로필 이미지
     const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
-
-    const [certs, setCerts] = useState<CertificateItem[]>([]);
 
     const isBuddy = v.type === 'buddy';
     const isLove = v.type === 'love';
     const isLovuddy = v.type === 'lovuddy';
 
+    // 제출 가능 여부
     const canSubmit = useMemo(() => {
         if (!v.email || !v.password || v.password.length < 6 || !v.name || !v.type) return false;
 
-        if (v.type === 'love' || v.type === 'lovuddy') {
-            const owner = animalsForm.find((a) => a.owner) ?? animalsForm[0];
-            if (!owner) return false;
-            return !!owner.name && !!owner.age && !!owner.type;
+        if (isLove || isLovuddy) {
+            const firstAnimal = animalsForm[0];
+            if (!firstAnimal) return false;
+            return !!firstAnimal.name && !!firstAnimal.birth_year && !!firstAnimal.type;
         }
-
         return true;
-    }, [v.email, v.password, v.name, v.type, animalsForm]);
+    }, [v.email, v.password, v.name, v.type, animalsForm, isLove, isLovuddy]);
 
+    // 상위 인풋 onChange (animals는 별도 컴포넌트에서 상태 관리)
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        if (name.startsWith('animals')) {
-            const key = name.replace('animals.', '') as keyof SignUpFormValues['animals'];
-            setV((prev) => ({ ...prev, animals: { ...prev.animals, [key]: value } }));
-        } else {
-            setV((prev) => ({ ...prev, [name]: value }));
-        }
+        setV((prev) => ({ ...prev, [name]: value }) as any);
         setErr('');
     };
 
@@ -72,31 +65,193 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
     const clearProfile = () => {
         setProfileFile(null);
         setProfilePreview('');
-        setV((prev) => ({ ...prev, profileImg: '' }));
+        setV((prev) => ({ ...prev, avatar_url: '' }));
     };
+
+    // 스토리지 업로드 후 public URL 반환
+    async function uploadAvatarAndGetUrl(userId: string): Promise<string | null> {
+        if (!profileFile) return v.avatar_url || null; // 파일이 없으면 기존 URL 사용
+
+        const ext = profileFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const path = `${userId}/avatar.${ext}`; // avatars 버킷에 userId 폴더
+
+        // 동일 파일명 존재 시 덮어쓰기 위해 upsert 옵션 사용
+        const { error: upErr } = await supabase.storage
+            .from('avatars')
+            .upload(path, profileFile, { upsert: true, contentType: profileFile.type });
+
+        if (upErr) throw upErr;
+
+        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+        return data.publicUrl || null;
+    }
+
+    // ⛔ (지금 코드) async function signupViaRpc(avatarUrl: string | null) { ... }
+    // ✅ (수정) 인자 제거
+    async function signupViaRpc() {
+        // 1) 회원가입
+        const { data: authData, error: signErr } = await supabase.auth.signUp({
+            email: v.email,
+            password: v.password,
+        });
+        if (signErr) throw signErr;
+
+        const userId = authData.user?.id;
+        if (!userId) throw new Error('유저 ID를 얻지 못했습니다.');
+
+        // 2) 아바타 업로드 (실패 시 throw 대신 null로 처리하고 싶으면 try/catch로 감싸세요)
+        const finalAvatarUrl = await uploadAvatarAndGetUrl(userId);
+
+        // 3) 동물
+        const firstAnimal: Animal | undefined = isLove || isLovuddy ? animalsForm[0] : undefined;
+
+        // 4) RPC 호출
+        const { error: rpcErr } = await supabase.rpc('signup_with_profile', {
+            p_email: v.email,
+            p_name: v.name,
+            p_type: v.type,
+            p_avatar_url: finalAvatarUrl,
+            p_user_birth_year: v.user_birth_year ? Number(v.user_birth_year) : null,
+            p_user_comment: v.user_comment ?? null,
+            p_animal: firstAnimal
+                ? {
+                      owner_nickname: firstAnimal.owner_nickname || v.name,
+                      name: firstAnimal.name,
+                      birth_year: Number(firstAnimal.birth_year), // number 변환 중요
+                      type: firstAnimal.type,
+                      variety: firstAnimal.variety ?? '',
+                      color: firstAnimal.color ?? '',
+                      personality: firstAnimal.personality ?? 'introvert',
+                      level: firstAnimal.level ?? '0',
+                      comment: firstAnimal.comment ?? '',
+                      img: firstAnimal.img ?? '',
+                      first: firstAnimal.first ?? true,
+                  }
+                : null,
+            p_certificates:
+                isBuddy || isLovuddy
+                    ? (certs || []).map((c) => ({
+                          name: c.name,
+                          issuer: c.issuer,
+                          acquired_at: c.acquired_at, // 'YYYY-MM-DD'
+                          url: c.url ?? null,
+                      }))
+                    : [],
+        });
+
+        if (rpcErr) {
+            console.error('RPC ERROR:', rpcErr.message, rpcErr.details, rpcErr.hint);
+            throw rpcErr;
+        }
+
+        // ❌ 여기 있던 “두 번째 signUp” 블록은 완전히 삭제하세요.
+        return true;
+    }
 
     const handleSignUp = async () => {
         if (!v.email || !v.password || !v.name || !v.type) {
             setErr('필수 값을 입력해주세요.');
             return;
         }
+        if ((isLove || isLovuddy) && (!animalsForm[0] || !animalsForm[0].name)) {
+            setErr('반려동물 정보를 입력해주세요.');
+            return;
+        }
 
-        setLoading(true);
-        setErr('');
+        try {
+            setLoading(true);
+            setErr('');
+            setSuccess(false);
+            // 1) 관리자 생성 (클라 signUp 금지)
+            const r = await fetch('/api/dev-create-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: v.email, password: v.password }),
+            });
+            const j = await r.json();
+            if (!r.ok || !j.ok) {
+                setErr(j.error || '관리자 생성 실패');
+                setLoading(false);
+                return;
+            }
 
-        setSuccess(false);
+            // 2) 클라 로그인(세션 확보)
+            const { error: siErr } = await supabase.auth.signInWithPassword({
+                email: v.email,
+                password: v.password,
+            });
+            if (siErr) {
+                setErr(siErr.message);
+                setLoading(false);
+                return;
+            }
+
+            // 3) (선택) 프로필 이미지 업로드: 실패해도 가입은 진행
+            let avatarUrl: string | null = null;
+            try {
+                const user = (await supabase.auth.getUser()).data.user;
+                if (user) {
+                    avatarUrl = await uploadAvatarAndGetUrl(user.id);
+                }
+            } catch (e) {
+                console.warn('Avatar upload skipped:', e);
+            }
+            const accessToken = (await supabase.auth.getSession()).data.session?.access_token;
+            if (!accessToken) {
+                setErr('세션 없음');
+                setLoading(false);
+                return;
+            }
+
+            const animalsPayload = animalsForm.map((a) => ({
+                name: a.name,
+                age: Number(a.age || 0), // 서버에서 birth_year로 변환
+                type: a.type,
+                variety: a.variety,
+                color: a.color,
+                personality: a.personality,
+                level: Number(a.level || 5),
+                comment: a.comment,
+                img: a.img || '',
+                owner: !!a.owner,
+            }));
+
+            const certsPayload = (certs || []).map(({ file, preview, ...rest }) => rest);
+
+            const res = await fetch('/api/sign-up', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
+                body: JSON.stringify({
+                    name: v.name,
+                    type: v.type,
+                    avatar_url: v.avatar_url,
+                    animals: animalsPayload,
+                    certs: certsPayload,
+                }),
+            });
+            const j2 = await res.json();
+            if (!res.ok || !j2.ok) {
+                setErr(j2.error || '서버 저장 실패');
+                setLoading(false);
+                return;
+            }
+
+            setSuccess(true);
+            // 초기화
+            setV(EMPTY_SIGNUP_FORM);
+            setAnimalsForm([EMPTY_ANIMAL]);
+            setCerts([]);
+            setProfileFile(null);
+            setProfilePreview('');
+        } catch (e: any) {
+            setErr(e?.message ?? '회원가입 중 오류가 발생했습니다.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <ModalIos
-            isOpen={isOpen}
-            handleModalState={onClose}
-            title="회원가입"
-            width="560px"
-            height="970px"
-            // leftComment={loading ? '처리 중…' : '가입하기'}
-            // leftAction={handleSignUp}
-        >
+        <ModalIos isOpen={isOpen} handleModalState={onClose} title="회원가입" width="560px" height="970px">
             <div className="p-3 space-y-4 overflow-scroll h-[850px] no-scrollbar">
                 <div className="grid grid-cols-1 gap-3">
                     <label className="text-[13px] text-gray-600">이메일</label>
@@ -128,12 +283,11 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                                 placeholder="최대 7자"
                                 value={v.name}
                                 onChange={onChange}
-                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner 
-                 focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                             />
                         </div>
 
-                        <div className="flex flex-col  w-1/2">
+                        <div className="flex flex-col w-1/2">
                             <div className="flex items-end gap-3">
                                 {profilePreview || v.avatar_url ? (
                                     <Tooltip
@@ -149,15 +303,10 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                                         }
                                         tooltip="삭제"
                                     />
-                                ) : (
-                                    <></>
-                                )}
+                                ) : null}
 
                                 <div className="flex flex-col gap-1">
-                                    <label
-                                        className="px-3 py-2 rounded-xl border-2 border-dashed border-gray-200 h-full bg-white shadow 
-                          cursor-pointer text-[13px]"
-                                    >
+                                    <label className="px-3 py-2 rounded-xl border-2 border-dashed border-gray-200 h-full bg-white shadow cursor-pointer text-[13px]">
                                         + 프로필 이미지 선택
                                         <input
                                             type="file"
@@ -229,6 +378,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         )}
                     </div>
                 )}
+
                 {(isBuddy || isLovuddy) && (
                     <span className="text-[12px] text-gray-500 px-3 mb-2 inline-flex">
                         * 일부 정보는 나중에 추가 가능하지만, 버디 활동 시 자격증 정보가 없으면 등록이 제한돼요.
