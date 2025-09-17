@@ -40,8 +40,8 @@ const SelectedPlace = () => {
                 isOpen={isLocationModalOpen}
                 handleModalState={() => setIsLocationModalOpen(!isLocationModalOpen)}
                 title="어느 동네에서 버디를 찾으시나요?"
-                width="50%"
-                height="50%"
+                width="400px"
+                height="600px"
                 leftComment="선택하기"
                 leftAction={() => setIsLocationModalOpen(!isLocationModalOpen)}
             >

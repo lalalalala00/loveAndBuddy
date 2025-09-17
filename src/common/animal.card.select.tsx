@@ -19,14 +19,14 @@ export default function AnimalSelect({
 
     const setAsOwner = (targetId: string) => {
         setItems((prev) => {
-            const next = prev.map((a) => ({ ...a, owner: a.animal_uuid === targetId }));
+            const next = prev.map((a) => ({ ...a, first: a.animal_uuid === targetId }));
             const sorted = sortWithOwnerFirst(next);
             onChange?.(sorted);
             return sorted;
         });
         setSelected(new Set([targetId]));
     };
-
+    console.log(items);
     const toggleSelect = (item: Animal) => {
         setSelected((prev) => {
             if (item.first) return prev;

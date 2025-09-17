@@ -1,4 +1,8 @@
 import { BuddyConcept, BuddyStory } from './buddy';
+import CaseStudy from './doc.case';
+import JoinWalkWhy from './doc.join.why';
+import JoinWalkRevenue from './doc.joinwalk';
+import { Type, DomainTypes } from './doc.type';
 import ScenarioCarousel from './persona';
 import { Card, conceptImgs, Divider, DividerS, FlowList, PlaceholderImage, Section } from './ui.function';
 
@@ -519,6 +523,11 @@ export default function DocContent() {
                     <ArchitectureDiagram />
                 </Section>
                 <Divider />
+                <Section id="architecture__type" title="Types">
+                    {Type()}
+                    {DomainTypes()}
+                </Section>
+                <Divider />
                 <Section id="architecture__db-erd" title="DB 설계 (ERD)">
                     <ERDCard />
                 </Section>
@@ -533,6 +542,10 @@ export default function DocContent() {
                     </div>
                 </Section>
                 <Divider />
+                <Section id="demo__case-study" title="기획서 요약 (Case Study)">
+                    <CaseStudy />
+                </Section>
+                <Divider />
                 <Section id="demo__links" title="배포 & 자료 링크">
                     <ul className="list-disc pl-5 space-y-1">
                         <li>
@@ -545,11 +558,6 @@ export default function DocContent() {
                                 GitHub 저장소
                             </a>
                         </li>
-                        <li>
-                            <a className="underline hover:no-underline" href="#" aria-disabled>
-                                Notion / PDF 기획서
-                            </a>
-                        </li>
                     </ul>
                 </Section>
             </Card>
@@ -557,39 +565,461 @@ export default function DocContent() {
             {/* Business */}
             <Card>
                 <Section id="biz__revenue" title="수익 구조">
-                    <ul className="list-disc pl-5 space-y-1">
-                        <li>민간 자격증 기반 교육·검증 수익</li>
-                        <li>상단 노출·지역 타게팅 광고</li>
-                        <li>보험/동물병원 제휴 수익</li>
-                    </ul>
+                    <div className="space-y-4 text-sm">
+                        <div>
+                            <h4 className="font-semibold mb-2">1) 핵심 수익원</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    <b>자격증 기반 교육 수익</b> — 민간 훈련소 제휴 & 자체 아카데미 운영.
+                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                        <li>수강료·시험료·재응시료·교재/키트 판매</li>
+                                        <li>
+                                            제휴 훈련소와 <i>수강료 분배(Rev-Share)</i>, soom 인증 커리큘럼 제공
+                                        </li>
+                                        <li>
+                                            플랫폼 공급부족 지역/시간대에는 <i>장학·할인</i>으로 빠른 공급 확보
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>매칭 수수료(테이크 레이트)</b> — 기본 커미션 + 결제/플랫폼 수수료.
+                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                        <li>
+                                            예) 기본 12–18% 커미션 / 상위 티어 버디는 <i>커미션 감면·환급</i>
+                                        </li>
+                                        <li>서비스 수수료를 Love 측에 일부 전가(예: 3–5%)하여 양면시장 부담 균형</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>광고</b> — 상단 노출(스폰서 카드), 지역 타게팅.
+                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                        <li>CPC/CPA 혼합(시즌·지역별 패키지)</li>
+                                        <li>카테고리 스폰서십(대형견/고양이/초보자용 가이드 등)</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>제휴 수익</b> — 보험·동물병원·용품.
+                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                        <li>
+                                            보험: 폴리시 당 <i>CPA</i> 또는 유지율 기반 리베이트
+                                        </li>
+                                        <li>
+                                            동물병원: 건강검진/예방접종 번들 쿠폰 <i>Rev-Share</i>
+                                        </li>
+                                        <li>
+                                            용품/사료/간식: 제휴몰·링크 아웃 <i>어필리에이트</i>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>버디 Pro 구독(선택)</b> — 배지 강화, 즉시 정산, 일정·분석, 노출 부스터 등 부가
+                                    기능 월 구독
+                                </li>
+                            </ul>
+                        </div>
+                        <Divider />
+
+                        <div>
+                            <h4 className="font-semibold mb-2">2) 인센티브 설계 (버디 유입·품질 동시 달성)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    <b>버디 티어링</b> — S/A/B/C. 자격증·후기·완료율·재예약율로 산정.
+                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                        <li>
+                                            S/A 티어: <i>커미션 감면 또는 면제</i>, 상단 노출 가중치↑, 더 높은 시급
+                                            가이드
+                                        </li>
+                                        <li>
+                                            자격증·수의테크니션·관련 경력 가중치 → <i>페이 상승</i> & <i>수수료 감면</i>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>공급 전략</b> — 초기엔 Love 커뮤니티(디얼러브) 집중으로 수요 집적 - 트위터(엑스)
+                                    바이럴 → “좋아하는 일로 쉽게 번다” 메시지로 버디 유입
+                                </li>
+                                <li>
+                                    <b>교육-매칭 연계</b> — 교육 이수/합격 → 즉시 티어 반영, 특정 지역·시간대는{' '}
+                                    <i>수강료 보조</i>로 공급 탄력 확보
+                                </li>
+                            </ul>
+                        </div>
+
+                        <Divider />
+                        <div>
+                            <h4 className="font-semibold mb-2">3) 단계별 운영</h4>
+                            <ol className="list-decimal pl-5 space-y-1">
+                                <li>
+                                    <b>Phase 1: 커뮤니티/콘텐츠 성장</b> — dear.Love로 UGC 유입, Love 활성화 → 초기
+                                    매출은 광고·제휴 소폭
+                                </li>
+                                <li>
+                                    <b>Phase 2: 버디 풀 구축</b> — 교육/자격증 트랙 론칭, 티어링/감면 인센티브 → 매칭
+                                    매출 본격화
+                                </li>
+                                <li>
+                                    <b>Phase 3: 수익 다각화</b> — Pro 구독, 지역 스폰서십, 보험/병원 본격 제휴
+                                </li>
+                            </ol>
+                            <div className="mt-2">
+                                <b>핵심 KPI</b> — 첫 매칭 완료율, 재이용률(30일), 버디 S/A 비중, 교육 이수→매칭 전환율,
+                                CAC : LTV, 지역별 커버리지.
+                            </div>
+                        </div>
+
+                        <Divider />
+                        <div>
+                            <h4 className="font-semibold mb-2">4) 단가/모형 예시 (튜닝 용)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>매칭 커미션: 기본 15% / S티어 5–8% / A티어 8–12%</li>
+                                <li>Love 서비스 수수료: 3–5% (환불/보호 프로그램 포함)</li>
+                                <li>교육: 기본 과정 ₩3xx,xxx / 심화·전문 ₩5xx,xxx / 시험·재응시·키트 별도</li>
+                                <li>광고: 지역 패키지 월 ₩x00,000~ / CPC ₩x00~ / 스폰서 카드 고정가</li>
+                                <li>보험/병원 제휴: CPA ₩x,xxx~ / Rev-Share 5–15%</li>
+                            </ul>
+                            <p className="text-[12px] text-neutral-500 mt-1">
+                                ※ 숫자는 초기 가이드. 지역·시즌·공급 상황에 맞춰 A/B 테스트로 최적화.
+                            </p>
+                        </div>
+
+                        <Divider />
+                        <div>
+                            <h4 className="font-semibold mb-2">5) 리스크 & 가드</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    자격증 남발/신뢰 하락 리스크 → <b>커리큘럼 표준화</b>, 실습·평가·갱신 제도, 무작위
+                                    샘플 리뷰
+                                </li>
+                                <li>
+                                    양면시장 불균형 → 특정 지역/시간대 <b>장학/보조·보너스</b>로 공급 탄력 확보
+                                </li>
+                                <li>품질·안전 → 보험 번들/사고 리포팅/재발 방지 교육, RLS·평판 시스템</li>
+                            </ul>
+                        </div>
+                    </div>
+                </Section>
+
+                <Divider />
+                <Section id="biz__audience" title="타깃 고객">
+                    <div className="space-y-3 text-sm">
+                        <div>
+                            <h4 className="font-semibold mb-1">버디(Buddy)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    대학생/취준생/알바생: <b>20–30대</b> 초중반, 유연한 스케줄 선호
+                                </li>
+                                <li>
+                                    가정주부/경력단절 재도전: <b>파트타임</b> + 돌봄 경험 활용
+                                </li>
+                                <li>
+                                    관련 전공/경력: 수의테크니션·훈련 보조 등 <b>전문 트랙</b> 선호
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold mb-1">러브(Love)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    <b>30대+</b> 1인가구 여성: 혼자 사는/직장인, <b>안전·신뢰</b> 최우선
+                                </li>
+                                <li>
+                                    장시간 근무/외근이 잦은 직장인: <b>빠른 매칭·정시 케어</b> 니즈
+                                </li>
+                                <li>
+                                    초보 집사/대형견 보호자: <b>경험/자격 기반 안심</b> 니즈
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold mb-1">핵심 니즈 요약</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    버디: <b>좋아하는 일로 쉬운 수익</b> · 유연한 스케줄 · <b>자격-수익 연동</b>
+                                </li>
+                                <li>
+                                    러브: <b>검증/안전</b> · 신속 매칭 · <b>케어 기록 공유</b>(dear.Love)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </Section>
+                <Divider />
+                <Section id="biz__growth" title="유입/성장 전략">
+                    <div className="space-y-4 text-sm">
+                        <div>
+                            <h4 className="font-semibold mb-2">1) 채널</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    <b>트위터(X) 바이럴</b>: 스레드/밈 + 짧은 팁(산책 노하우, 안전체크리스트)로{' '}
+                                    <b>버디 유입</b>
+                                </li>
+                                <li>
+                                    <b>인스타그램</b>: <b>dear.Love UGC</b> 리그램(허가), 리일스 하이라이트 →{' '}
+                                    <b>러브 신뢰</b> 형성
+                                </li>
+                                <li>
+                                    <b>캠퍼스/지역 커뮤니티</b>: 동아리·학과 제휴, 맘카페·아파트 커뮤니티
+                                </li>
+                                <li>
+                                    <b>제휴</b>: 훈련소/병원/용품사와 콘텐츠 공동 제작(쿠폰·체험단)
+                                </li>
+                                <li>
+                                    <b>추천(리퍼럴)</b>: 버디↔러브 초대 코드 · 양면 보상
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold mb-2">2) 메시지 & 오퍼</h4>
+                            <div className="grid md:grid-cols-2 gap-3">
+                                <div className="rounded-xl border p-3">
+                                    <div className="font-semibold mb-1">버디 대상</div>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>
+                                            <b>“좋아하는 반려동물과 함께, 쉽게 버는 부수입”</b>
+                                        </li>
+                                        <li>
+                                            자격/경력 있을수록 <b>커미션 감면·페이 상승</b>
+                                        </li>
+                                        <li>
+                                            교육 수료 시 <b>즉시 티어 반영</b> · 상단 노출 가중치
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div className="rounded-xl border p-3">
+                                    <div className="font-semibold mb-1">러브 대상</div>
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        <li>
+                                            <b>자격증/후기/매너지수</b>로 안심 매칭
+                                        </li>
+                                        <li>
+                                            <b>dear.Love</b>로 케어 기록(사진·노트·날씨) 투명 공유
+                                        </li>
+                                        <li>
+                                            긴급/정기 케어 <b>빠른 예약</b> 가이드
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold mb-2">3) 초기 실행 플랜</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    <b>트위터(X), 스레드 주 3회</b>: 알바/부업·펫케어 팁(버디 톤)
+                                </li>
+                                <li>
+                                    <b>인스타 릴스 주 4개</b>: dear.Love 사진 슬라이드/전후 비교/산책 하이라이트
+                                </li>
+                                <li>
+                                    <b>캠퍼스 앰버서더</b>: 동물 관련 학과·동아리 대상 온보딩 데이
+                                </li>
+                                <li>
+                                    <b>UGC 가이드</b>: dear.Love 업로드 체크리스트 + 리그램 동의 플로우
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold mb-2">4) 측정 지표</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>채널별 CTR / 가입 전환(CVR) / CAC</li>
+                                <li>버디: 교육 수료→S/A 티어 전환율, 활성 버디 수, 매칭률</li>
+                                <li>러브: 첫 매칭 완료율, dear.Love 작성률, 재이용률(30일)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </Section>
                 <Divider />
                 <Section id="biz__roadmap" title="확장 계획">
-                    <ul className="list-disc pl-5 space-y-1">
-                        <li>커뮤니티 강화 (후기/리뷰, Q&A)</li>
-                        <li>Buddy 전문화 (훈련/산책/병원동행 등 카테고리화)</li>
-                        <li>예약·결제 모듈 고도화</li>
-                    </ul>
+                    <div className="space-y-6 text-sm">
+                        {/* 커뮤니티 강화 */}
+                        <div>
+                            <h4 className="font-semibold mb-2">커뮤니티 강화</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>dear.Love 상호 공유 피드(팔로우/북마크/리그램 허가 플로우)</li>
+                                <li>퀵 포스트(이미지·짧은 글) — 트위터(X)처럼 반려동물 외 일상 토픽도 허용</li>
+                                <li>가벼운 모더레이션(신고/숨기기) & 공개범위(전체/팔로워/비공개)</li>
+                            </ul>
+                        </div>
+
+                        {/* Buddy 전문화 */}
+                        <div>
+                            <h4 className="font-semibold mb-2">Buddy 전문화 (카테고리화)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    카테고리: <b>훈련 보조</b> / <b>산책</b> / <b>병원 동행</b> / <b>투약 보조</b> /{' '}
+                                    <b>노령견 케어</b>
+                                </li>
+                                <li>
+                                    전문 배지 & 최소 요건: 관련 자격/경력·후기·완료율 기준 → <b>S/A/B/C 티어</b> 산정
+                                </li>
+                                <li>카테고리별 요금 가이드·체크리스트·사고대응 매뉴얼 제공</li>
+                            </ul>
+                        </div>
+
+                        {/* Love Pro: 다묘·다견 */}
+                        <div>
+                            <h4 className="font-semibold mb-2">Love Pro (다묘·다견 업그레이드)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    기본 동물 슬롯: <b>초기 가입자 5</b> / 이후 신규 가입자 <b>3</b>
+                                </li>
+                                <li>
+                                    Pro 구독: 슬롯 <b>6개 제공</b> (최대 <b>12개</b>까지 확장)
+                                </li>
+                                <li>
+                                    추가 슬롯: <b>₩1,900/월 · 1슬롯</b> (6개 초과분부터 적용)
+                                </li>
+                                <li>
+                                    멀티펫 번들 예약 시 플랫폼 수수료 할인(동시간·동버디 조건)
+                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                        <li>
+                                            2마리: 수수료 <b>-5%</b>
+                                        </li>
+                                        <li>
+                                            3마리: 수수료 <b>-10%</b>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Buddy Pro */}
+                        <div>
+                            <h4 className="font-semibold mb-2">Buddy Pro (전문 버디를 위한 수익/노출 부스트)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    <b>Pro Lite — ₩9,900/월</b>: 커미션 <b>-3%p</b>, 상단 노출 <b>주 1회</b>,
+                                    일정/빠른응답/간단 리포트
+                                </li>
+                                <li>
+                                    <b>Pro Plus — ₩19,900/월</b>: 커미션 <b>-7%p</b>, 상단 노출 <b>주 3회</b>, 즉시
+                                    정산(1%), 후기요청 자동화
+                                </li>
+                                <li>
+                                    티어 연동: S/A/B/C에 따라 <b>추가 -0~2%p</b> 감면(최저 커미션 하한 유지)
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* 예약·결제 고도화 */}
+                        <div>
+                            <h4 className="font-semibold mb-2">예약·결제 모듈 고도화</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>멀티펫/다회차 번들, 추가요금, 전자영수증</li>
+                                <li>취소/지연 정책 레벨링(버디/러브 균형)</li>
+                                <li>보증/보험 번들(제휴) — 예약 시 선택</li>
+                            </ul>
+                        </div>
+
+                        {/* 측정/가드 */}
+                        <div>
+                            <h4 className="font-semibold mb-2">지표 & 가드</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>Love Pro: Pro 가입률, 평균 슬롯 수, 멀티펫 ARPU, 번들 할인 이용률</li>
+                                <li>Buddy Pro: Pro 전환률, 유효 노출→예약 전환, 커미션 실효율</li>
+                                <li>조인 산책: 사전 미팅 완료율, 매칭 성공률, 사건/사고율, 재조인율</li>
+                            </ul>
+                        </div>
+
+                        {/* Join Walk: 조인 산책 */}
+                        <div>
+                            <h4 className="font-semibold mb-2">Join Walk (조인 산책)</h4>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>
+                                    개념: 같은 시간/동네에 <b>서로 다른 가정의 반려동물</b>을 <b>한 번에 산책</b> (최대
+                                    3마리 권장)
+                                </li>
+                                <li>
+                                    <b>사전 미팅(필수)</b>: 성향/사이즈/연령/예방접종·중성화·하네스 적합 등{' '}
+                                    <b>호환성 체크</b>
+                                </li>
+                                <li>매칭: 공개(조인 신청) / 초대(기존 이력 기반) 두 모드 지원</li>
+                                <li>
+                                    안전 가드: 리드 1마리 1개 원칙, 공격성/분리불안/발바닥 상태 체크리스트, 비상
+                                    연락망·보험 옵션
+                                </li>
+                            </ul>
+                        </div>
+                        <JoinWalkWhy />
+                        <JoinWalkRevenue />
+                    </div>
                 </Section>
             </Card>
 
             {/* Closing */}
             <Card>
                 <Section id="closing__role" title="본인 역할 & 기여">
-                    <p>기획 · UX/UI · 프론트엔드 · DB 설계. 실 구현은 핵심 플로우 중심으로 mock API를 사용하여 시연.</p>
+                    <p>기획 · UI/UX · 프론트엔드 · DB 설계. 실 구현은 핵심 플로우 중심으로 mock API를 사용하여 시연.</p>
                 </Section>
                 <Divider />
                 <Section id="closing__next" title="향후 개선">
                     <ul className="list-disc pl-5 space-y-1">
-                        <li>Supabase 실 DB 연결 및 RLS 정책 구성</li>
-                        <li>예약/채팅 Realtime 연동</li>
-                        <li>Dear Love 에디터/갤러리 고도화</li>
-                    </ul>
-                </Section>
-                <Divider />
-                <Section id="closing__refs" title="참고 링크">
-                    <ul className="list-disc pl-5 space-y-1">
-                        <li>Figma 파일, 시장 리서치 문서 등</li>
+                        <li>
+                            <b>Supabase 실 DB 연결 & RLS 정책 정비</b>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                <li>
+                                    스키마 확정: <i>users / animals / certificates / bookings / messages / dear_love</i>
+                                </li>
+                                <li>RLS: 본인 레코드 쓰기, 공개 범위별 읽기(공개/팔로워/비공개), 서비스롤 예외</li>
+                                <li>
+                                    스토리지 버킷: <i>avatars / dearlove / certificates</i> + 퍼블릭/사인드 URL 정책
+                                </li>
+                                <li>SQL 마이그레이션 & 초기 시드 데이터(개발/스테이징 분리)</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <b>예약/채팅 Realtime 연동</b>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                <li>
+                                    채널 설계:{' '}
+                                    <i>
+                                        booking:{'{id}'} / dm:{'{pairId}'}
+                                    </i>
+                                    , Presence & typing 표시
+                                </li>
+                                <li>메시지 모델: 읽음표시, 첨부(사진/위치), 소프트 삭제, 신고 플래그</li>
+                                <li>
+                                    예약 상태머신: <i>requested → accepted → in_progress → done → disputed</i>
+                                </li>
+                                <li>알림 훅: 수락/변경/취소/조인확정 시 푸시·이메일(옵션)</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <b>dear.Love 에디터/갤러리 고도화</b>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                <li>블록/마크다운 혼합 에디팅, 드래그·드롭 업로드, 진행률 표시</li>
+                                <li>이미지 리사이즈/웹 최적화, EXIF 타임라인 자동 정렬</li>
+                                <li>갤러리: Masonry 레이아웃, 태그/날씨 필터, 공개 범위(공개/팔로워/비공개)</li>
+                                <li>좋아요 반응 버튼 추가, 이미지 릴스로 제작 </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <b>커뮤니티 오픈</b>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                <li>
+                                    보드: 동네/주제 분류 + <i>조인 산책 매칭</i> 탭 (find.myDearDay와 버디룸에도 추가)
+                                </li>
+                                <li>모더레이션: 신고/차단, 키워드 필터, 레이트 리밋, 관리자 툴</li>
+                                <li>참여 리워드: 배지/레벨, 주간 인기 포스트</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <b>인덱스 커뮤니티 리스트 & 바로 글쓰기</b>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                <li>피드: 최신/인기/내 근처 정렬, 무한 스크롤, 스켈레톤</li>
+                                <li>퀵 컴포저: 텍스트/사진/해시태그/위치, 미리보기 후 즉시 발행</li>
+                                <li>접근성/성능: SSR/ISR, 이미지 최적화, 키보드 내비게이션</li>
+                            </ul>
+                        </li>
                     </ul>
                 </Section>
             </Card>
@@ -615,7 +1045,7 @@ function ArchitectureDiagram() {
                         <li>요청/응답 스키마 정의</li>
                     </ul>
                 </Box>
-                <Box title="DB (Supabase 예정)">
+                <Box title="DB (Supabase)">
                     <ul className="list-disc pl-5 text-sm space-y-1">
                         <li>Postgres 스키마: users, animals, certificates, dear_love</li>
                         <li>RLS 정책 (owner 기반)</li>
@@ -631,11 +1061,54 @@ function ERDCard() {
     return (
         <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-4 bg-neutral-50 dark:bg-neutral-800">
             <div className="text-sm font-mono whitespace-pre overflow-x-auto">
-                {`users (id PK, email, nickname, role)\nanimals (id PK, owner_id FK->users.id, name, breed, age)\ncertificates (id PK, user_id FK->users.id, title, issued_at)\ndear_love (id PK, author_id FK->users.id, date, title, photos[], comment)`}
+                {`users (
+  id uuid PK, email text, name text, nickname text,
+  type role_enum, avatar_url text, birth_year int4,
+  user_comment text, created_at timestamptz
+)
+
+animals (
+  animal_uuid uuid PK,
+  owner_uuid uuid FK->users.id,
+  owner_nickname text,
+  name text, birth_year int4,
+  type animal_type, variety text, color text,
+  personality personality, level text,
+  comment text, img text, first bool,
+  created_at timestamptz
+)
+
+certificates (
+  id uuid PK,
+  user_id uuid FK->users.id,
+  name text, issuer text,
+  acquired_at date, url text,
+  created_at timestamptz
+)
+
+dear_love (
+  id uuid PK,
+  author_id uuid FK->users.id,
+  author_type card_kind_enum,
+  buddy_user_id uuid FK->users.id,
+  date_at timestamptz,
+  title text, weather weather_enum,
+  representative_img text,
+  photos text[], comment text,
+  location text, place text, tags text[],
+  visibility dearlove_visibility_enum,
+  likes int4, bookmarks int4, comments_count int4,
+  created_at timestamptz, updated_at timestamptz
+)`}
             </div>
-            <p className="text-sm text-neutral-600 dark:text-neutral-300 mt-2">
-                실제 ERD 이미지는 dbdiagram.io 또는 Draw.io로 작성해 교체하세요.
-            </p>
+
+            <a href="/wireframe/supa.png" target="_blank" rel="noopener noreferrer">
+                <img
+                    src="/wireframe/supa.png"
+                    alt="schema"
+                    className="w-full h-[500px] rounded-xl mt-2 cursor-zoom-in border border-gray-200"
+                />
+            </a>
         </div>
     );
 }

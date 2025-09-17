@@ -6,6 +6,8 @@ import Sidebar from './side.bar';
 import DocHero from './doc.here';
 import DocContent from './doc.content';
 import Header from './header';
+import ModalIos from '@/common/modal.ios';
+import Recume from './resume';
 
 export type Active = { groupId: string; itemId: string } | null;
 
@@ -26,6 +28,7 @@ export default function DocsPortfolio() {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
     const [active, setActive] = useState<Active>(null);
     const headingIds = useMemo(() => SECTIONS.flatMap((g) => g.items.map((i) => `${g.id}__${i.id}`)), []);
+    const [resume, setResume] = useState<boolean>(false);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -60,7 +63,7 @@ export default function DocsPortfolio() {
 
     return (
         <div className="min-h-screen bg-[#f9fbfd] dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
-            <Header setSidebarOpen={setSidebarOpen} />
+            <Header setSidebarOpen={setSidebarOpen} resume={resume} setResume={setResume} />
 
             <div className="mx-auto max-w-7xl  py-6 lg:py-10 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] gap-6">
                 <aside className="hidden lg:block sticky top-20 self-start">
@@ -112,6 +115,15 @@ export default function DocsPortfolio() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            <ModalIos
+                isOpen={resume}
+                handleModalState={() => setResume(!resume)}
+                title="자기소개서"
+                width="700px"
+                height="810px"
+            >
+                <Recume />
+            </ModalIos>
 
             <Footer />
         </div>
@@ -154,15 +166,7 @@ export const SECTIONS = [
         title: 'User Scenario',
         items: [{ id: 'persona', title: '유저 페르소나' }],
     },
-    {
-        id: 'user-flow',
-        title: 'User Flow',
-        items: [
-            { id: 'love-journey', title: 'Love 여정' },
-            { id: 'buddy-journey', title: 'Buddy 여정' },
-            { id: 'lovuddy', title: 'Lovuddy (통합)' },
-        ],
-    },
+
     {
         id: 'wireframes',
         title: 'Wireframes',
@@ -180,6 +184,7 @@ export const SECTIONS = [
         items: [
             { id: 'stack', title: 'Tech Stack' },
             { id: 'system', title: '서비스 아키텍처' },
+            { id: 'type', title: 'Domain & Form Types' },
             { id: 'db-erd', title: 'DB 설계 (ERD)' },
         ],
     },
@@ -188,6 +193,7 @@ export const SECTIONS = [
         title: 'Demo',
         items: [
             { id: 'live', title: '시연 (live/gif)' },
+            { id: 'case-study', title: '기획서 요약 (Case Study)' },
             { id: 'links', title: '배포 & 자료 링크' },
         ],
     },
@@ -196,6 +202,8 @@ export const SECTIONS = [
         title: 'Business Model',
         items: [
             { id: 'revenue', title: '수익 구조' },
+            { id: 'audience', title: '타깃 고객' },
+            { id: 'growth', title: '유입/성장 전략' },
             { id: 'roadmap', title: '확장 계획' },
         ],
     },
@@ -205,7 +213,6 @@ export const SECTIONS = [
         items: [
             { id: 'role', title: '본인 역할 & 기여' },
             { id: 'next', title: '향후 개선' },
-            { id: 'refs', title: '참고 링크' },
         ],
     },
 ] as const;

@@ -2,13 +2,12 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { UserStateType, useUserState } from '../context/useUserContext';
-import { useTypedRouter } from '@/hooks/userTypeRouter';
+
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
 import SignUpModal from '@/components/sign.up';
 import LoginModal from '@/components/sign.login';
-import { UsersRow } from '@/utils/type';
 import SettingModal from '@/components/setting.modal';
 import Tooltip from './tooltip';
 
@@ -22,62 +21,78 @@ const Header = () => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const { userState, setUserState } = useUserState();
-    const { push } = useTypedRouter();
+    const { setUserState, getUser, setGetUser, setAnimals, setCertificates, certificates } = useUserState();
 
-    const [pendingType, setPendingType] = useState<UserStateType | null>(null);
-    const [getUser, setGetUser] = useState<UsersRow | null>(null);
+    // const [getUser, setGetUser] = useState<UsersRow | null>(null);
     const [signUpModal, setSignUpModal] = useState<boolean>(false);
     const [signModal, setSignModal] = useState<boolean>(false);
 
     const [settingModal, setSettingModal] = useState<boolean>(false);
 
-    const currentUser = userType.find((u) => u.label === userState);
+    const safeAvatarSrc = getUser?.avatar_url && getUser.avatar_url.trim().length > 0 ? getUser.avatar_url : null;
 
     const isActive = (url: string) => pathname.includes(url);
 
-    const handleTabClick = (type: UserStateType) => {
-        setUserState(type);
-        setPendingType(type);
-    };
-    console.log(getUser, 'get');
-
-    useEffect(() => {
-        (async () => {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-            if (!user?.id) {
-                setGetUser(null);
-                return;
-            }
-
-            const { data, error } = await supabase
-                .from('users')
-                .select('id,email,name,type,avatar_url,certificate_url,created_at,updated_at')
-                .eq('id', user.id)
-                .maybeSingle();
-            if (error) {
-                console.error('users select error:', error);
-                setGetUser(null);
-                return;
-            }
-            setGetUser(data ?? null);
-
-            setUserState(data.type);
-        })();
-    }, []);
-
-    useEffect(() => {
-        if (pendingType) {
-            router.push(`/?type=${pendingType}`);
-            setPendingType(null);
+    const loadUser = async () => {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+        if (!user?.id) {
+            setGetUser(null);
+            setUserState(null as any);
+            return;
         }
-    }, [userState]);
 
+        const [{ data: u }, { data: cs }, { data: as }] = await Promise.all([
+            supabase.from('users').select('*').eq('id', user?.id).single(),
+            supabase
+                .from('certificates')
+                .select('*')
+                .eq('user_id', user?.id)
+                .order('acquired_at', { ascending: false }),
+            supabase.from('animals').select('*').eq('owner_id', user?.id),
+        ]);
+
+        setGetUser(u ?? null);
+        setCertificates(cs ?? []);
+        setAnimals(as ?? []);
+
+        if (u?.type) setUserState(u.type as UserStateType);
+    };
+    console.log(getUser);
+    useEffect(() => {
+        loadUser();
+
+        const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_OUT') {
+                setGetUser(null);
+                setUserState(null as any);
+            } else {
+                loadUser();
+            }
+        });
+
+        return () => sub.subscription?.unsubscribe();
+    }, []);
+    console.log(certificates, 'certificates');
     const handleSignUp = () => {
         setSignModal(false);
         setSignUpModal(true);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await supabase.auth.signOut();
+        } catch (e) {
+            console.warn('signOut error:', e);
+        } finally {
+            setGetUser(null);
+            setUserState(null as any);
+            setSignModal(false);
+            setSignUpModal(false);
+            setSettingModal(false);
+            router.push('/');
+        }
     };
 
     return (
@@ -122,11 +137,12 @@ const Header = () => {
                     </div>
                 </div>
 
-                <div
-                    className={`rounded-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2 ${getUser === null ? 'w-16' : ''}`}
-                >
-                    {getUser === null ? (
-                        <button onClick={() => setSignModal(!signModal)} className="">
+                <div className={` ${getUser === null ? 'w-16' : ''}`}>
+                    {!getUser ? (
+                        <button
+                            onClick={() => setSignModal(!signModal)}
+                            className="rounded-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2"
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-4 h-4 stroke-black group-hover:stroke-amber-500 transition"
@@ -143,15 +159,27 @@ const Header = () => {
                             </svg>
                         </button>
                     ) : (
-                        <div className="flex">
-                            <button className="rounded-xl px-3 py-2 text-sm shadow-[4px_8px_10px_#f3faea,-4px_-4px_10px_#ffffff]">
-                                <span className="inline-flex items-center gap-1">{ROLE_META[getUser.type]?.emoji}</span>
-                                <span className="text-[12px]">{getUser.type}</span>
-                                <span className="text-[12px]">{getUser.name}</span>
-                            </button>
-                            <button onClick={() => setSettingModal(!settingModal)}>
-                                <Tooltip tooltip="내 정보 수정하기" comment="⚙️" />
-                            </button>
+                        <div className="flex h-12 rounded-2xl bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] items-center">
+                            <span className="inline-flex items-center gap-1  p-1 rounded-lg">
+                                {ROLE_META[getUser?.type]?.emoji}{' '}
+                                <span className="text-[13px] mr-2 font-semibold">{getUser.name}</span>
+                            </span>
+
+                            <div className="h-full flex">
+                                <div
+                                    className="w-8 flex items-center custom-card justify-center mr-1 rounded-l-xl rounded-r-sm"
+                                    onClick={() => setSettingModal(!settingModal)}
+                                >
+                                    <Tooltip tooltip="내 정보 수정하기" comment="⚙️" clickCss="text-[13px]" />
+                                </div>
+                                <button
+                                    onClick={handleLogout}
+                                    className="px-3 py-2 text-[12px] font-semibold text-gray-600 rounded-r-xl rounded-l-sm custom-card flex items-center"
+                                    aria-label="logout"
+                                >
+                                    logout
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

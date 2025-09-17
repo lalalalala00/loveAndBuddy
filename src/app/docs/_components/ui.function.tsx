@@ -8,7 +8,7 @@ export function Divider() {
     return <hr className="my-5 border-neutral-200 dark:border-neutral-800" />;
 }
 export function DividerS() {
-    return <hr className="my-5 mx-20 border-neutral-100 dark:border-neutral-800" />;
+    return <hr className="my-5 mx-20 border-gray-200 dark:border-neutral-800" />;
 }
 
 export function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
@@ -62,11 +62,18 @@ export function FlowList({ items }: { items: string[] }) {
 export function PlaceholderImage({ img, label, desc }: { img: string; label?: string; desc?: string | ReactNode }) {
     return (
         <div className="w-full rounded-xl border border-neutral-100 dark:border-neutral-700 shadow-sm mb-5">
-            <figure className="w-full rounded-t-xl ">
+            <figure className="w-full rounded-t-xl  ">
                 {label && (
                     <figcaption className="px-3 py-2 text-sm font-medium bg-gray-100 rounded-t-xl">{label}</figcaption>
                 )}
-                <img src={img} alt={label || 'wireframe'} className="block w-full  h-auto object-none" loading="lazy" />
+                <div className="flex justify-center w-full">
+                    <img
+                        src={img}
+                        alt={label || 'wireframe'}
+                        className="block w-auto h-auto object-none"
+                        loading="lazy"
+                    />
+                </div>
             </figure>
 
             {desc && (

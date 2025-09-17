@@ -91,3 +91,9 @@ export const formatDateLongEn = (dateStr?: string) => {
   const d = dayjs(dateStr); 
   return d.isValid() ? d.locale('en').format('MMMM D, YYYY') : dateStr;
 };
+
+export function getAgeFromYear(birthYear: number | string, baseDate: Date = new Date()): number {
+  const y = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
+  if (!Number.isFinite(y)) return 0;           
+  return Math.max(0, baseDate.getFullYear() - y); 
+}

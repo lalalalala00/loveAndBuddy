@@ -3,7 +3,15 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import DocsSearchLight from './doc.search.light';
 
-export default function Header({ setSidebarOpen }: { setSidebarOpen: Dispatch<SetStateAction<boolean>> }) {
+export default function Header({
+    setSidebarOpen,
+    resume,
+    setResume,
+}: {
+    setSidebarOpen: Dispatch<SetStateAction<boolean>>;
+    resume: boolean;
+    setResume: Dispatch<SetStateAction<boolean>>;
+}) {
     const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -48,7 +56,7 @@ export default function Header({ setSidebarOpen }: { setSidebarOpen: Dispatch<Se
                 <div className="flex items-center gap-3">
                     <div className="hidden md:flex items-center gap-2">
                         <a
-                            href=""
+                            href="/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm"
@@ -63,14 +71,12 @@ export default function Header({ setSidebarOpen }: { setSidebarOpen: Dispatch<Se
                         >
                             GitHub
                         </a>
-                        <a
-                            href=""
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <button
+                            onClick={() => setResume(!resume)}
                             className="inline-flex items-center h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm"
                         >
                             Resume
-                        </a>
+                        </button>
                     </div>
 
                     <button

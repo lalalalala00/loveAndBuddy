@@ -1,7 +1,5 @@
 'use client';
 
-import { Dispatch, SetStateAction } from 'react';
-
 const ModalIos = ({
     children,
     width,

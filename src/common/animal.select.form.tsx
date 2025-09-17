@@ -70,7 +70,7 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
                 handleModalState={() => setAddAnimal(!addAnimal)}
                 title="반려동물 추가하기"
                 width="400px"
-                height="50%"
+                height="665px"
                 leftComment="추가하기"
                 leftAction={() => setAddAnimal(false)}
             >

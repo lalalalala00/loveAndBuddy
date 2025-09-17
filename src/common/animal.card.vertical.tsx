@@ -1,5 +1,7 @@
 import { Chip, sortWithOwnerFirst } from './animal.card.select';
 import { Animal } from '@/utils/sign';
+import Tooltip from './tooltip';
+import { getAgeFromYear } from '@/utils/date';
 
 export default function AnimalCardVertical({
     initial,
@@ -16,21 +18,29 @@ export default function AnimalCardVertical({
                 {list.map((item, i) => (
                     <div
                         key={i}
-                        onClick={() => onDelete?.(item.animal_uuid)}
+                        // onClick={() => onDelete?.(item.animal_uuid)}
                         className={[
                             'relative rounded-2xl p-2 mb-2',
                             ' border border-[#e3ecdc] shadow',
                             `${item.first ? 'bg-[#f3f7ee]' : 'bg-[#f3f7ee23]'}`,
 
-                            `${list.length >= 2 ? 'hover:opacity-50 cursor-pointer hover:border hover:border-red-300' : ''}`,
+                            ,
                         ].join(' ')}
                     >
-                        <div className="relative flex flex-col gap-3">
-                            <img
-                                src={item.img}
-                                alt={item.name}
-                                className="w-full h-30 object-cover rounded-xl ring-1 ring-[#e3ecdc] shadow-md"
+                        <div className="relative flex flex-col  gap-3">
+                            <Tooltip
+                                comment={
+                                    <img
+                                        src={item.img}
+                                        alt={item.name}
+                                        className={`w-full h-30 object-cover rounded-xl ring-1 ring-[#e3ecdc] shadow-md ${list.length >= 2 ? 'hover:opacity-50 cursor-pointer hover:border hover:border-red-300' : ''}`}
+                                    />
+                                }
+                                tooltip="삭제"
+                                onClick={() => onDelete?.(item.animal_uuid)}
+                                clickCss="w-full"
                             />
+
                             <div className="absolute top-27 left-1/2 -translate-x-1/2">
                                 <span className="rounded-xl px-2 py-0.5 text-[10px] bg-white shadow">
                                     {item.type === 'dog' ? '🐶' : '🐱'}
@@ -46,7 +56,7 @@ export default function AnimalCardVertical({
 
                                     <div className="mt-1 flex flex-wrap gap-1.5 text-[11px]">
                                         {/* <Chip>{item.type === 'dog' ? '🐶 dog' : '🐱 cat'}</Chip> */}
-                                        <Chip>{item.birth_year}살</Chip>
+                                        <Chip>{getAgeFromYear(item.birth_year)}살</Chip>
                                         <Chip>{item.color}</Chip>
                                         <Chip>{item.personality === 'extrovert' ? '🌼 외향적' : '🌙 내향적'}</Chip>
                                     </div>

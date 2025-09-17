@@ -8,6 +8,8 @@ import PhotoModal from './modal.photo';
 import ModalIos from '@/common/modal.ios';
 import DiaryMessage from './diary.message';
 import NameTag from '@/common/name.tag';
+import Calendar from './calendar';
+import File from './file';
 
 const FilePage = () => {
     const [selectedMonth, setSelectedMonth] = useState<string>('August');
@@ -191,7 +193,7 @@ const imgs = [
     { url: '/cha/1_13.png' },
 ];
 
-const months = [
+export const months = [
     'January',
     'February',
     'March',

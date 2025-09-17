@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import BuddyMessageRoom from './buddy.message.room';
 import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
+import { useUserState } from '@/context/useUserContext';
 
 const FIXED_ROOM_ID = '6e43ecea-3772-4926-983d-8688acc9fb8d';
 const FIXED_SENDER_ID = '6dc3998b-b201-4c89-bb1e-6400d92c79a5';
@@ -29,6 +30,7 @@ function mapRpcRow(raw: any): ChatSummary {
 }
 
 export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (value: string) => void }) {
+    const { getUser } = useUserState();
     const [expanded, setExpanded] = useState(false);
     const [inRoom, setInRoom] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -38,7 +40,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
     const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
     const [activePartnerName, setActivePartnerName] = useState<string>('');
 
-    const userId = FIXED_SENDER_ID;
+    const userId = getUser?.uuid;
 
     useEffect(() => {
         let mounted = true;
@@ -49,13 +51,13 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
 
             if (!mounted) return;
 
-            if (error) {
-                console.error('err:', error);
-                setErr('대화 목록을 불러오는 중 오류가 발생했어요.');
-            }
+            // if (error) {
+            //     console.error('err:', error);
+            //     setErr('대화 목록을 불러오는 중 오류가 발생했어요.');
+            // }
 
             const mapped = Array.isArray(data) ? data.map(mapRpcRow) : [];
-
+            console.log(mapped);
             const fallback: ChatSummary = {
                 roomId: FIXED_ROOM_ID,
                 partnerName: 'cheerrry_',
@@ -65,9 +67,10 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                 unread: 0,
             };
 
+            //guest
             const final = mapped.length > 0 ? mapped : [fallback];
 
-            setItems(final);
+            setItems(mapped);
 
             if (!activeRoomId && final.length > 0) {
                 setActiveRoomId(final[0].roomId);

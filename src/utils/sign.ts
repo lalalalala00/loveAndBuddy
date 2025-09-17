@@ -33,7 +33,7 @@ export const EMPTY_ANIMAL: Animal = {
   owner_nickname: "",
   name: "",
   birth_year: 2012,
- 
+
   type: "dog",   
   variety: "",
   color: "",
@@ -55,21 +55,26 @@ export type SignUpFormValues = {
   uuid?: string;
   email: string;
   password: string;
-  name: string;
+  nickname: string;
   type: Role | null;
   avatar_url: string;
-    user_birth_year?: string;
+  birth_year?: string;
   user_comment?: string;
-  animals: Animal
+  animals?: Animal
   certificates?: Certificate[]; 
+  name?: string;
 };
 
 export const EMPTY_SIGNUP_FORM: SignUpFormValues = {
   email: '',
   password: '',
-  name: '',
+  nickname: '',
   type: null,
   avatar_url: '',
   animals: EMPTY_ANIMAL,
   certificates: [],
+  user_comment:"",
+  name:"",
+  birth_year:"",
+
 };

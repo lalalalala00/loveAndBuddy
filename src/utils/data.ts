@@ -2,7 +2,7 @@ import { Animal, Certificate, Role } from "./sign";
 
 //상대방 정보
 export type User = {
-  uuid?: string;
+  uuid: string;
   name: string;
   avatar_url: string;
   type: Role | null;
