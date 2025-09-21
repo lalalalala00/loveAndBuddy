@@ -41,43 +41,77 @@ export type Card = User & {
   animals: Animal[];         // lovuddy면 포함, buddy면 []
 };
 
+
+
 export type Weather = 'sunny' | 'wind' | 'cloud' | 'snow' | 'rain'
 export type DearLoveVisibility = 'public' | 'followers' | 'private';
 
 //어떤 버디와 했는지 필요해서 User
 // 러브가 직접 썼을 경우 User는 빈값
 
+// export type DearLove  = {
+//   id?: string;                 // 식별자(옵션: DB 생성)
+//   authorType: CardKind;  
+
+//   buddy?: User;
+
+//   date: number;
+
+//   title: string;
+//   weather: Weather;
+
+//   /** 대표 이미지(미입력 시 photos[0]을 자동 대표) */
+//   representativeImg?: string;
+
+//   photos: string[];
+
+//   comment: string;
+
+//   animals: Animal[];
+//   with_animals:string,
+
+
+//   location?: string;                 // 동네/장소 라벨
+//   place?: string;                    // “애견카페” 등 장소 카테고리
+//   tags?: string[];                   // 검색/필터 태그
+
+//   //추후 업데이트 
+//   visibility?: DearLoveVisibility;   // 공개 범위 (기본 public)
+//   likes?: number;                    // 반응 수
+//   bookmarks?: number;                // 저장 수
+//   commentsCount?: number;            // 댓글 수
+
+//   created_at?: number;
+//   updated_at?: number;
+// };
+
 export type DearLove = {
-  id?: string;                 // 식별자(옵션: DB 생성)
-  authorType: CardKind;  
-
-  buddy?: User;
-
-  date: number;
-
+  id: string;
+  author_id: string;
+  author_type: 'love' | 'buddy' | string;
+  buddy_user_id: string | null;
+  date_at: string | null;             // '2025-09-21 14:38:53+00'
   title: string;
-  weather: Weather;
+  weather: string | null;
+  representative_img: string | null;
+  photos: string[];                    // ← 단수 아님!
+  comment: string | null;
+  location: string | null;
+  place: string | null;
+  tags: string[];                     
+  visibility: 'public' | 'private' | string;
+  likes: number;
+  bookmarks: number;
+  comments_count: number;
+  created_at: string;
+  updated_at: string;
+  with_animals: string | null;         // uuid 목록이 문자열이면 나중에 split
+};
 
-  /** 대표 이미지(미입력 시 photos[0]을 자동 대표) */
-  representativeImg?: string;
-
-  photos: string[];
-
-  comment: string;
-
-  animals: Animal[];
-
-
-  location?: string;                 // 동네/장소 라벨
-  place?: string;                    // “애견카페” 등 장소 카테고리
-  tags?: string[];                   // 검색/필터 태그
-
-  //추후 업데이트 
-  visibility?: DearLoveVisibility;   // 공개 범위 (기본 public)
-  likes?: number;                    // 반응 수
-  bookmarks?: number;                // 저장 수
-  commentsCount?: number;            // 댓글 수
-
-  created_at?: number;
-  updated_at?: number;
+export type BuddyLite = {
+  id: string;
+  name?: string | null;
+  user_nickname?: string | null;
+  avatar_url?: string | null;
+  type?: string | null;
 };

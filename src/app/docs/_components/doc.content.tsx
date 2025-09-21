@@ -756,7 +756,7 @@ export default function DocContent() {
                                     <b>버디 유입</b>
                                 </li>
                                 <li>
-                                    <b>인스타그램</b>: <b>dear.Love UGC</b> 리그램(허가), 리일스 하이라이트 →{' '}
+                                    <b>인스타그램</b>: <b>dear.Love UGC</b> 리그램(허가), 릴스 하이라이트 →{' '}
                                     <b>러브 신뢰</b> 형성
                                 </li>
                                 <li>

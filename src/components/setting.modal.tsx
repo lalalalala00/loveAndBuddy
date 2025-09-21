@@ -1,4 +1,3 @@
-import AnimalSelectedForm, { animal } from '@/common/animal.select.form';
 import ModalIos from '@/common/modal.ios';
 import { useUserState } from '@/context/useUserContext';
 import AnimalsForm, { defaultAnimal } from './sign.animals.form';
@@ -9,12 +8,15 @@ import { getMannerEmoji } from '@/common/buddy.name.tag';
 import CertificatesForm from './sign.certificateField.form';
 import { Certificate } from '@/utils/sign';
 import { supabase } from '@/lib/supabaseClient';
+import AnimalSelect from '@/common/animal.card.select';
 
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
-    const { getUser, certificates } = useUserState();
+    const { getUser, certificates, animals } = useUserState();
     const [animalsForm, setAnimalsForm] = useState<Animal[]>([defaultAnimal(true)]);
 
-    const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animal);
+    const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animals);
+
+    console.log(animals, 'dd');
 
     const [profilePreview, setProfilePreview] = useState<string>(''); // 미리보기
     const [profileFile, setProfileFile] = useState<File | null>(null);
@@ -119,21 +121,46 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 console.warn('avatar upload skipped:', e);
             }
 
-            const mergedAnimals = [...(draftAnimals ?? []), ...(animalsForm ?? [])];
+            // 유효성 검사
+            const isUuid = (v: any) =>
+                typeof v === 'string' &&
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
 
-            const animalsPayload = mergedAnimals.map((a, idx) => ({
-                id: (a as any).animalId ?? null,
-                name: a.name ?? '',
-                birth_year: a.birth_year ? Number(a.birth_year) : null,
-                type: (a as any).type ?? 'dog',
-                variety: a.variety ?? '',
-                color: a.color ?? '',
-                personality: (a as any).personality ?? 'introvert',
-                level: String((a as any).level ?? '0'),
-                comment: a.comment ?? '',
-                img: a.img ?? '',
-                first: typeof (a as any).owner === 'boolean' ? (a as any).owner : ((a as any).first ?? idx === 0),
-            }));
+            const mergedAnimals = [...(draftAnimals ?? []), ...(animalsForm ?? [])];
+            let seenFirst = false;
+
+            const animalsPayload = mergedAnimals
+                .filter((a) => a.name?.trim() || a.img) // 빈 폼 제거
+                .map((a, idx) => {
+                    let first =
+                        typeof (a as any).owner === 'boolean' ? (a as any).owner : ((a as any).first ?? idx === 0);
+                    if (first) {
+                        if (seenFirst) first = false;
+                        else seenFirst = true;
+                    }
+
+                    // 공통 필드
+                    const base: any = {
+                        name: a.name?.trim() ?? '',
+                        birth_year: a.birth_year ? Number(a.birth_year) : null,
+                        type: (a as any).type ?? 'dog',
+                        variety: a.variety ?? '',
+                        color: a.color ?? '',
+                        personality: (a as any).personality ?? 'introvert',
+                        level: Number((a as any).level ?? 0),
+                        comment: a.comment ?? '',
+                        img: a.img ?? '',
+                        first,
+                    };
+
+                    // ⚠️ 절대 animalId/숫자 넣지 말 것. 유효 uuid만 포함. 그 외는 **키 자체를 빼기**
+                    const uuid = (a as any).animal_uuid;
+                    if (isUuid(uuid)) base.animal_uuid = uuid;
+
+                    return base;
+                });
+
+            if (!seenFirst && animalsPayload[0]) animalsPayload[0].first = true;
 
             const certsWithUrl = await Promise.all(
                 (certs ?? []).map(async (c) => {
@@ -268,7 +295,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
                 {getUser && _lov && (
                     <div className="p-2 rounded-xl shadow">
-                        <AnimalCardVertical initial={draftAnimals} onDelete={handleDelete} />
+                        <AnimalCardVertical initial={animals} onDelete={handleDelete} />
                         <AnimalsForm value={animalsForm} onChange={setAnimalsForm} maxCount={5} className="mt-4" />
                     </div>
                 )}

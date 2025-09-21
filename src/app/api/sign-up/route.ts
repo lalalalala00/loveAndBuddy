@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     // 2) 동물 upsert (owner_id = uid)
     if (Array.isArray(animals) && animals.length) {
       const upserts = animals.map((a:any, idx:number) => ({
-        owner_id: uid,
+        owner_uuid: uid,
         name: a.name ?? '',
         birth_year: a.birth_year ?? null,
         type: a.type ?? 'dog',

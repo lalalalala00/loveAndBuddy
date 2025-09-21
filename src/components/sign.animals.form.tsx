@@ -35,13 +35,19 @@ export default function AnimalsForm({
     };
 
     const setOwnerAt = (idx: number) => {
-        const next = value.map((a, i) => ({ ...a, owner: i === idx }));
+        const next = value.map((a, i) => ({ ...a, first: i === idx }));
         onChange(next);
     };
 
     const addAnimal = () => {
         if (maxCount !== undefined && value.length >= maxCount) return;
-        onChange([...value, defaultAnimal(false)]);
+        const hasFirst = value.some((v) => v.first);
+        const newItem = defaultAnimal(false);
+        const next = [...value, newItem];
+        if (!hasFirst && next.length > 0) {
+            next[0] = { ...next[0], first: true };
+        }
+        onChange(next);
     };
 
     const removeAt = (idx: number) => {
@@ -231,8 +237,11 @@ export default function AnimalsForm({
                                         type="number"
                                         min={1}
                                         max={10}
-                                        value={a.level || 0}
-                                        onChange={(e) => updateAt(idx, { level: e.target.value })}
+                                        value={Number.isFinite(Number(a.level)) ? Number(a.level) : 0}
+                                        onChange={(e) => {
+                                            const n = Math.max(0, Math.min(10, Number(e.target.value || 0)));
+                                            updateAt(idx, { level: n as any });
+                                        }}
                                         className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] w-[50px] mr-2"
                                     />
                                     <span className="text-[14px]">/10</span>

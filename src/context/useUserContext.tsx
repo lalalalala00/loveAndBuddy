@@ -1,6 +1,6 @@
 'use client';
 
-import { User } from '@/utils/data';
+import { DearLove, User } from '@/utils/data';
 import { Animal, Certificate } from '@/utils/sign';
 import {
     createContext,
@@ -29,6 +29,9 @@ interface UserContext {
     animals: Animal[];
     setAnimals: Dispatch<SetStateAction<Animal[]>>;
 
+    dearLoves: DearLove[];
+    setDearLoves: Dispatch<SetStateAction<DearLove[]>>;
+
     /** 파생: 유저 + 자격증 */
     userWithCerts: UserWithCerts | null;
     /** 파생: 유저 + 자격증 + 애니멀 */
@@ -46,6 +49,7 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
     const [getUser, setGetUser] = useState<User | null>(null);
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [animals, setAnimals] = useState<Animal[]>([]);
+    const [dearLoves, setDearLoves] = useState<DearLove[]>([]);
 
     const userWithCerts = useMemo<UserWithCerts | null>(() => {
         if (!getUser) return null;
@@ -54,13 +58,15 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
 
     const userFull = useMemo<UserFull | null>(() => {
         if (!getUser) return null;
-        return { ...getUser, certificates, animals };
-    }, [getUser, certificates, animals]);
+        return { ...getUser, certificates, animals, dearLoves };
+    }, [getUser, certificates, animals, dearLoves]);
 
     const resetUser = () => {
         setGetUser(null);
         setCertificates([]);
         setAnimals([]);
+        setDearLoves([]);
+
         setUserState('guest');
     };
 
@@ -75,6 +81,9 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
                 setCertificates,
                 animals,
                 setAnimals,
+                dearLoves,
+                setDearLoves,
+
                 userWithCerts,
                 userFull,
                 resetUser,

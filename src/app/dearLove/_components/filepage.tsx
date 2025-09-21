@@ -79,8 +79,24 @@ const FilePage = () => {
                 </div>
 
                 <div className="flex flex-col pl-8 ">
-                    <div className="mt-2 mb-4">
-                        <h4 className="text-[28px] font-bold lowercase text-[#5b7551]">˚₊· {selectedMonth} —̳͟͞͞♡ ˚₊·</h4>
+                    <div className="flex w-full justify-between mb-2 itmes-center">
+                        <button
+                            className="px-3 py-1 rounded-lg hover:bg-[#f8fbf4] border border-[#e3ecdc]"
+                            aria-label="이전 달"
+                        >
+                            ‹
+                        </button>
+                        <div className="mt-2 mb-4">
+                            <h4 className="text-[28px] font-bold lowercase text-[#5b7551]">
+                                ˚₊· {selectedMonth} —̳͟͞͞♡ ˚₊·
+                            </h4>
+                        </div>
+                        <button
+                            className="px-3 py-1 rounded-lg hover:bg-[#f8fbf4] border border-[#e3ecdc]"
+                            aria-label="다음 달"
+                        >
+                            ›
+                        </button>
                     </div>
 
                     <div className="flex flex-col w-full ">
@@ -178,19 +194,30 @@ const FilePage = () => {
     );
 };
 
-const imgs = [
-    { url: '/cha/1_1.png' },
-    { url: '/cha/1_3.png' },
-    { url: '/cha/1_4.png' },
-    { url: '/cha/1_5.png' },
-    { url: '/cha/1_6.png' },
-    { url: '/cha/1_7.png' },
-    { url: '/cha/1_8.png' },
-    { url: '/cha/1_9.png' },
-    { url: '/cha/1_10.png' },
-    { url: '/cha/1_11.png' },
-    { url: '/cha/1_12.png' },
-    { url: '/cha/1_13.png' },
+export const imgs = [
+    { url: '/cha/1_1.png', comment: '' },
+    {
+        url: '/cha/1_3.png',
+        comment:
+            'commentcommentcommentv comment comment commentcommentcommentv comment comment commentcommentcommentv comment comment',
+    },
+    {
+        url: '/cha/1_4.png',
+        comment: 'commentcomment comment commentcommentcommentv comment comment commentcommentcommentv comment comment',
+    },
+    { url: '/cha/1_5.png', comment: 'comment' },
+    { url: '/cha/1_6.png', comment: '' },
+    { url: '/cha/1_7.png', comment: '' },
+    {
+        url: '/cha/1_8.png',
+        comment:
+            'comment comment comment commentcommentcommentcomment commentcommentcommentv comment comment commentcommentcommentv comment comment commentcommentcommentv comment comment',
+    },
+    { url: '/cha/1_9.png', comment: '' },
+    { url: '/cha/1_10.png', comment: 'commentcommentcomment' },
+    { url: '/cha/1_11.png', comment: '' },
+    { url: '/cha/1_12.png', comment: '' },
+    { url: '/cha/1_13.png', comment: '' },
 ];
 
 export const months = [
@@ -206,6 +233,18 @@ export const months = [
     'October',
     'November',
     'December',
+];
+
+export const cover = [
+    { url: '/cha/bg.png' },
+    { url: '/concept_site/7.png' },
+    { url: '/concept_site/10.png' },
+    { url: '/cover/1.png' },
+    { url: '/cover/2.png' },
+    { url: '/cover/3.png' },
+    { url: '/cover/4.png' },
+    { url: '/cover/5.png' },
+    { url: '/cover/6.png' },
 ];
 
 export default FilePage;

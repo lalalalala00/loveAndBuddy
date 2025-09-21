@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import BuddyConnect from '../buddy.connect';
-import CommunityList from '../commu.list';
-import WriteIndex from '../commu.write.index';
+
 import Calendar from './calendar';
 
 import GridLayout from 'react-grid-layout';

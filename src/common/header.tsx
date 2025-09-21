@@ -10,6 +10,7 @@ import SignUpModal from '@/components/sign.up';
 import LoginModal from '@/components/sign.login';
 import SettingModal from '@/components/setting.modal';
 import Tooltip from './tooltip';
+import { DearLove } from '@/utils/data';
 
 const ROLE_META = {
     love: { label: 'love', emoji: '💚' },
@@ -21,7 +22,7 @@ const Header = () => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const { setUserState, getUser, setGetUser, setAnimals, setCertificates, certificates } = useUserState();
+    const { setUserState, getUser, setGetUser, setAnimals, setCertificates, animals, setDearLoves } = useUserState();
 
     // const [getUser, setGetUser] = useState<UsersRow | null>(null);
     const [signUpModal, setSignUpModal] = useState<boolean>(false);
@@ -33,33 +34,73 @@ const Header = () => {
 
     const isActive = (url: string) => pathname.includes(url);
 
+    async function fetchAllDearLove(userId: string, pageSize = 1000) {
+        let from = 0;
+        let all: DearLove[] = [];
+
+        while (true) {
+            const { data, error } = await supabase
+                .from('dear_love')
+                .select(
+                    `
+        id, author_id, author_type, buddy_user_id,
+        date_at, title, weather, representative_img, photos,
+        comment, location, place, tags, visibility,
+        likes, bookmarks, comments_count,
+        created_at, updated_at, with_animals
+      `,
+                )
+                .eq('author_id', userId)
+                .order('date_at', { ascending: false }) // 또는 .order('created_at', { ascending: false })
+                .range(from, from + pageSize - 1);
+
+            if (error) throw error;
+
+            const chunk = data ?? [];
+            all = all.concat(chunk);
+
+            if (chunk.length < pageSize) break; // 마지막 페이지
+            from += pageSize;
+        }
+
+        return all;
+    }
+
     const loadUser = async () => {
         const {
             data: { user },
         } = await supabase.auth.getUser();
+
         if (!user?.id) {
             setGetUser(null);
             setUserState(null as any);
+            setCertificates([]);
+            setAnimals([]);
+            setDearLoves([]);
             return;
         }
 
         const [{ data: u }, { data: cs }, { data: as }] = await Promise.all([
-            supabase.from('users').select('*').eq('id', user?.id).single(),
-            supabase
-                .from('certificates')
-                .select('*')
-                .eq('user_id', user?.id)
-                .order('acquired_at', { ascending: false }),
-            supabase.from('animals').select('*').eq('owner_id', user?.id),
+            supabase.from('users').select('*').eq('id', user.id).maybeSingle(),
+            supabase.from('certificates').select('*').eq('user_id', user.id).order('acquired_at', { ascending: false }),
+            supabase.from('animals').select('*').eq('owner_uuid', user.id),
         ]);
 
         setGetUser(u ?? null);
         setCertificates(cs ?? []);
         setAnimals(as ?? []);
-
         if (u?.type) setUserState(u.type as UserStateType);
+
+        try {
+            const list = await fetchAllDearLove(user.id);
+            setDearLoves(list);
+        } catch (e) {
+            console.error('[dear_love fetchAll]', e);
+            setDearLoves([]);
+        }
     };
-    console.log(getUser);
+
+    console.log(animals);
     useEffect(() => {
         loadUser();
 
@@ -74,7 +115,7 @@ const Header = () => {
 
         return () => sub.subscription?.unsubscribe();
     }, []);
-    console.log(certificates, 'certificates');
+
     const handleSignUp = () => {
         setSignModal(false);
         setSignUpModal(true);
@@ -141,7 +182,7 @@ const Header = () => {
                     {!getUser ? (
                         <button
                             onClick={() => setSignModal(!signModal)}
-                            className="rounded-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2"
+                            className="rounded-full w-full h-12 justify-center bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] flex items-center space-x-2"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
