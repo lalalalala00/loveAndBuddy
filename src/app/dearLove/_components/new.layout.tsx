@@ -16,25 +16,66 @@ import PhotoModal from './modal.photo';
 import ModalIos from '@/common/modal.ios';
 
 export default function NewLayout() {
-    const { animals, dearLoves } = useUserState();
+    const { animals, dearLoves = [] } = useUserState();
 
-    const firstId = dearLoves?.[0]?.buddy_user_id ?? null;
+    const sortedDearLoves = useMemo<DearLove[]>(
+        () => [...dearLoves].sort((a, b) => (b.date_at ?? '').localeCompare(a.date_at ?? '')),
+        [dearLoves],
+    );
+
+    const uniqueBuddyIds = useMemo(() => {
+        const ids = sortedDearLoves.map((d) => d.buddy_user_id).filter((v): v is string => !!v);
+        return Array.from(new Set(ids));
+    }, [sortedDearLoves]);
+
+    const initial = sortedDearLoves[0] ?? null;
 
     const [selectedAni, setSelectedAni] = useState<string[]>([]);
-
-    const [currentBuddyId, setCurrentBuddyId] = useState<string | null>(null);
+    const [currentBuddyId, setCurrentBuddyId] = useState<string | null>(initial?.buddy_user_id ?? null);
     const [currentBuddy, setCurrentBuddy] = useState<BuddyLite | null>(null);
     const [buddyCache, setBuddyCache] = useState<Record<string, BuddyLite | null>>({});
-
-    const [dearLove, setDearLove] = useState<DearLove>(dearLoves[0]);
+    const [dearLove, setDearLove] = useState<DearLove | null>(initial);
 
     const [selectedPhoto, setSelectedPhoto] = useState<boolean>(false);
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
     useEffect(() => {
-        setCurrentBuddyId(firstId);
-        setDearLove(dearLoves[0]);
-    }, [firstId]);
+        const latest = sortedDearLoves[0];
+        setDearLove(latest ?? null);
+        setCurrentBuddyId(latest?.buddy_user_id ?? null);
+    }, [sortedDearLoves]);
+
+    useEffect(() => {
+        if (!uniqueBuddyIds.length) return;
+
+        const idsToFetch = uniqueBuddyIds.filter((id) => buddyCache[id] === undefined);
+        if (!idsToFetch.length) return;
+
+        let cancelled = false;
+        (async () => {
+            try {
+                const results = await Promise.all(idsToFetch.map((id) => getUserById(id).catch(() => null)));
+                if (cancelled) return;
+
+                setBuddyCache((prev) => {
+                    const next = { ...prev };
+                    idsToFetch.forEach((id, i) => {
+                        if (next[id] === undefined) next[id] = results[i];
+                    });
+                    return next;
+                });
+
+                if (currentBuddyId && idsToFetch.includes(currentBuddyId)) {
+                    const idx = idsToFetch.indexOf(currentBuddyId);
+                    setCurrentBuddy(results[idx] ?? null);
+                }
+            } catch {}
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [uniqueBuddyIds, currentBuddyId]);
 
     useEffect(() => {
         (async () => {
@@ -53,21 +94,26 @@ export default function NewLayout() {
             setBuddyCache((prev) => ({ ...prev, [currentBuddyId]: user }));
             setCurrentBuddy(user);
         })();
-    }, [currentBuddyId, buddyCache]);
-    console.log(currentBuddy, dearLoves, currentBuddyId);
+    }, [currentBuddyId]);
 
-    const handleCoverClick = (buddyId?: string | null, dear: DearLove) => {
-        if (!buddyId) return;
-
+    const handleCoverClick = (buddyId?: string | null, nextDear?: DearLove) => {
+        if (!buddyId || !nextDear) return;
         setCurrentBuddyId(buddyId);
-        setDearLove(dear);
+        setDearLove(nextDear);
     };
-    console.log(dearLove);
+
     const gallery = useMemo(() => imgs, []);
 
     const handlePhotoClick = (i: number) => {
-        setSelectedPhoto(!selectedPhoto);
+        setSelectedPhoto(true);
         setSelectedPhotoIndex(i);
+    };
+
+    const formatStamp = (ts?: number) => {
+        if (!ts) return '';
+        const d = new Date(ts);
+        const w = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+        return `${d.getMonth() + 1}월 ${d.getDate()}일 (${w}) ${d.getHours()}시 ${String(d.getMinutes()).padStart(2, '0')}분`;
     };
 
     return (
@@ -83,28 +129,33 @@ export default function NewLayout() {
                     <Tooltip
                         tooltip={`체리쉬 버디룸 보러가기`}
                         comment={
-                            <h2 className="text-[15px] mb-1 font-semibold text-[#5b7551] ">
-                                체리쉬와 함께한 1월의 디얼러브
-                            </h2>
+                            <h2 className="text-[15px] mb-1 font-semibold text-[#5b7551] ">체리쉬와 함께한 디얼러브</h2>
                         }
                         clickCss="w-full"
                     />
                     <LoveCollageFilter2 onChange={setSelectedAni} currentBuddyId={currentBuddyId} />
                 </div>
 
-                <CoverList currentBuddy={currentBuddy} handleCoverClick={handleCoverClick} />
+                <CoverList
+                    dearLoves={sortedDearLoves}
+                    buddyCache={buddyCache}
+                    resolveBuddyName={(id?: string | null) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '')}
+                    handleCoverClick={handleCoverClick}
+                />
             </section>
+
             <div className=" mx-auto max-w-[1000px] pt-3 pb-3">
                 <div className="border-t-2 border-[#e7efe1]" />
             </div>
-            {!dearLoves ? (
+
+            {!dearLove ? (
                 <div>
-                    <span> no data</span>
+                    <span>no data</span>
                 </div>
             ) : (
                 <main className=" mx-auto max-w-[1200px] px-3 mt-4">
                     <span className="flex justify-center mb-6 text-[12px] text-[#8f8f8f] text-shadow-2xs">
-                        8월 1일 (금) 오전 9:35
+                        {formatStamp(dearLove.date_at)}
                     </span>
                     <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
                         {gallery.map((item, i) => (
@@ -124,7 +175,6 @@ export default function NewLayout() {
                                         <DiaryMessage text={dearLove?.comment} />
                                     </div>
                                 )}
-
                                 <button
                                     onClick={() => handlePhotoClick(i)}
                                     className="group rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
@@ -154,7 +204,7 @@ export default function NewLayout() {
 
             <ModalIos
                 isOpen={selectedPhoto}
-                handleModalState={() => setSelectedPhoto(!selectedPhoto)}
+                handleModalState={() => setSelectedPhoto(false)}
                 width="50%"
                 height="800px"
                 title={'title'}
@@ -162,7 +212,7 @@ export default function NewLayout() {
                 leftAction={() => console.log('heart')}
             >
                 <PhotoModal
-                    handleModalState={() => setSelectedPhoto(!selectedPhoto)}
+                    handleModalState={() => setSelectedPhoto(false)}
                     images={imgs}
                     selectedIndex={selectedPhotoIndex}
                 />
@@ -170,10 +220,3 @@ export default function NewLayout() {
         </div>
     );
 }
-
-const loves = [
-    { imgs: '/cha/chacha.png', name: '샤넬', id: '1' },
-    { imgs: '/love/rungji.jpeg', name: '룽지', id: '2' },
-    { imgs: '/love/meng.png', name: '돌멩이', id: '3' },
-    { imgs: '/love/IMG_1659.JPG', name: '도도', id: '4' },
-];

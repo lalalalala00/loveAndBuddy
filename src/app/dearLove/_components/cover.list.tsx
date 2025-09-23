@@ -1,19 +1,17 @@
-import { useState, useRef, useEffect, Dispatch, SetStateAction } from 'react';
-import { cover } from './filepage';
-import { BuddyLite, DearLove } from '@/utils/data';
-import { useUserState } from '@/context/useUserContext';
+import { useState, useRef, useEffect } from 'react';
+import { DearLove } from '@/utils/data';
 
 export default function CoverList({
-    currentBuddy,
+    dearLoves,
 
+    resolveBuddyName,
     handleCoverClick,
 }: {
-    currentBuddy: BuddyLite | null;
+    dearLoves: DearLove[];
 
-    handleCoverClick: (buddyId?: string | null, dear: DearLove) => void;
+    resolveBuddyName: (id?: string | null) => string;
+    handleCoverClick: (buddyId?: string | null, dear?: DearLove) => void;
 }) {
-    const { animals, dearLoves } = useUserState();
-
     const [canLeft, setCanLeft] = useState(false);
     const [canRight, setCanRight] = useState(false);
 
@@ -30,7 +28,6 @@ export default function CoverList({
         updateNav();
         const el = railRef.current;
         if (!el) return;
-
         const onScroll = () => updateNav();
         el.addEventListener('scroll', onScroll);
         window.addEventListener('resize', updateNav);
@@ -47,14 +44,22 @@ export default function CoverList({
         el.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
     };
 
+    const formatDate = (ts?: number) => {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return `${d.toLocaleString('en-US', {
+            month: 'short',
+        })} ${d.getDate()}, ${d.getFullYear()}`;
+    };
+
     return (
-        <div className="relative w-full ">
-            <div ref={railRef} className="flex gap-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory ">
+        <div className="relative w-full">
+            <div ref={railRef} className="flex gap-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory">
                 {dearLoves.map((c, idx) => (
                     <button
                         onClick={() => handleCoverClick(c.buddy_user_id, c)}
                         key={idx}
-                        className="snap-start relative shrink-0 w-[200px] h-[130px]"
+                        className="snap-start relative shrink-0 w-[200px] h-[130px] group"
                     >
                         <img
                             src={c.representative_img}
@@ -63,10 +68,12 @@ export default function CoverList({
                             loading="lazy"
                             decoding="async"
                         />
-                        <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                        <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-t from-black/25 to-transparent opacity-0 group-hover:opacity-100 transition" />
                         <div className="absolute bottom-2 right-3 text-right text-white drop-shadow">
-                            <div className="text-[12px] font-semibold">Buddy_ᬏ᭄꙳⸌ {currentBuddy?.name}</div>
-                            <div className="text-[12px] font-semibold">july 14, 2025</div>
+                            <div className="text-[12px] font-semibold">
+                                Buddy_ᬏ᭄꙳⸌ {resolveBuddyName(c.buddy_user_id)}
+                            </div>
+                            <div className="text-[12px] font-semibold">{formatDate(c.date_at)}</div>
                         </div>
                     </button>
                 ))}
