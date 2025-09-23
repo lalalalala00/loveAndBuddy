@@ -10,8 +10,10 @@ import Tooltip from '@/common/tooltip';
 
 import LoveCollageFilter2 from './love.filter2';
 import { useUserState } from '@/context/useUserContext';
-import { BuddyLite } from '@/utils/data';
+import { BuddyLite, DearLove } from '@/utils/data';
 import { getUserById } from '@/common/get.user.by.id';
+import PhotoModal from './modal.photo';
+import ModalIos from '@/common/modal.ios';
 
 export default function NewLayout() {
     const { animals, dearLoves } = useUserState();
@@ -24,8 +26,14 @@ export default function NewLayout() {
     const [currentBuddy, setCurrentBuddy] = useState<BuddyLite | null>(null);
     const [buddyCache, setBuddyCache] = useState<Record<string, BuddyLite | null>>({});
 
+    const [dearLove, setDearLove] = useState<DearLove>(dearLoves[0]);
+
+    const [selectedPhoto, setSelectedPhoto] = useState<boolean>(false);
+    const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+
     useEffect(() => {
         setCurrentBuddyId(firstId);
+        setDearLove(dearLoves[0]);
     }, [firstId]);
 
     useEffect(() => {
@@ -46,13 +54,21 @@ export default function NewLayout() {
             setCurrentBuddy(user);
         })();
     }, [currentBuddyId, buddyCache]);
-    console.log(currentBuddy);
-    const handleCoverClick = (buddyId?: string | null) => {
-        if (!buddyId) return;
-        setCurrentBuddyId(buddyId);
-    };
+    console.log(currentBuddy, dearLoves, currentBuddyId);
 
+    const handleCoverClick = (buddyId?: string | null, dear: DearLove) => {
+        if (!buddyId) return;
+
+        setCurrentBuddyId(buddyId);
+        setDearLove(dear);
+    };
+    console.log(dearLove);
     const gallery = useMemo(() => imgs, []);
+
+    const handlePhotoClick = (i: number) => {
+        setSelectedPhoto(!selectedPhoto);
+        setSelectedPhotoIndex(i);
+    };
 
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
@@ -73,56 +89,84 @@ export default function NewLayout() {
                         }
                         clickCss="w-full"
                     />
-                    <LoveCollageFilter2 onChange={setSelectedAni} />
+                    <LoveCollageFilter2 onChange={setSelectedAni} currentBuddyId={currentBuddyId} />
                 </div>
 
-                <CoverList />
+                <CoverList currentBuddy={currentBuddy} handleCoverClick={handleCoverClick} />
             </section>
             <div className=" mx-auto max-w-[1000px] pt-3 pb-3">
                 <div className="border-t-2 border-[#e7efe1]" />
             </div>
-            <main className=" mx-auto max-w-[1200px] px-3 mt-4">
-                <span className="flex justify-center mb-6 text-[12px] text-[#8f8f8f] text-shadow-2xs">
-                    8월 1일 (금) 오전 9:35
-                </span>
-                <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
-                    {gallery.map((item, i) => (
-                        <div key={i} className="mb-2 break-inside-avoid">
-                            {i === 0 && (
-                                <div className="mb-2">
-                                    <FileNameBox bgImg="/cha/bg.png" textColor="" />
-                                </div>
-                            )}
-                            {i === 5 && (
-                                <div className="mb-2">
-                                    <DiaryMessage
-                                        text={`Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero id obcaecati, fuga ex, nulla eligendi tempore ad tempora, cumque omnis minima laudantium.`}
-                                    />
-                                </div>
-                            )}
-
-                            <article className="group rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5">
-                                <img
-                                    src={item.url}
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                    className={`block w-full object-cover ${item.comment ? 'rounded-t-xl' : 'rounded-xl'}`}
-                                />
-                                {item.comment && (
-                                    <div className="p-2">
-                                        <p className="text-[14px] md:text-[15px] leading-4 text-gray-800">
-                                            {item.comment}
-                                        </p>
+            {!dearLoves ? (
+                <div>
+                    <span> no data</span>
+                </div>
+            ) : (
+                <main className=" mx-auto max-w-[1200px] px-3 mt-4">
+                    <span className="flex justify-center mb-6 text-[12px] text-[#8f8f8f] text-shadow-2xs">
+                        8월 1일 (금) 오전 9:35
+                    </span>
+                    <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
+                        {gallery.map((item, i) => (
+                            <div key={i} className="mb-2 break-inside-avoid">
+                                {i === 0 && (
+                                    <div className="mb-2">
+                                        <FileNameBox
+                                            bgImg={dearLove?.representative_img}
+                                            textColor=""
+                                            dearLove={dearLove}
+                                            currentBuddy={currentBuddy}
+                                        />
                                     </div>
                                 )}
-                            </article>
-                        </div>
-                    ))}
-                </div>
-            </main>
+                                {i === 5 && (
+                                    <div className="mb-2">
+                                        <DiaryMessage text={dearLove?.comment} />
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={() => handlePhotoClick(i)}
+                                    className="group rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
+                                >
+                                    <img
+                                        src={item.url}
+                                        alt=""
+                                        loading="lazy"
+                                        decoding="async"
+                                        className={`block w-full object-cover ${item.comment ? 'rounded-t-xl' : 'rounded-xl'}`}
+                                    />
+                                    {item.comment && (
+                                        <div className="p-2">
+                                            <p className="text-[14px] md:text-[15px] leading-4 text-gray-800">
+                                                {item.comment}
+                                            </p>
+                                        </div>
+                                    )}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            )}
 
             <div className="h-12" />
+
+            <ModalIos
+                isOpen={selectedPhoto}
+                handleModalState={() => setSelectedPhoto(!selectedPhoto)}
+                width="50%"
+                height="800px"
+                title={'title'}
+                leftComment="*⁀➷♥ Heart ⌁❤︎⌁﻿"
+                leftAction={() => console.log('heart')}
+            >
+                <PhotoModal
+                    handleModalState={() => setSelectedPhoto(!selectedPhoto)}
+                    images={imgs}
+                    selectedIndex={selectedPhotoIndex}
+                />
+            </ModalIos>
         </div>
     );
 }

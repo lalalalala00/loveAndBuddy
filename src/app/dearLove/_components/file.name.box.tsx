@@ -1,4 +1,16 @@
-const FileNameBox = ({ bgImg, textColor }: { bgImg: string; textColor: string }) => {
+import { BuddyLite, DearLove } from '@/utils/data';
+
+const FileNameBox = ({
+    bgImg,
+    textColor,
+    dearLove,
+    currentBuddy,
+}: {
+    bgImg: string;
+    textColor: string;
+    dearLove: DearLove;
+    currentBuddy: BuddyLite;
+}) => {
     return (
         <div
             className="relative flex flex-col justify-between p-4 rounded-xl shadow-inner h-[260px] border-2 border-gray-300 "
@@ -10,7 +22,7 @@ const FileNameBox = ({ bgImg, textColor }: { bgImg: string; textColor: string })
                     className="text-2xl font-semibold tracking-wide uppercase"
                     style={{ color: textColor ? textColor : '#111' }}
                 >
-                    {weather[0].label}
+                    {dearLove?.weather}
                 </span>
                 <div className="flex items-end">
                     <h4 className="text-2xl font-bold" style={{ color: textColor ? textColor : '#101828' }}>
@@ -25,15 +37,15 @@ const FileNameBox = ({ bgImg, textColor }: { bgImg: string; textColor: string })
                     ⏱ ̗̀ 16:00 =͟͟͞ ♡̩͙꙳ 19:00 ˎˊ
                 </h6>
                 <span className="text-sm font-medium" style={{ color: textColor ? textColor : '#111' }}>
-                    Buddy_ᬏ᭄꙳⸌ <span className="font-semibold">cheeerry</span> ⛧*̩̩͙⸝⋆
+                    Buddy_ᬏ᭄꙳⸌ <span className="font-semibold">{currentBuddy?.name}</span> ⛧*̩̩͙⸝⋆
                 </span>
             </div>
             <div className="mt-2 flex flex-col z-2">
                 <span
-                    className="text-[14px] font-semibold line-clamp-3"
+                    className="text-[14px] font-semibold line-clamp-3 text-center"
                     style={{ color: textColor ? textColor : '#111' }}
                 >
-                    샤넬이와 놀이터에서 신나게 놀았어요!
+                    {dearLove?.title}
                 </span>
                 <span className="text-[10px] text-nowrap flex justify-center">
                     *･☪·̩͙ ⋰˚☆⋰˚★⋰˚☆⋰˚★⋰˚☆⋰˚★⋰˚☆⋰˚★ ·̩͙☪･*
