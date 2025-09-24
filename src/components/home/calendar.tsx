@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -9,6 +9,10 @@ import { PanelRightOpen, PanelRightClose, Maximize2, Minimize2 } from 'lucide-re
 
 import CalendarSideContent from '../calendar.side';
 import { formatDateLongEn } from '@/utils/date';
+import { useUserState } from '@/context/useUserContext';
+import { getUserById } from '@/common/get.user.by.id';
+import { useDearLoveIndex } from '@/hooks/useDearLove';
+import { DearLove } from '@/utils/data';
 
 interface Buddy {
     name: string;
@@ -29,8 +33,10 @@ export interface Reservation {
 
 export interface SelectedDay {
     day: string;
-    reservation: Array<Reservation>;
+    reservation: DearLove[];
 }
+
+type ReservationVM = { buddyName: string; loveName?: string; date: number };
 
 const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
@@ -43,6 +49,12 @@ const Calendar = ({
 }) => {
     dayjs.extend(utc);
     dayjs.extend(timezone);
+    dayjs.tz.setDefault('Asia/Seoul');
+
+    const { dearLoves = [] } = useUserState();
+
+    const { state, actions } = useDearLoveIndex(dearLoves, getUserById);
+    const { sortedDearLoves, dearLove, currentBuddy, currentBuddyId, buddyCache } = state;
 
     const [calSize, setCalSize] = useState<boolean>(true);
     const [selectedDay, setSelectedDay] = useState<SelectedDay>();
@@ -63,6 +75,18 @@ const Calendar = ({
 
     const today = dayjs();
 
+    const dearMapByDay = useMemo(() => {
+        const map: Record<string, DearLove[]> = {};
+        for (const d of sortedDearLoves) {
+            if (!d?.date_at) continue;
+            const key = dayjs(d.date_at).tz().format('YYYY-MM-DD');
+            (map[key] ||= []).push(d);
+        }
+        return map;
+    }, [sortedDearLoves]);
+
+    const resolveBuddyName = (id?: string | null) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '');
+
     const generateCalendar = () => {
         const calendar: (dayjs.Dayjs | null)[] = [];
 
@@ -78,22 +102,23 @@ const Calendar = ({
     };
 
     const handleDateClick = (date: dayjs.Dayjs) => {
-        const clickedDateStr = date.format('YYYY-MM-DD');
-        console.log(clickedDateStr, 'date');
+        const key = date.tz().format('YYYY-MM-DD');
+        const dayReservations = dearMapByDay[key] ?? [];
 
-        const dayReservations = reservations.filter(
-            (r) => dayjs(r.date).utcOffset(9).format('YYYY-MM-DD') === clickedDateStr,
-        );
+        setSelectedDay({ day: key, reservation: dayReservations });
+        setDay(date.format('ddd'));
+        // setDayContents(dayReservations.length > 0);
 
-        setSelectedDay({ day: clickedDateStr, reservation: dayReservations });
-        setDay(dayjs(clickedDateStr).format('ddd'));
-        console.log(dayReservations.length, 'dayReservations');
         if (dayReservations.length > 0) {
             setDayContents(true);
         }
-
-        console.log(`[${clickedDateStr}] 예약 목록: `, dayReservations);
     };
+
+    const toVM = (arr: DearLove[]): ReservationVM[] =>
+        arr.map((d) => ({
+            buddyName: resolveBuddyName(d.buddy_user_id),
+            date: d.date_at ? dayjs(d.date_at).valueOf() : 0,
+        }));
 
     useEffect(() => {
         let width = 1;
@@ -175,21 +200,19 @@ const Calendar = ({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-7 text-center text-sm text-gray-500 w-full">
+                <div className="grid grid-cols-7 text-center text-sm text-gray-500 w-full bg-[#f9efd34c] py-2 rounded-t-lg mb-1">
                     {daysOfWeek.map((day) => (
-                        <div key={day} className="first:text-red-500">
+                        <div key={day} className="first:text-red-500 font-semibold">
                             <p>{day}</p>
                         </div>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-7 text-center mt-2 w-full">
+                <div className="grid grid-cols-7 text-center  w-full">
                     {generateCalendar().map((date, i) => {
-                        const clickedDateStr = date && date.format('YYYY-MM-DD');
-
-                        const dayReservations = reservations.filter(
-                            (r) => dayjs(r.date).utcOffset(9).format('YYYY-MM-DD') === clickedDateStr,
-                        );
+                        const key = date?.tz().format('YYYY-MM-DD');
+                        const dayReservations = key ? (dearMapByDay[key] ?? []) : [];
+                        const bg = dayReservations.map((item) => item.representative_img);
 
                         return (
                             <div
@@ -197,30 +220,46 @@ const Calendar = ({
                                 className={`w-full h-full flex justify-start cursor-pointer p-1 flex-col border border-[#f7f9f6]
         ${date?.isSame(today, 'day') ? 'bg-[#c8d9b5b4] text-white font-bold hover:text-[#9dbb80]' : ''}
         ${!date ? '' : 'hover:bg-[#f7f9f6]'}
+        ${bg.length > 0 ? 'hover:opacity-90' : ''}
       `}
                                 style={{
-                                    minWidth: !calSize ? '' : '',
-                                    minHeight: !calSize ? '66px' : '100px',
-                                    height: !calSize ? '66px' : '100px',
+                                    minHeight: !calSize ? '70px' : '112px',
+                                    height: !calSize ? '70px' : '112px',
+                                    backgroundImage: `url(${bg})`,
+                                    backgroundSize: 'cover',
                                 }}
                                 onClick={() => date && handleDateClick(date)}
                             >
                                 <div className="text-left relative">
-                                    <span className={`${calSize ? 'text-[16px]' : 'text-[14px]'} `}>
+                                    <span
+                                        className={`${calSize ? 'text-[16px]' : 'text-[14px]'} z-[6] relative ${dayReservations.length > 0 ? 'text-gray-700 font-normal' : ''}`}
+                                    >
                                         {date?.date()}
                                     </span>
+
                                     {dayReservations.length > 0 && (
-                                        <div className="w-9 h-5 bg-[#e8f0e1] absolute -top-0 -left-2 -z-1" />
+                                        <div className="w-9 h-9 rounded-full bg-[#fce3ec] border-2 border-[#fbcddc] absolute -top-[7px] -left-[12px] z-[5]" />
+                                    )}
+                                    {dayReservations.length > 0 && (
+                                        <div
+                                            className="w-full h-full absolute inset-0 bg-gradient-to-b from-white/70 via-white/45 to-white/75"
+                                            style={{
+                                                minHeight: !calSize ? '70px' : '102px',
+                                                height: !calSize ? '70px' : '102px',
+                                                filter: 'blur(2px)',
+                                            }}
+                                        />
                                     )}
                                 </div>
 
-                                <div className="flex flex-col items-start">
-                                    {dayReservations.length > 0 &&
-                                        dayReservations.map((item, i) => (
-                                            <div className="flex" key={i}>
-                                                <span className="text-[12px] text-nowrap">{item.buddy.name} buddy</span>
-                                            </div>
-                                        ))}
+                                <div className="flex flex-col items-end  px-1">
+                                    {dayReservations.map((dl, idx) => (
+                                        <div className="flex" key={idx}>
+                                            <span className="text-[11px] leading-none px-1.5 py-0.5 rounded-sm text-gray-800 bg-white/60 backdrop-blur border border-[#e3ecdc]">
+                                                {resolveBuddyName(dl.buddy_user_id)}
+                                            </span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         );
@@ -239,45 +278,18 @@ const Calendar = ({
                     <div
                         className={`${selectedDay && selectedDay?.reservation.length >= 1 ? '' : 'bg-[#f3f7ee]'} h-[calc(100%-47px)] rounded-b-2xl`}
                     >
-                        <CalendarSideContent item={selectedDay} dayContents={dayContents} calSize={calSize} />
+                        <CalendarSideContent
+                            item={selectedDay}
+                            dayContents={dayContents}
+                            calSize={calSize}
+                            resolveBuddyName={(id) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '')}
+                            buddyAvatar={(id) => (id && buddyCache[id]?.avatar_url) || (id ? 'Buddy' : '')}
+                        />
                     </div>
                 </div>
             )}
         </div>
     );
 };
-
-const reservations: Reservation[] = [
-    {
-        buddy: { name: '코코', code: 'B001', profileImg: '' },
-        love: { name: '루비', code: 'B002', profileImg: '' },
-        date: 1754265600000, // ✅ 2025-08-04
-    },
-    {
-        buddy: { name: '루비', code: 'B002', profileImg: '' },
-        love: { name: '루비', code: 'B002', profileImg: '' },
-        date: 1754265600000, // ✅ 2025-08-04
-    },
-    {
-        buddy: { name: '몽이', code: 'B003', profileImg: '' },
-        love: { name: '루비', code: 'B002', profileImg: '' },
-        date: 1754784000000, // ✅ 2025-08-10
-    },
-    {
-        buddy: { name: '초코', code: 'B004', profileImg: '' },
-        love: { name: '루비', code: 'B002', profileImg: '' },
-        date: 1755475200000, // ✅ 2025-08-18
-    },
-    {
-        buddy: { name: '하니', code: 'B005', profileImg: '' },
-        love: { name: '루비', code: 'B002', profileImg: '' },
-        date: 1755475200000, // ✅ 2025-08-18
-    },
-    {
-        buddy: { name: '보리', code: 'B006', profileImg: '' },
-        love: { name: '루비', code: 'B002', profileImg: '' },
-        date: 1756080000000, // ✅ 2025-08-25
-    },
-];
 
 export default Calendar;
