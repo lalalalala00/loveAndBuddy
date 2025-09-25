@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import type { BuddyLite, DearLove } from '@/utils/data';
+import type { DearLove } from '@/utils/data';
 import type { SelectedDay } from './home/calendar';
 import { useUserState } from '@/context/useUserContext';
 
@@ -29,9 +29,7 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
 
     const loveNames = useMemo(() => {
         const names = new Set<string>();
-
         (animals ?? []).forEach((a) => a?.animal_uuid && names.add(a.name));
-
         return Array.from(names);
     }, [item]);
 
@@ -50,7 +48,7 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
         const extra = Math.max(pics.length - show.length, 0);
         return { show, extra };
     };
-    console.log(item);
+
     return (
         <div className="flex flex-col justify-between items-center h-full rounded-xl p-2">
             {item?.reservation.length >= 1 ? (
@@ -72,13 +70,14 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
                                         className={`border mb-2 border-gray-200 bg-[#fafdf4] rounded-xl p-4 ${cardWidth}`}
                                     >
                                         <div className="flex items-center gap-2">
-                                            <div className="w-9 h-9 rounded-full bg-white border border-[#e3ecdc] flex items-center justify-center text-[12px] text-[#51683b]">
-                                                {buddyName}
-                                            </div>
-                                            <img src={buddyAvatar} alt="" className="w-9 h-9 rounded-full" />
+                                            <img
+                                                src={buddyAvatar}
+                                                alt=""
+                                                className="w-9 h-9 rounded-full object-cover"
+                                            />
                                             <div className="flex-1 min-w-0">
                                                 <div className="text-[12px] text-gray-700 truncate">
-                                                    Buddy&nbsp;<b className="text-[#51683b]">{buddyName}</b>
+                                                    <b className="text-[#51683b]">{buddyName}</b> buddy
                                                 </div>
                                                 <div className="text-[11px] text-gray-500">
                                                     ⏱ ̗̀ {dl.start_time} =͟͟͞ ♡̩͙꙳ {dl.end_time} ˎˊ

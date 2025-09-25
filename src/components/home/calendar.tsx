@@ -238,7 +238,10 @@ const Calendar = ({
                                     </span>
 
                                     {dayReservations.length > 0 && (
-                                        <div className="w-9 h-9 rounded-full bg-[#fce3ec] border-2 border-[#fbcddc] absolute -top-[7px] -left-[12px] z-[5]" />
+                                        <>
+                                            <div className="w-9 h-9 rounded-full bg-[#fce3ec] border-2 border-[#fbcddc] absolute -top-[12px] -left-[20px] z-[5]" />
+                                            <div className="absolute -top-[7px] -left-[12px] z-[5]">🍀</div>
+                                        </>
                                     )}
                                     {dayReservations.length > 0 && (
                                         <div
@@ -283,7 +286,10 @@ const Calendar = ({
                             dayContents={dayContents}
                             calSize={calSize}
                             resolveBuddyName={(id) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '')}
-                            buddyAvatar={(id) => (id && buddyCache[id]?.avatar_url) || (id ? 'Buddy' : '')}
+                            buddyAvatar={
+                                buddyCache[selectedDay?.reservation?.[0]?.buddy_user_id].avatar_url?.trim() ||
+                                '/buddy/buddy_1.png'
+                            }
                         />
                     </div>
                 </div>
