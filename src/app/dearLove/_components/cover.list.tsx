@@ -3,14 +3,14 @@ import { DearLove } from '@/utils/data';
 
 export default function CoverList({
     dearLoves,
-
     resolveBuddyName,
     handleCoverClick,
+    currentBuddyId,
 }: {
     dearLoves: DearLove[];
-
     resolveBuddyName: (id?: string | null) => string;
     handleCoverClick: (buddyId?: string | null, dear?: DearLove) => void;
+    currentBuddyId: string;
 }) {
     const [canLeft, setCanLeft] = useState(false);
     const [canRight, setCanRight] = useState(false);
@@ -55,16 +55,24 @@ export default function CoverList({
     return (
         <div className="relative w-full">
             <div ref={railRef} className="flex gap-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory">
-                {dearLoves.map((c, idx) => (
+                {[...dearLoves].reverse().map((c, idx) => (
                     <button
                         onClick={() => handleCoverClick(c.buddy_user_id, c)}
                         key={idx}
-                        className="snap-start relative shrink-0 w-[200px] h-[130px] group"
+                        className={`snap-start relative shrink-0 w-[200px] h-[130px] group `}
                     >
+                        <div
+                            className={[
+                                'rounded-[14px] w-5 h-5 transition absolute top-3 right-3 border border-gray-400',
+                                c.buddy_user_id === currentBuddyId
+                                    ? 'bg-gradient-to-br from-[#cfe0bf] to-[#9ebc81]'
+                                    : 'bg-transparent',
+                            ].join(' ')}
+                        ></div>
                         <img
                             src={c.representative_img}
                             alt="cover"
-                            className="w-full h-[130px] rounded-xl object-cover border border-[#dfe9d7] shadow-[2px_4px_10px_#eaf3e2,-2px_-2px_8px_#ffffff] transition group-hover:-translate-y-0.5"
+                            className={`w-full h-[130px] rounded-xl object-cover border border-[#dfe9d7] shadow-[2px_4px_10px_#eaf3e2,-2px_-2px_8px_#ffffff] transition group-hover:-translate-y-0.5 ${c.buddy_user_id === currentBuddyId ? ' border-gray-200 border-4' : ''}`}
                             loading="lazy"
                             decoding="async"
                         />

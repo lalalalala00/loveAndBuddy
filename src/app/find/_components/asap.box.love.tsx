@@ -1,40 +1,32 @@
 import LoveNameTag from '@/common/love.name.tag';
 import NameTag from '@/common/name.tag';
+import { LoveGroupCard } from '@/utils/sign';
 
-const AsapBoxLove = () => {
-    const love = {
-        nickname: 'chanelu',
-        level: 9,
-        mannerScore: 10,
-        dearLove: 24,
-        profileImg: '/cha/8.jpg',
-        loveId: 'chacha',
-        ownerName: '탁은지',
-        loveName: '샤넬',
-        loveOld: 12,
-    };
+const AsapBoxLove = ({ list }: { list: LoveGroupCard }) => {
     return (
         <div className="relative custom-card-bg-white p-3 rounded-2xl my-4">
-            <NameTag love asap />
+            <NameTag love asap info={list} />
             <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-0.5" />
-            <div className="flex flex-col text-[12px] items-start w-full px-1 mt-2">
+            <div className="flex flex-col text-[13px] items-start w-full px-1 mt-2">
                 <div className="flex justify-between w-full items-center">
                     <span>🕒 시간 </span>
-                    <span className="font-medium">25.08.05_16:00 ~ 20:00</span>
+                    <span className="font-medium">
+                        {list.date}_{list?.start_time} ~ {list?.end_time}
+                    </span>
                 </div>
 
                 <div className="flex justify-between w-full items-center">
                     <span>📍 동네</span>
-                    <span className="font-medium">유성구 원신흥동</span>
+                    <span className="font-medium">{list?.location}</span>
                 </div>
                 <div className="flex justify-between w-full items-center">
                     <span>🏠 장소</span>
-                    <span className="font-medium">애견카페 [잘놀아]</span>
+                    <span className="font-medium">{list?.place}</span>
                 </div>
-                {/* 
-                <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-0.5" />
-                <span className="text-gray-800">🐾 샤넬이의 한마디</span>
-                <span className="ml-3 font-semibold">풀냄새 흙냄새 좋아해요. 뛰는 거 자신 있어요 ❣</span> */}
+
+                <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
+                <span className="text-gray-800">🐾 {list?.animals.map((item) => item.name).join(', ')}의 한마디</span>
+                <span className="ml-3 font-semibold">{list?.animals[0]?.comment} ❣</span>
             </div>
 
             <button className="mt-3 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition">

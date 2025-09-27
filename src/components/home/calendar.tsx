@@ -223,8 +223,8 @@ const Calendar = ({
         ${bg.length > 0 ? 'hover:opacity-90' : ''}
       `}
                                 style={{
-                                    minHeight: !calSize ? '70px' : '112px',
-                                    height: !calSize ? '70px' : '112px',
+                                    minHeight: !calSize ? '65px' : '98px',
+                                    height: !calSize ? '65px' : '98px',
                                     backgroundImage: `url(${bg})`,
                                     backgroundSize: 'cover',
                                 }}
@@ -240,15 +240,14 @@ const Calendar = ({
                                     {dayReservations.length > 0 && (
                                         <>
                                             <div className="w-9 h-9 rounded-full bg-[#fce3ec] border-2 border-[#fbcddc] absolute -top-[12px] -left-[20px] z-[5]" />
-                                            <div className="absolute -top-[7px] -left-[12px] z-[5]">🍀</div>
                                         </>
                                     )}
                                     {dayReservations.length > 0 && (
                                         <div
                                             className="w-full h-full absolute inset-0 bg-gradient-to-b from-white/70 via-white/45 to-white/75"
                                             style={{
-                                                minHeight: !calSize ? '70px' : '102px',
-                                                height: !calSize ? '70px' : '102px',
+                                                minHeight: !calSize ? '65px' : '98px',
+                                                height: !calSize ? '65px' : '98px',
                                                 filter: 'blur(2px)',
                                             }}
                                         />
@@ -287,7 +286,7 @@ const Calendar = ({
                             calSize={calSize}
                             resolveBuddyName={(id) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '')}
                             buddyAvatar={
-                                buddyCache[selectedDay?.reservation?.[0]?.buddy_user_id].avatar_url?.trim() ||
+                                buddyCache[selectedDay?.reservation?.[0]?.buddy_user_id]?.avatar_url?.trim() ||
                                 '/buddy/buddy_1.png'
                             }
                         />

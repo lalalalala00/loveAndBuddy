@@ -32,12 +32,12 @@ export type Card = User & {
     gender: 'female' | 'male' | 'other' | ''; // 빈값 허용 가능
     // 리스트/달력 공통 소스
 
-    bookmarks: User[]; // 사용자가 좋아요/즐겨찾기한 유저들
-    bookings: Booking[]; // 이번 주 캘린더 뱃지 등 계산할 소스
+    bookmarks?: User[] | null; // 사용자가 좋아요/즐겨찾기한 유저들
+    bookings?: Booking[] | null; // 이번 주 캘린더 뱃지 등 계산할 소스
 
     // 배지/상세
-    certificates: Certificate[];
-    animals: Animal[]; // lovuddy면 포함, buddy면 []
+    certificates?: Certificate[];
+    animals?: Animal[]; // lovuddy면 포함, buddy면 []
 };
 
 export type Weather = 'sunny' | 'wind' | 'cloud' | 'snow' | 'rain';

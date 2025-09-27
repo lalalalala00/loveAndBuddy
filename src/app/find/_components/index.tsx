@@ -1,25 +1,143 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import AsapBoxBuddy from './asap.box.buddy';
 import AsapBoxLove from './asap.box.love';
 import ListBox2 from './list.box2';
-import AsapBoxBuddy2 from './asap.box.buddy2';
+
 import CompactBuddyCard from './compact.buddy.card';
-import PlaceSelectedBox from './place.selected.box';
-import ModalIos from '@/common/modal.ios';
-import { Option } from '@/common/selected.box';
 import BuddyFilterBar from './buddy.filter.bar';
 import LoveList from './list.love';
 import Tooltip from '@/common/tooltip';
 import { useRouter } from 'next/navigation';
 import SelectedPlace from '@/common/selected.place';
+import { CardOverviewRow } from './data/cards';
+import { supabase } from '@/lib/supabaseClient';
+import { DUMMY_CARDS } from './data/cards.others';
+import { buildDateLabel, Filters, inRange } from '@/utils/date';
+import { DUMMY_LOVE_ANIMALS, DUMMY_LOVE_GROUPS } from './data/cards.love';
+import { filterBySpecies, groupByOwner } from './data/love.helpers';
+import { LoveGroupCard } from '@/utils/sign';
 
 const Index = () => {
     const router = useRouter();
     const [selectedType, setSelectedType] = useState<number>(1);
+    const [list, setList] = useState<CardOverviewRow[]>([]);
+    const [loadingList, setLoadingList] = useState(false);
+    const [errorList, setErrorList] = useState<string | null>(null);
 
+    const [filters, setFilters] = useState<Filters>({
+        dateKey: 'thisweek',
+        species: 'all',
+        genders: [],
+        sortKey: 'trust',
+        sortDir: 'desc',
+    });
+
+    useEffect(() => {
+        const run = async () => {
+            setLoadingList(true);
+            setErrorList(null);
+            try {
+                const { data, error } = await supabase
+                    .from('card_overview')
+                    .select('*')
+                    .eq('card_kind', 'buddy')
+                    .order('reliability', { ascending: false });
+
+                if (error) throw error;
+
+                const supa = (data ?? []) as CardOverviewRow[];
+                const seen = new Set<string>();
+                const merged = [...supa, ...DUMMY_CARDS].filter((x) => {
+                    if (!x.user_id || seen.has(x.user_id)) return false;
+                    seen.add(x.user_id);
+                    return true;
+                });
+                setList(merged);
+                console.log(DUMMY_CARDS, 'DUMMY_CARDS');
+            } catch (e: any) {
+                setErrorList(e?.message ?? '목록을 불러오지 못했어요.');
+            } finally {
+                setLoadingList(false);
+            }
+        };
+        run();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const filtered = useMemo(() => {
+        const range = buildDateLabel(filters.dateKey, filters.dateFrom, filters.dateTo);
+
+        const speciesOk = (it: CardOverviewRow) => {
+            if (filters.species === 'all') return true;
+            return it.animal_type === filters.species;
+        };
+
+        const genderOk = (it: CardOverviewRow) => {
+            if (!filters.genders.length) return true;
+            return filters.genders.includes((it.gender as any) || '');
+        };
+
+        const dateOk = (it: CardOverviewRow) => (range ? inRange(it, range) : true);
+
+        const arr = list.filter(speciesOk).filter(genderOk).filter(dateOk);
+
+        const val = (it: CardOverviewRow) => {
+            switch (filters.sortKey) {
+                case 'heart':
+                    return it.heart ?? 0;
+                case 'manner':
+                    return it.manner ?? 0;
+                case 'dearlove':
+                    return it.dear_love ?? 0;
+                case 'trust':
+                    return it.reliability ?? 0;
+                default:
+                    return 0;
+            }
+        };
+
+        arr.sort((a, b) => (filters.sortDir === 'asc' ? val(a) - val(b) : val(b) - val(a)));
+        return arr;
+    }, [list, filters]);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const loveFiltered = useMemo(() => {
+        const sp = filters.species; // 'all' | 'dog' | 'cat' | 'others'
+        if (sp === 'all') return DUMMY_LOVE_GROUPS;
+
+        const hasBy = {
+            dog: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type === 'dog'),
+            cat: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type === 'cat'),
+            others: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type !== 'dog' && a.animal_type !== 'cat'),
+        } as const;
+
+        if (sp === 'dog') return DUMMY_LOVE_GROUPS.filter(hasBy.dog);
+        if (sp === 'cat') return DUMMY_LOVE_GROUPS.filter(hasBy.cat);
+        // 'others'
+        return DUMMY_LOVE_GROUPS.filter(hasBy.others);
+    }, [filters.species]);
+
+    const toLocalDate = (s: string) => {
+        const [y, m, d] = s.split('-').map(Number);
+        return new Date(y, (m ?? 1) - 1, d ?? 1);
+    };
+
+    const loveFilteredSoon = useMemo(() => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const end = new Date(today);
+        end.setDate(end.getDate() + 7);
+
+        return loveFiltered.filter((g) => {
+            if (!g.date) return false;
+            const d = toLocalDate(g.date);
+            return d >= today && d <= end;
+        });
+    }, [loveFiltered]);
+
+    console.log(list, 'list');
     return (
         <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">
@@ -48,11 +166,7 @@ const Index = () => {
                 <div className="flex flex-col w-[920px] items-end">
                     <SelectedPlace />
 
-                    <BuddyFilterBar
-                        onFiltersChange={(f) => {
-                            console.log('filters', f);
-                        }}
-                    />
+                    <BuddyFilterBar onFiltersChange={setFilters} selectedType={selectedType} />
                 </div>
             </div>
             <div className="flex px-5">
@@ -72,7 +186,7 @@ const Index = () => {
                             </span>
                         )}
                     </div>
-                    {selectedType === 1 && (
+                    {selectedType === 1 ? (
                         <span className="text-[12px] flex justify-center">
                             <Tooltip
                                 comment="6가지 조건을 모두 만족한"
@@ -81,41 +195,73 @@ const Index = () => {
                             />
                             믿을 수 있는 buddy예요.
                         </span>
+                    ) : (
+                        <span className="text-[12px] flex justify-center">
+                            {' '}
+                            📅 오늘부터 <b className="mx-1">7일 이내로</b> 구하는 러브예요!
+                        </span>
                     )}
 
                     <div className="h-[670px] overflow-y-scroll no-scrollbar">
                         {selectedType === 0 ? (
-                            <>
-                                <AsapBoxLove />
-                            </>
+                            <div>
+                                {loveFilteredSoon.length ? (
+                                    loveFilteredSoon.map((item, i) => (
+                                        <div key={i} className="mb-3 break-inside-avoid">
+                                            <AsapBoxLove list={item} />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-gray-500 text-sm p-3">
+                                        오늘부터 7일 안에 가능한 Love 카드가 없어요.
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <>
-                                <CompactBuddyCard />
-                                <CompactBuddyCard />
-                                <CompactBuddyCard />
+                                <div className="">
+                                    {list
+                                        .filter(
+                                            (it) =>
+                                                (it.heart ?? 0) >= 20 &&
+                                                (it.dear_love ?? 0) >= 20 &&
+                                                (it.manner ?? 0) >= 8,
+                                        )
+                                        .map((item) => (
+                                            <div key={item.user_id} className="break-inside-avoid mb-3">
+                                                <CompactBuddyCard list={item} />
+                                            </div>
+                                        ))}
 
-                                <AsapBoxBuddy />
-                                <AsapBoxBuddy2 />
-                                <AsapBoxBuddy />
+                                    {list.filter(
+                                        (it) =>
+                                            (it.heart ?? 0) >= 20 && (it.dear_love ?? 0) >= 20 && (it.manner ?? 0) >= 8,
+                                    ).length === 0 && (
+                                        <div className="text-gray-500 text-sm p-3">조건에 맞는 카드가 없어요.</div>
+                                    )}
+                                </div>
                             </>
                         )}
                     </div>
                 </div>
                 {selectedType === 0 ? (
-                    <div className="w-3/4 columns-3 gap-2">
-                        {Array.from({ length: 12 }).map((_, i) => (
-                            <div key={i} className="break-inside-avoid mb-3">
-                                <LoveList />
+                    <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-2">
+                        {loveFiltered.map((item, i) => (
+                            <div key={i} className="mb-3 break-inside-avoid">
+                                <LoveList list={item} />
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="w-3/4 columns-3 gap-2">
-                        {Array.from({ length: 12 }).map((_, i) => (
-                            <div key={i} className="break-inside-avoid mb-3">
-                                <ListBox2 />
+                    <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-x-4">
+                        {filtered.map((item) => (
+                            <div key={item.user_id} className="break-inside-avoid mb-4">
+                                <ListBox2 list={item} />
                             </div>
                         ))}
+                        {!filtered.length && (
+                            <div className="text-gray-500 text-sm p-3">조건에 맞는 카드가 없어요.</div>
+                        )}
                     </div>
                 )}
             </div>

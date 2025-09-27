@@ -14,7 +14,7 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
 
     const getRepresentative = (list: Animal[]) => list.find((v) => v.first) ?? list[0];
 
-    const rep = getRepresentative(animal);
+    const rep = getRepresentative(animals);
     const displayList = draftAnimals.length > 0 ? draftAnimals : rep ? [rep] : [];
 
     const handleDelete = (id: string) => {

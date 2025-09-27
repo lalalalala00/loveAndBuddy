@@ -7,22 +7,27 @@ function cx(...c: (string | false | null | undefined)[]) {
     return c.filter(Boolean).join(' ');
 }
 
-export default function BuddyFilterBar({ onFiltersChange }: { onFiltersChange?: (f: Filters) => void }) {
+export default function BuddyFilterBar({
+    onFiltersChange,
+    selectedType,
+}: {
+    onFiltersChange?: (f: Filters) => void;
+    selectedType: number;
+}) {
     const [dateOpen, setDateOpen] = useState(false);
     const [dateKey, setDateKey] = useState<Filters['dateKey']>('thisweek');
 
     const [species, setSpecies] = useState<Filters['species']>('all');
     const [genders, setGenders] = useState<Filters['genders']>([]);
-
     const [sortKey, setSortKey] = useState<Filters['sortKey']>('trust');
     const [sortDir, setSortDir] = useState<Filters['sortDir']>('desc');
 
-    const [customFrom, setCustomFrom] = useState<string>('');
-    const [customTo, setCustomTo] = useState<string>('');
+    const [dateFrom, setDateFrom] = useState<string>('');
+    const [dateTo, setDateTo] = useState<string>('');
 
     useEffect(() => {
-        onFiltersChange?.({ dateKey, species, genders, sortKey, sortDir });
-    }, [dateKey, species, genders, sortKey, sortDir, onFiltersChange]);
+        onFiltersChange?.({ dateKey, dateFrom, dateTo, species, genders, sortKey, sortDir });
+    }, [dateKey, dateFrom, dateTo, species, genders, sortKey, sortDir, onFiltersChange]);
 
     const genderActive = (g: 'female' | 'male') => genders.includes(g);
     const toggleGender = (g: 'female' | 'male') =>
@@ -35,7 +40,7 @@ export default function BuddyFilterBar({ onFiltersChange }: { onFiltersChange?: 
         dearlove: '디얼러브',
     } as const;
 
-    const dateLabel = buildDateLabel(dateKey, customFrom, customTo);
+    const dateLabel = buildDateLabel(dateKey, dateFrom, dateTo);
 
     return (
         <div className="flex justify-end items-center mb-3">
@@ -72,8 +77,8 @@ export default function BuddyFilterBar({ onFiltersChange }: { onFiltersChange?: 
                                         onClick={() => {
                                             setDateKey(d.k as Filters['dateKey']);
                                             if (d.k !== 'custom') {
-                                                setCustomFrom('');
-                                                setCustomTo('');
+                                                setDateFrom('');
+                                                setDateTo('');
                                             }
                                             setDateOpen(false);
                                         }}
@@ -83,40 +88,37 @@ export default function BuddyFilterBar({ onFiltersChange }: { onFiltersChange?: 
                                 ))}
 
                                 <div className="my-2 h-px bg-gray-100" />
-
                                 <div className="px-2 pb-2">
                                     <div className="text-xs text-gray-500 mb-2">직접 설정</div>
                                     <div className="flex items-center gap-2">
                                         <input
                                             type="date"
                                             className="border rounded-md px-2 py-1 text-sm"
-                                            value={customFrom}
-                                            onChange={(e) => setCustomFrom(e.target.value)}
+                                            value={dateFrom}
+                                            onChange={(e) => setDateFrom(e.target.value)}
                                         />
                                         <span className="text-gray-400">–</span>
                                         <input
                                             type="date"
                                             className="border rounded-md px-2 py-1 text-sm"
-                                            value={customTo}
-                                            min={customFrom || undefined}
-                                            onChange={(e) => setCustomTo(e.target.value)}
+                                            value={dateTo}
+                                            min={dateFrom || undefined}
+                                            onChange={(e) => setDateTo(e.target.value)}
                                         />
                                     </div>
                                     <div className="flex justify-end gap-2 mt-2">
                                         <button
                                             className="text-xs text-gray-500 hover:text-gray-700"
                                             onClick={() => {
-                                                setCustomFrom('');
-                                                setCustomTo('');
+                                                setDateFrom('');
+                                                setDateTo('');
                                             }}
                                         >
                                             초기화
                                         </button>
                                         <button
                                             className="text-xs px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:opacity-40"
-                                            disabled={
-                                                !customFrom || !customTo || new Date(customFrom) > new Date(customTo)
-                                            }
+                                            disabled={!dateFrom || !dateTo || new Date(dateFrom) > new Date(dateTo)}
                                             onClick={() => {
                                                 setDateKey('custom');
                                                 setDateOpen(false);
@@ -153,52 +155,56 @@ export default function BuddyFilterBar({ onFiltersChange }: { onFiltersChange?: 
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <button
-                            className={cx(
-                                'px-3 py-2 rounded-full border text-[14px]',
-                                genderActive('female')
-                                    ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                    : 'border-gray-200 text-gray-700',
-                            )}
-                            onClick={() => toggleGender('female')}
-                            aria-pressed={genderActive('female')}
-                        >
-                            여성
-                        </button>
-                        <button
-                            className={cx(
-                                'px-3 py-2 rounded-full border text-[14px]',
-                                genderActive('male')
-                                    ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                    : 'border-gray-200 text-gray-700',
-                            )}
-                            onClick={() => toggleGender('male')}
-                            aria-pressed={genderActive('male')}
-                        >
-                            남성
-                        </button>
-                    </div>
+                    {selectedType === 1 && (
+                        <div className="flex items-center gap-2">
+                            <button
+                                className={cx(
+                                    'px-3 py-2 rounded-full border text-[14px]',
+                                    genderActive('female')
+                                        ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                        : 'border-gray-200 text-gray-700',
+                                )}
+                                onClick={() => toggleGender('female')}
+                                aria-pressed={genderActive('female')}
+                            >
+                                여성
+                            </button>
+                            <button
+                                className={cx(
+                                    'px-3 py-2 rounded-full border text-[14px]',
+                                    genderActive('male')
+                                        ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                        : 'border-gray-200 text-gray-700',
+                                )}
+                                onClick={() => toggleGender('male')}
+                                aria-pressed={genderActive('male')}
+                            >
+                                남성
+                            </button>
+                        </div>
+                    )}
 
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center bg-white rounded-full border border-gray-200 p-1">
-                            {(['heart', 'manner', 'dearlove', 'trust'] as Filters['sortKey'][]).map((k) => (
-                                <button
-                                    key={k}
-                                    className={cx(
-                                        'px-3 py-1.5 rounded-full text-[14px]',
-                                        sortKey === k
-                                            ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                            : 'text-gray-700',
-                                    )}
-                                    onClick={() => setSortKey(k)}
-                                    aria-pressed={sortKey === k}
-                                    title={`정렬: ${sortLabelMap[k]}`}
-                                >
-                                    {sortLabelMap[k]}
-                                </button>
-                            ))}
-                        </div>
+                        {selectedType === 1 && (
+                            <div className="flex items-center bg-white rounded-full border border-gray-200 p-1">
+                                {(['heart', 'manner', 'dearlove', 'trust'] as Filters['sortKey'][]).map((k) => (
+                                    <button
+                                        key={k}
+                                        className={cx(
+                                            'px-3 py-1.5 rounded-full text-[14px]',
+                                            sortKey === k
+                                                ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                                : 'text-gray-700',
+                                        )}
+                                        onClick={() => setSortKey(k)}
+                                        aria-pressed={sortKey === k}
+                                        title={`정렬: ${sortLabelMap[k]}`}
+                                    >
+                                        {sortLabelMap[k]}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                         <button
                             className="px-3 py-2 rounded-full border border-gray-200 text-[14px] hover:bg-gray-50"
                             onClick={() => setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))}

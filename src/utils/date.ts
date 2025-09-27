@@ -97,3 +97,30 @@ export function getAgeFromYear(birthYear: number | string, baseDate: Date = new 
   if (!Number.isFinite(y)) return 0;           
   return Math.max(0, baseDate.getFullYear() - y); 
 }
+
+
+export function getDecadeLabel(birthYear?: string | number | null, fallback = '20대') {
+  const y = Number(birthYear);
+  if (!y || !Number.isFinite(y) || String(y).length !== 4) return fallback;
+  const now = new Date();
+  const currentYear = now.getFullYear(); 
+  const age = Math.max(0, currentYear - y); 
+  const decade =  Math.floor(age / 10) * 10; 
+  return `${decade}대`;
+}
+
+export function inRange(item: any, range: { start: number; end: number }) {
+  const bookings: any[] = (item as any).bookings ?? [];
+  if (!bookings.length) return true; // 예약 정보가 없으면 날짜 필터 패스
+  return bookings.some((b) => {
+    if (typeof b.date === 'number') {
+      const ms = b.date > 2_000_000_000 ? b.date : b.date * 1000;
+      return ms >= range.start && ms <= range.end;
+    }
+    if (b.start_at) {
+      const ms = new Date(b.start_at).getTime();
+      return ms >= range.start && ms <= range.end;
+    }
+    return false;
+  });
+}

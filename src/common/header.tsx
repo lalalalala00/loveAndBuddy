@@ -47,7 +47,7 @@ const Header = () => {
         date_at, title, weather, representative_img, photos,
         comment, location, place, tags, visibility,
         likes, bookmarks, comments_count,
-        created_at, updated_at, with_animals
+        created_at, updated_at, with_animals,start_time, end_time
       `,
                 )
                 .eq('author_id', userId)

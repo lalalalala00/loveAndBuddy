@@ -1,8 +1,14 @@
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { months } from './filepage';
 import ModalIos from '@/common/modal.ios';
 
-export default function DateSelected({ signupAt }: { signupAt?: string | Date | number }) {
+export default function DateSelected({
+    signupAt,
+    setSelectedDate,
+}: {
+    signupAt?: string | Date | number;
+    setSelectedDate: Dispatch<SetStateAction<string>>;
+}) {
     const now = new Date();
     const currentYear = now.getFullYear();
     const todayMonth = now.getMonth();
@@ -10,6 +16,7 @@ export default function DateSelected({ signupAt }: { signupAt?: string | Date | 
     const signupYear = useMemo(() => {
         if (!signupAt) return currentYear;
         const d = new Date(signupAt);
+        console.log(d);
         return Number.isNaN(d.getTime()) ? currentYear : d.getFullYear();
     }, [signupAt, currentYear]);
 
@@ -20,7 +27,7 @@ export default function DateSelected({ signupAt }: { signupAt?: string | Date | 
     const [openYearPicker, setOpenYearPicker] = useState(false);
 
     const selectedMonth = months[activeMonth] ?? 'month';
-
+    console.log(selectedMonth);
     const years = useMemo(() => {
         const start = Math.min(signupYear, currentYear);
         const list: number[] = [];
@@ -54,6 +61,11 @@ export default function DateSelected({ signupAt }: { signupAt?: string | Date | 
             return i + 1;
         });
     };
+
+    useEffect(() => {
+        const _Date = `${year}-${String(activeMonth + 1).padStart(2, '0')}`;
+        setSelectedDate(_Date);
+    }, [activeMonth, year, setSelectedDate]);
 
     return (
         <section className="mx-auto max-w-full px-3 sticky -top-1 mb-8 flex justify-center z-10 bg-gradient-to-b from-[#f6f9f3] to-transparent">

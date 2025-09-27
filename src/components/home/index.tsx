@@ -8,10 +8,13 @@ import Calendar from './calendar';
 import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import CommunityList from '../commu.list';
+import WriteIndex from '../commu.write.index';
 
 const blocks = ['cal', 'toki', 'comm', 'write'];
 const Index = () => {
-    const [selectedClose, setSelectedClose] = useState<string[]>([]);
+    const [selectedClose, setSelectedClose] = useState<string[]>(['comm', 'write']);
+
     const [calExtension, setCalExtension] = useState<number>(2);
     const [layout, setLayout] = useState([
         { i: 'cal', x: 0, y: 0, w: 2, h: 3 },
@@ -37,9 +40,10 @@ const Index = () => {
     const componentMap: Record<string, React.ReactNode> = {
         cal: <Calendar setSelectedClose={toggleClose} setCalExtension={setCalExtension} />,
         toki: <BuddyConnect setSelectedClose={toggleClose} />,
-        // comm: <CommunityList setSelectedClose={toggleClose} />,
-        // write: <WriteIndex setSelectedClose={toggleClose} />,
+        comm: <CommunityList setSelectedClose={toggleClose} />,
+        write: <WriteIndex setSelectedClose={toggleClose} />,
     };
+    //  const visibleBlocks = blocks.filter(b => !selectedClose.includes(b));
 
     return (
         <div className="mt-5 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] rounded-b-2xl">
@@ -50,6 +54,7 @@ const Index = () => {
                         <button
                             key={item.value}
                             onClick={() => toggleClose(item.value)}
+                            disabled={item.value === 'comm' || item.value === 'write'}
                             className="flex justify-between items-center cursor-pointer py-0.5 mx-3 px-8 bg-white/80 border border-white/20 rounded-2xl shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] font-semibold"
                         >
                             <div className="bg-[#9dbb80] w-[22px] h-[8px] mr-2 rounded-2xl" />
