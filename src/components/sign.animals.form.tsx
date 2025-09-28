@@ -15,6 +15,7 @@ type Props = {
     minCount?: number;
     maxCount?: number;
     className?: string;
+    allowAddRemove?: boolean;
 };
 
 export default function AnimalsForm({
@@ -24,6 +25,7 @@ export default function AnimalsForm({
     minCount = 1,
     maxCount,
     className = '',
+    allowAddRemove,
 }: Props) {
     const [files, setFiles] = useState<Record<number, File | null>>({});
     const createdUrlsRef = useRef<Set<string>>(new Set());
@@ -119,22 +121,24 @@ export default function AnimalsForm({
 
     return (
         <div className={`space-y-3 ${className}`}>
-            <div className="flex items-center justify-between">
-                <p className="text-[13px]">{title}</p>
-                <button
-                    type="button"
-                    onClick={addAnimal}
-                    disabled={!canAdd}
-                    className={[
-                        'px-3 py-2 rounded-xl border-2 border-dashed text-[14px] transition',
-                        canAdd
-                            ? 'border-gray-300 bg-white hover:border-emerald-300'
-                            : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed',
-                    ].join(' ')}
-                >
-                    + 반려동물 추가하기
-                </button>
-            </div>
+            {allowAddRemove && (
+                <div className="flex items-center justify-between">
+                    <p className="text-[13px]">{title}</p>
+                    <button
+                        type="button"
+                        onClick={addAnimal}
+                        disabled={!canAdd}
+                        className={[
+                            'px-3 py-2 rounded-xl border-2 border-dashed text-[14px] transition',
+                            canAdd
+                                ? 'border-gray-300 bg-white hover:border-emerald-300'
+                                : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed',
+                        ].join(' ')}
+                    >
+                        + 반려동물 추가하기
+                    </button>
+                </div>
+            )}
 
             {value.map((a, idx) => (
                 <div
@@ -186,8 +190,10 @@ export default function AnimalsForm({
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
                             />
                             <select
-                                value={a.type}
-                                onChange={(e) => updateAt(idx, { type: e.target.value as Animal['type'] })}
+                                value={a.animal_type}
+                                onChange={(e) =>
+                                    updateAt(idx, { animal_type: e.target.value as Animal['animal_type'] })
+                                }
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
                             >
                                 <option value="dog">강아지</option>

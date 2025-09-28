@@ -1,6 +1,5 @@
-// EmptyMonthCollage.tsx
 'use client';
-import { useUserState } from '@/context/useUserContext';
+
 import { useMemo } from 'react';
 
 type Animal = { name: string; image?: string | null; avatar_url?: string | null };
@@ -24,14 +23,16 @@ const seededShuffle = <T,>(arr: T[], seedStr: string) => {
     }
     return res;
 };
-const extractUrls = (dears: Dear[]) => {
+
+const extractAllUrls = (dears: Dear[]) => {
     const out: string[] = [];
-    for (const d of dears)
+    for (const d of dears) {
         for (const p of d.photos ?? []) {
             if (typeof p === 'string') out.push(p);
             else if (p?.url) out.push(p.url);
         }
-    return Array.from(new Set(out));
+    }
+    return out; // ← 중복 허용
 };
 
 export default function EmptyMonthCollage({
@@ -45,11 +46,7 @@ export default function EmptyMonthCollage({
 }) {
     const imgs = animals.map((a) => a.img).filter(Boolean) as string[];
 
-    const monthPool = useMemo(() => {
-        const inMonth = dears.filter((d) => (d.date_at ?? '').startsWith(selectedYYYYMM));
-        const urls = extractUrls(inMonth.length ? inMonth : dears);
-        return urls;
-    }, [dears, selectedYYYYMM]);
+    const allDearUrls = useMemo(() => extractAllUrls(dears), [dears]);
 
     const petUrls = useMemo(() => {
         const arr = animals.map((a) => a.image ?? a.avatar_url).filter((v): v is string => !!v);
@@ -57,7 +54,7 @@ export default function EmptyMonthCollage({
     }, [animals]);
 
     const { bgTiles, cardA, cardB, hero } = useMemo(() => {
-        const shuffled = seededShuffle(monthPool, selectedYYYYMM);
+        const shuffled = seededShuffle(allDearUrls, 'all');
         const bgTiles = shuffled.slice(0, 12);
 
         const rest = shuffled.slice(12);
@@ -67,7 +64,7 @@ export default function EmptyMonthCollage({
         const hero = petUrls[0] ?? shuffled[0] ?? '';
 
         return { bgTiles, cardA, cardB, hero };
-    }, [monthPool, petUrls, selectedYYYYMM]);
+    }, [allDearUrls, petUrls]);
 
     const emptyMessage = (selectedDate: string) => {
         const today = new Date();
@@ -88,12 +85,10 @@ export default function EmptyMonthCollage({
 
     return (
         <section className="relative mx-auto max-w-[1200px] px-4 mt-8">
-            <div className=" flex items-center justify-center">
-                <div className="">
-                    <p className="text-center text-[14px] md:text-[15px] text-[#5b7551] font-medium">
-                        {emptyMessage(selectedYYYYMM)}
-                    </p>
-                </div>
+            <div className=" flex items-center justify-center mb-6">
+                <p className="text-center text-[14px] md:text-[15px] text-[#5b7551] font-medium">
+                    {emptyMessage(selectedYYYYMM)}
+                </p>
             </div>
             <div className="relative rounded-3xl border border-[#e3ecdc] bg-[#f3f7ee] shadow-[6px_8px_24px_#eef6e6,inset_-6px_-8px_24px_#ffffff] overflow-hidden">
                 <div className="grid grid-cols-2 opacity-40 blur-[2px] sm:grid-cols-3 md:grid-cols-4 gap-1 p-2">
@@ -105,7 +100,7 @@ export default function EmptyMonthCollage({
                                     alt=""
                                     loading="lazy"
                                     decoding="async"
-                                    className="w-full h-full object-cover scale-[1.02]"
+                                    className={`w-full h-full object-cover scale-[1.02] ${src ? '' : 'bg-red-200'}`}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                             </div>
@@ -121,7 +116,6 @@ export default function EmptyMonthCollage({
                     )}
                 </div>
 
-                {/* 앞쪽 카드 A */}
                 {!!cardA.length && (
                     <div className="absolute left-4 top-6 w-[55%] max-w-[420px] rounded-2xl overflow-hidden bg-white/90 backdrop-blur-sm shadow-xl rotate-[-2.2deg]">
                         <div className="flex items-center gap-2 px-3 py-2 border-b border-[#eef3ea]">
@@ -140,7 +134,6 @@ export default function EmptyMonthCollage({
                     </div>
                 )}
 
-                {/* 앞쪽 카드 B */}
                 {!!cardB.length && (
                     <div className="absolute right-6 top-20 w-[42%] max-w-[360px] overflow-hidden rounded-2xl bg-white/90 backdrop-blur-sm  shadow-xl rotate-[1.6deg]">
                         <div className="flex items-center gap-2 px-3 py-2 border-b border-[#eef3ea]">
@@ -158,7 +151,6 @@ export default function EmptyMonthCollage({
                     </div>
                 )}
 
-                {/* 하단 작은 패널(이모지판 느낌) */}
                 <div className="absolute left-8 bottom-6 w-[280px] rounded-2xl border border-[#e3ecdc] bg-white/90 backdrop-blur-sm shadow-lg">
                     <div className="px-3 py-2 text-[12px] text-gray-600 border-b border-[#eef3ea]">
                         smileys &amp; people
@@ -181,7 +173,7 @@ export default function EmptyMonthCollage({
                   bg-white/60 backdrop-blur-xl shadow-[0_12px_32px_rgba(157,187,128,0.28)]"
                 >
                     <div className="relative">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 p-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 p-2.5">
                             {imgs.map((src, i) => (
                                 <div key={`${src}-${i}`} className="relative aspect-square rounded-2xl overflow-hidden">
                                     <img
@@ -194,11 +186,14 @@ export default function EmptyMonthCollage({
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                                 </div>
                             ))}
-                        </div>
-
-                        <div className="px-4 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-sm text-[13px] text-gray-700">
-                            {animals.map((a) => a.name).join(', ')}와 함께한 기록해 보세요. 사진을 업로드하면 이 달의
-                            디얼러브가 채워져요 ✦
+                            <div className="p-2 rounded-xl flex flex-col justify-between border border-[#e3ecdc] bg-white shadow-sm text-[13px] text-gray-700">
+                                <span className="p-2">
+                                    {' '}
+                                    {animals.map((a) => a.name).join(', ')}와 함께한 하루를 기록해 보세요. 사진을
+                                    업로드하면 이 달의 디얼러브가 채워져요 ✦
+                                </span>
+                                <button className="custom-card w-full p-2 rounded-lg">디얼러브 기록하기</button>
+                            </div>
                         </div>
                     </div>
                 </div>

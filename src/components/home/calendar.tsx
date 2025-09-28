@@ -221,6 +221,7 @@ const Calendar = ({
         ${date?.isSame(today, 'day') ? 'bg-[#c8d9b5b4] text-white font-bold hover:text-[#9dbb80]' : ''}
         ${!date ? '' : 'hover:bg-[#f7f9f6]'}
         ${bg.length > 0 ? 'hover:opacity-90' : ''}
+     
       `}
                                 style={{
                                     minHeight: !calSize ? '65px' : '98px',
@@ -232,29 +233,32 @@ const Calendar = ({
                             >
                                 <div className="text-left relative">
                                     <span
-                                        className={`${calSize ? 'text-[16px]' : 'text-[14px]'} z-[6] relative ${dayReservations.length > 0 ? 'text-gray-700 font-normal' : ''}`}
+                                        className={`${calSize ? 'text-[16px]' : 'text-[14px]'} z-[6] relative ${dayReservations.length > 0 ? 'text-white font-bold text-[18px]' : ''}`}
                                     >
                                         {date?.date()}
                                     </span>
 
-                                    {dayReservations.length > 0 && (
+                                    {/* {dayReservations.length > 0 && (
                                         <>
-                                            <div className="w-9 h-9 rounded-full bg-[#fce3ec] border-2 border-[#fbcddc] absolute -top-[12px] -left-[20px] z-[5]" />
+                                            <div className="w-10 h-10 bg-white rounded-full absolute -top-[8px] -left-[15px] z-[5]" />
+                                            <div className="absolute -top-[8px] -left-[15px] z-[5] text-[50px] text-amber-400">
+                                                ⛧
+                                            </div>
                                         </>
-                                    )}
-                                    {dayReservations.length > 0 && (
+                                    )} */}
+                                    {/* {dayReservations.length > 0 && (
                                         <div
                                             className="w-full h-full absolute inset-0 bg-gradient-to-b from-white/70 via-white/45 to-white/75"
                                             style={{
-                                                minHeight: !calSize ? '65px' : '98px',
-                                                height: !calSize ? '65px' : '98px',
+                                                minHeight: !calSize ? '65px' : '89px',
+                                                height: !calSize ? '65px' : '89px',
                                                 filter: 'blur(2px)',
                                             }}
                                         />
-                                    )}
+                                    )} */}
                                 </div>
 
-                                <div className="flex flex-col items-end  px-1">
+                                {/* <div className="flex flex-col items-end  px-1">
                                     {dayReservations.map((dl, idx) => (
                                         <div className="flex" key={idx}>
                                             <span className="text-[11px] leading-none px-1.5 py-0.5 rounded-sm text-gray-800 bg-white/60 backdrop-blur border border-[#e3ecdc]">
@@ -262,7 +266,7 @@ const Calendar = ({
                                             </span>
                                         </div>
                                     ))}
-                                </div>
+                                </div> */}
                             </div>
                         );
                     })}

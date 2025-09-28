@@ -1,4 +1,3 @@
-import LoveNameTag from '@/common/love.name.tag';
 import NameTag from '@/common/name.tag';
 import { LoveGroupCard } from '@/utils/sign';
 

@@ -16,6 +16,7 @@ import ModalIos from '@/common/modal.ios';
 import { useDearLoveIndex } from '@/hooks/useDearLove';
 import EmptyMonthState from './empty.state';
 import EmptyMonthCollage from './empty.state2';
+import DearLovePhotoUploader from './dear.imgs.upload';
 
 export default function NewLayout() {
     const { animals, dearLoves = [] } = useUserState();
@@ -57,6 +58,14 @@ export default function NewLayout() {
 
     const targetLoves = useMemo(() => (dearLove ? [dearLove] : sortedDearLoves), [dearLove, sortedDearLoves]);
 
+    const pageTitle = useMemo(() => {
+        const t = dearLove?.title?.trim?.();
+        if (t) return t;
+
+        const buddyName = currentBuddy?.name ?? 'Buddy';
+        return `${buddyName}와 함께한 디얼러브`;
+    }, [dearLove?.title, currentBuddy?.name]);
+
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
             <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] font-semibold text-[#5b7551] tracking-tight">
@@ -79,7 +88,7 @@ export default function NewLayout() {
                                 tooltip={`${currentBuddy?.name ?? ''} 버디룸 보러가기`}
                                 comment={
                                     <h2 className="text-[15px] mb-1 font-semibold text-[#5b7551] ">
-                                        {currentBuddy?.name ?? 'Buddy'} 함께한 디얼러브
+                                        {pageTitle} _ {currentBuddy?.name ?? ''} 버디
                                     </h2>
                                 }
                                 clickCss="w-full"
@@ -93,7 +102,8 @@ export default function NewLayout() {
                                 (id && buddyCache[id]?.name) || (id ? 'Buddy' : '')
                             }
                             handleCoverClick={handleCoverClick}
-                            currentBuddyId={currentBuddyId}
+                            currentBuddyId={currentBuddyId ?? ''}
+                            currentDearId={dearLove?.id ?? null}
                         />
                     </section>
 
@@ -108,7 +118,7 @@ export default function NewLayout() {
                         <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
                             {targetLoves.map((item) =>
                                 item.photos.map((photo, i) => (
-                                    <div key={i} className="mb-2 break-inside-avoid">
+                                    <div key={i} className="mb-2 break-inside-avoid w-full">
                                         {i === 0 && (
                                             <div className="mb-2">
                                                 <FileNameBox
@@ -119,21 +129,21 @@ export default function NewLayout() {
                                                 />
                                             </div>
                                         )}
-                                        {i === 5 && (
+                                        {i === 3 && (
                                             <div className="mb-2">
                                                 <DiaryMessage text={item?.comment} />
                                             </div>
                                         )}
                                         <button
                                             onClick={() => handlePhotoClick(i)}
-                                            className="group rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
+                                            className="group w-full rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
                                         >
                                             <img
                                                 src={photo}
                                                 alt=""
                                                 loading="lazy"
                                                 decoding="async"
-                                                className={`block w-full object-cover ${item.comment ? 'rounded-t-xl' : 'rounded-xl'}`}
+                                                className={`block w-full min-w-full object-cover ${item.comment ? 'rounded-t-xl' : 'rounded-xl'}`}
                                             />
                                             {/* {item.comment && (
                                                 <div className="p-2">
