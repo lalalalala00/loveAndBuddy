@@ -100,7 +100,6 @@ const Header = () => {
         }
     };
 
-    console.log(animals);
     useEffect(() => {
         loadUser();
 

@@ -1,16 +1,8 @@
 'use client';
 import { useUserState } from '@/context/useUserContext';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-type Love = { id: string; name: string; imgs: string };
-
-export default function LoveCollageFilter2({
-    onChange,
-    currentBuddyId,
-}: {
-    onChange?: (selectedIds: string[]) => void;
-    currentBuddyId: string;
-}) {
+export default function LoveCollageFilter2({ onChange }: { onChange?: (selectedIds: string[]) => void }) {
     const { animals } = useUserState();
     const [sel, setSel] = useState<Set<string>>(new Set());
 
@@ -22,7 +14,7 @@ export default function LoveCollageFilter2({
         const next = new Set(initIds);
         setSel(next);
         onChange?.(Array.from(next));
-    }, [animals, onChange]);
+    }, [animals]);
 
     const isSingle = (animals?.length ?? 0) <= 1;
 

@@ -16,7 +16,6 @@ export default function DateSelected({
     const signupYear = useMemo(() => {
         if (!signupAt) return currentYear;
         const d = new Date(signupAt);
-        console.log(d);
         return Number.isNaN(d.getTime()) ? currentYear : d.getFullYear();
     }, [signupAt, currentYear]);
 
@@ -27,7 +26,7 @@ export default function DateSelected({
     const [openYearPicker, setOpenYearPicker] = useState(false);
 
     const selectedMonth = months[activeMonth] ?? 'month';
-    console.log(selectedMonth);
+
     const years = useMemo(() => {
         const start = Math.min(signupYear, currentYear);
         const list: number[] = [];

@@ -42,17 +42,25 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
             return next;
         });
     };
+
+    const toNameLine = (name?: string | string[]) => {
+        if (!name) return '';
+        return Array.isArray(name) ? name.join(', ') : name;
+    };
+
     return (
         <div>
-            <div className="flex h-16 justify-between mb-2">
+            <div className="flex h-16 justify-between mb-3">
                 {/* <RepresentativePreview items={displayList} selected={draftAnimals.length} /> */}
                 {dear ? (
-                    <div className="flex items-center gap-2 p-2 rounded-xl bg-white/70 border border-[#e3ecdc] w-full">
+                    <div className="flex items-center gap-2 p-2 justify-center border-b border-[#e3ecdc] w-full">
+                        -`♥´- dear.love_〘
                         {displayList.map((item, i) => (
                             <span key={i} className="text-[14px]">
                                 {item.name}
                             </span>
                         ))}
+                        〙 -`♥´-
                     </div>
                 ) : (
                     <RepresentativePreview items={displayList} selected={draftAnimals.length} />

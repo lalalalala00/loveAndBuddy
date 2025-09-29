@@ -11,7 +11,7 @@ export default function AnimalCardVertical({
     onDelete?: (id: string) => void;
 }) {
     const list = sortWithOwnerFirst(initial);
-    console.log(initial);
+
     return (
         <div className="space-y-3">
             <div className="grid grid-cols-3 gap-2">

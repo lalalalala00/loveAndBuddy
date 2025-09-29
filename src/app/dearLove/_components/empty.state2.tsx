@@ -151,7 +151,7 @@ export default function EmptyMonthCollage({
                     </div>
                 )}
 
-                <div className="absolute left-8 bottom-6 w-[280px] rounded-2xl border border-[#e3ecdc] bg-white/90 backdrop-blur-sm shadow-lg">
+                {/* <div className="absolute left-8 bottom-6 w-[280px] rounded-2xl border border-[#e3ecdc] bg-white/90 backdrop-blur-sm shadow-lg">
                     <div className="px-3 py-2 text-[12px] text-gray-600 border-b border-[#eef3ea]">
                         smileys &amp; people
                     </div>
@@ -163,7 +163,7 @@ export default function EmptyMonthCollage({
                             </span>
                         ))}
                     </div>
-                </div>
+                </div> */}
             </div>
 
             {imgs.length > 0 && (

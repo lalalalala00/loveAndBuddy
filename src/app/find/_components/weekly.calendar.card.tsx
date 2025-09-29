@@ -115,7 +115,6 @@ export default function WeeklyCalendarCard({
 
     const fullMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
-    console.log(selectedDay);
     return (
         <div className={`${modal ? 'w-full' : ''}  bg-[#f7f9f6ee] rounded-t-lg shadow`}>
             <div className="grid grid-cols-[1fr_auto_1fr] items-center pt-1 mt-2 pb-2">

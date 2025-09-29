@@ -34,7 +34,6 @@ export default function KoreaLocationSelector_GlobalQuickSearch({
     };
 
     const onChangeSido = (newSido: string) => {
-        console.log(newSido);
         setSido(newSido);
         setSigungu('');
         clearDongUI();
@@ -45,7 +44,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch({
         setSigungu(newSigungu);
         clearDongUI();
     };
-    console.log(selected);
+
     useEffect(() => {
         (async () => {
             try {

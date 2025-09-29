@@ -55,7 +55,6 @@ const Index = () => {
                     return true;
                 });
                 setList(merged);
-                console.log(DUMMY_CARDS, 'DUMMY_CARDS');
             } catch (e: any) {
                 setErrorList(e?.message ?? '목록을 불러오지 못했어요.');
             } finally {
@@ -137,7 +136,6 @@ const Index = () => {
         });
     }, [loveFiltered]);
 
-    console.log(list, 'list');
     return (
         <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">

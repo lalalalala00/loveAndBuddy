@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 export type Filters = {
     dateKey: 'today' | 'tomorrow' | 'weekend' | 'thisweek' | 'custom' | 'none';
@@ -87,40 +87,63 @@ export const buildDateLabel = (key: Filters['dateKey'], from?: string, to?: stri
 };
 
 export const formatDateLongEn = (dateStr?: string) => {
-  if (!dateStr) return '';
-  const d = dayjs(dateStr); 
-  return d.isValid() ? d.locale('en').format('MMMM D, YYYY') : dateStr;
+    if (!dateStr) return '';
+    const d = dayjs(dateStr);
+    return d.isValid() ? d.locale('en').format('MMMM D, YYYY') : dateStr;
 };
 
 export function getAgeFromYear(birthYear: number | string, baseDate: Date = new Date()): number {
-  const y = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
-  if (!Number.isFinite(y)) return 0;           
-  return Math.max(0, baseDate.getFullYear() - y); 
+    const y = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
+    if (!Number.isFinite(y)) return 0;
+    return Math.max(0, baseDate.getFullYear() - y);
 }
 
-
 export function getDecadeLabel(birthYear?: string | number | null, fallback = '20대') {
-  const y = Number(birthYear);
-  if (!y || !Number.isFinite(y) || String(y).length !== 4) return fallback;
-  const now = new Date();
-  const currentYear = now.getFullYear(); 
-  const age = Math.max(0, currentYear - y); 
-  const decade =  Math.floor(age / 10) * 10; 
-  return `${decade}대`;
+    const y = Number(birthYear);
+    if (!y || !Number.isFinite(y) || String(y).length !== 4) return fallback;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const age = Math.max(0, currentYear - y);
+    const decade = Math.floor(age / 10) * 10;
+    return `${decade}대`;
 }
 
 export function inRange(item: any, range: { start: number; end: number }) {
-  const bookings: any[] = (item as any).bookings ?? [];
-  if (!bookings.length) return true; // 예약 정보가 없으면 날짜 필터 패스
-  return bookings.some((b) => {
-    if (typeof b.date === 'number') {
-      const ms = b.date > 2_000_000_000 ? b.date : b.date * 1000;
-      return ms >= range.start && ms <= range.end;
-    }
-    if (b.start_at) {
-      const ms = new Date(b.start_at).getTime();
-      return ms >= range.start && ms <= range.end;
-    }
-    return false;
-  });
+    const bookings: any[] = (item as any).bookings ?? [];
+    if (!bookings.length) return true; // 예약 정보가 없으면 날짜 필터 패스
+    return bookings.some((b) => {
+        if (typeof b.date === 'number') {
+            const ms = b.date > 2_000_000_000 ? b.date : b.date * 1000;
+            return ms >= range.start && ms <= range.end;
+        }
+        if (b.start_at) {
+            const ms = new Date(b.start_at).getTime();
+            return ms >= range.start && ms <= range.end;
+        }
+        return false;
+    });
+}
+
+export const formatDate = (ts?: number) => {
+    if (!ts) return '';
+    const d = new Date(ts);
+    return `${d.toLocaleString('en-US', {
+        month: 'short',
+    })} ${d.getDate()}, ${d.getFullYear()}`;
+};
+
+export function getWeekdayEnCap(dateStr?: string) {
+    if (!dateStr) return '';
+    const hasTZ = /([zZ])|([+-]\d{2}:\d{2})$/.test(dateStr);
+    const iso = hasTZ ? dateStr : `${dateStr}+09:00`;
+
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+
+    const weekday = new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        timeZone: 'Asia/Seoul',
+    }).format(d);
+
+    return weekday.charAt(0).toUpperCase() + weekday.slice(1).toLowerCase();
 }

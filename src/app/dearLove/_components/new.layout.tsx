@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { imgs } from './filepage';
 import FileNameBox from './file.name.box';
 import DiaryMessage from './diary.message';
 import DateSelected from './date.selected';
@@ -14,9 +13,7 @@ import { getUserById } from '@/common/get.user.by.id';
 import PhotoModal from './modal.photo';
 import ModalIos from '@/common/modal.ios';
 import { useDearLoveIndex } from '@/hooks/useDearLove';
-import EmptyMonthState from './empty.state';
 import EmptyMonthCollage from './empty.state2';
-import DearLovePhotoUploader from './dear.imgs.upload';
 
 export default function NewLayout() {
     const { animals, dearLoves = [] } = useUserState();
@@ -39,14 +36,19 @@ export default function NewLayout() {
     const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
+    const [selectedPhotos, setSelectePhotos] = useState<string[]>();
+
+    const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[] | null>(null);
+
     const handleCoverClick = (buddyId?: string | null, nextDear?: DearLove) => {
         if (!buddyId || !nextDear) return;
         actions.selectByDear(nextDear);
     };
 
-    const handlePhotoClick = (i: number) => {
+    const handlePhotoClick = (i: number, photos: string[]) => {
         setSelectedPhoto(true);
         setSelectedPhotoIndex(i);
+        setSelectePhotos(photos);
     };
 
     const formatStamp = (iso?: string | null) => {
@@ -65,6 +67,24 @@ export default function NewLayout() {
         const buddyName = currentBuddy?.name ?? 'Buddy';
         return `${buddyName}와 함께한 디얼러브`;
     }, [dearLove?.title, currentBuddy?.name]);
+
+    const filteredLoves = useMemo(() => {
+        if (!selectedAnimalIds || selectedAnimalIds.length === 0) return targetLoves;
+
+        const allAnimalIds = animals?.map((a) => a.animal_uuid) ?? [];
+        if (selectedAnimalIds.length === allAnimalIds.length) return targetLoves;
+
+        const selSet = new Set(selectedAnimalIds);
+
+        return targetLoves.filter((d) => {
+            if (!d.with_animals) return false;
+            const ids = d.with_animals
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean);
+            return ids.some((id) => selSet.has(id));
+        });
+    }, [selectedAnimalIds, animals, targetLoves]);
 
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
@@ -93,7 +113,7 @@ export default function NewLayout() {
                                 }
                                 clickCss="w-full"
                             />
-                            <LoveCollageFilter2 onChange={setSelectedAnimal} currentBuddyId={currentBuddyId} />
+                            <LoveCollageFilter2 onChange={(ids) => setSelectedAnimalIds(ids)} />
                         </div>
 
                         <CoverList
@@ -116,13 +136,13 @@ export default function NewLayout() {
                         </span>
 
                         <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
-                            {targetLoves.map((item) =>
+                            {filteredLoves.map((item) =>
                                 item.photos.map((photo, i) => (
                                     <div key={i} className="mb-2 break-inside-avoid w-full">
                                         {i === 0 && (
                                             <div className="mb-2">
                                                 <FileNameBox
-                                                    bgImg={dearLove?.representative_img}
+                                                    bgImg={dearLove?.representative_img ?? '/cover/3.png'}
                                                     textColor=""
                                                     dearLove={dearLove}
                                                     currentBuddy={currentBuddy as BuddyLite | null}
@@ -131,11 +151,11 @@ export default function NewLayout() {
                                         )}
                                         {i === 3 && (
                                             <div className="mb-2">
-                                                <DiaryMessage text={item?.comment} />
+                                                <DiaryMessage text={item?.comment ?? ''} />
                                             </div>
                                         )}
                                         <button
-                                            onClick={() => handlePhotoClick(i)}
+                                            onClick={() => handlePhotoClick(i, item.photos)}
                                             className="group w-full rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
                                         >
                                             <img
@@ -168,13 +188,13 @@ export default function NewLayout() {
                 handleModalState={() => setSelectedPhoto(false)}
                 width="50%"
                 height="800px"
-                title={'title'}
+                title={pageTitle}
                 leftComment="*⁀➷♥ Heart ⌁❤︎⌁﻿"
                 leftAction={() => console.log('heart')}
             >
                 <PhotoModal
                     handleModalState={() => setSelectedPhoto(false)}
-                    images={imgs}
+                    images={selectedPhotos}
                     selectedIndex={selectedPhotoIndex}
                 />
             </ModalIos>

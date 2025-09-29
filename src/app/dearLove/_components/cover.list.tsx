@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { DearLove } from '@/utils/data';
+import { formatDate } from '@/utils/date';
 
 export default function CoverList({
     dearLoves,
@@ -44,14 +45,6 @@ export default function CoverList({
         if (!el) return;
         const amount = Math.max(200, Math.floor(el.clientWidth * 0.9));
         el.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
-    };
-
-    const formatDate = (ts?: number) => {
-        if (!ts) return '';
-        const d = new Date(ts);
-        return `${d.toLocaleString('en-US', {
-            month: 'short',
-        })} ${d.getDate()}, ${d.getFullYear()}`;
     };
 
     return (

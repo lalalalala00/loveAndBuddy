@@ -1,4 +1,5 @@
 import { BuddyLite, DearLove } from '@/utils/data';
+import { formatDate, getWeekdayEnCap } from '@/utils/date';
 
 const FileNameBox = ({
     bgImg,
@@ -17,24 +18,24 @@ const FileNameBox = ({
             style={{ backgroundImage: `url(${bgImg})`, backgroundSize: 'cover' }}
         >
             <div className="absolute top-0 left-0 w-full h-full bg-white/40 z-1" />
-            <div className="flex flex-col items-start gap-1 z-2">
+            <div className="flex flex-col items-start gap-1 z-2 mt-[16px]">
                 <span
-                    className="text-2xl font-semibold tracking-wide uppercase"
-                    style={{ color: textColor ? textColor : '#111' }}
+                    className="text-[20px] font-semibold tracking-wide uppercase leading-2"
+                    style={{ color: textColor ? textColor : '#222' }}
                 >
                     {dearLove?.weather}
                 </span>
                 <div className="flex items-end">
                     <h4 className="text-2xl font-bold" style={{ color: textColor ? textColor : '#101828' }}>
-                        Monday
+                        {getWeekdayEnCap(dearLove?.date_at)}
                     </h4>
                     <span className="ml-2 text-sm" style={{ color: textColor ? textColor : '#111' }}>
-                        ⪩July 14, 2025⪨
+                        ⪩{formatDate(dearLove?.date_at)}⪨
                     </span>
                 </div>
 
                 <h6 className="text-sm font-medium" style={{ color: textColor ? textColor : '#101828' }}>
-                    ⏱ ̗̀ 16:00 =͟͟͞ ♡̩͙꙳ 19:00 ˎˊ
+                    ⏱ ̗̀ {dearLove.start_time} =͟͟͞ ♡̩͙꙳ {dearLove.end_time} ˎˊ
                 </h6>
                 <span className="text-sm font-medium" style={{ color: textColor ? textColor : '#111' }}>
                     Buddy_ᬏ᭄꙳⸌ <span className="font-semibold">{currentBuddy?.name}</span> ⛧*̩̩͙⸝⋆

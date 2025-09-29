@@ -122,7 +122,7 @@ const ImportPhoto = () => {
     }, []);
 
     return (
-        <div className="w-full rounded-xl p-3 mb-3 bg-[#f5f7ee81] shadow">
+        <div className="w-full rounded-xl p-3 mb-3 bg-[#f5f7ee81] border-[#e3ecdc] border shadow">
             <div className="flex gap-3">
                 <div className="w-[140px] shrink-0">
                     {!cover ? (

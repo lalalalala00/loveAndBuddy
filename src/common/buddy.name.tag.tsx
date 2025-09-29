@@ -22,7 +22,7 @@ const BuddyNameTag = ({
 
     const [buddySelected, setBuddySelected] = useState(false);
     const hasLiked = hearts > buddyData.hearts;
-    console.log(wFull);
+
     return (
         <div className="w-full">
             <div

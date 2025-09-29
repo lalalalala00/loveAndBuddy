@@ -26,7 +26,7 @@ export default function AnimalSelect({
         });
         setSelected(new Set([targetId]));
     };
-    console.log(items);
+
     const toggleSelect = (item: Animal) => {
         setSelected((prev) => {
             if (item.first) return prev;
