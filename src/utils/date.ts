@@ -147,3 +147,10 @@ export function getWeekdayEnCap(dateStr?: string) {
 
     return weekday.charAt(0).toUpperCase() + weekday.slice(1).toLowerCase();
 }
+
+export    const formatStamp = (iso?: string | null) => {
+        if (!iso) return '';
+        const d = new Date(iso);
+        const w = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+        return `${d.getMonth() + 1}월 ${d.getDate()}일 (${w}) ${d.getHours()}시 ${String(d.getMinutes()).padStart(2, '0')}분`;
+    };

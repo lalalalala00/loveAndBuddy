@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import FileNameBox from './file.name.box';
 import DiaryMessage from './diary.message';
 import DateSelected from './date.selected';
@@ -14,6 +14,7 @@ import PhotoModal from './modal.photo';
 import ModalIos from '@/common/modal.ios';
 import { useDearLoveIndex } from '@/hooks/useDearLove';
 import EmptyMonthCollage from './empty.state2';
+import { formatStamp } from '@/utils/date';
 
 export default function NewLayout() {
     const { animals, dearLoves = [] } = useUserState();
@@ -40,10 +41,7 @@ export default function NewLayout() {
 
     const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[] | null>(null);
 
-    const handleCoverClick = (buddyId?: string | null, nextDear?: DearLove) => {
-        if (!buddyId || !nextDear) return;
-        actions.selectByDear(nextDear);
-    };
+    const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
     const handlePhotoClick = (i: number, photos: string[]) => {
         setSelectedPhoto(true);
@@ -51,22 +49,7 @@ export default function NewLayout() {
         setSelectePhotos(photos);
     };
 
-    const formatStamp = (iso?: string | null) => {
-        if (!iso) return '';
-        const d = new Date(iso);
-        const w = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
-        return `${d.getMonth() + 1}월 ${d.getDate()}일 (${w}) ${d.getHours()}시 ${String(d.getMinutes()).padStart(2, '0')}분`;
-    };
-
     const targetLoves = useMemo(() => (dearLove ? [dearLove] : sortedDearLoves), [dearLove, sortedDearLoves]);
-
-    const pageTitle = useMemo(() => {
-        const t = dearLove?.title?.trim?.();
-        if (t) return t;
-
-        const buddyName = currentBuddy?.name ?? 'Buddy';
-        return `${buddyName}와 함께한 디얼러브`;
-    }, [dearLove?.title, currentBuddy?.name]);
 
     const filteredLoves = useMemo(() => {
         if (!selectedAnimalIds || selectedAnimalIds.length === 0) return targetLoves;
@@ -86,6 +69,35 @@ export default function NewLayout() {
         });
     }, [selectedAnimalIds, animals, targetLoves]);
 
+    const pageTitle = useMemo(() => {
+        const t = dearLove?.title?.trim?.();
+        if (t) return t;
+        const buddyName = currentBuddy?.name ?? 'Buddy';
+        return `${buddyName}와 함께한 디얼러브`;
+    }, [dearLove?.title, currentBuddy?.name, selectedAnimalIds]);
+
+    const allAnimalIds = useMemo(() => (animals ?? []).map((a) => a.animal_uuid), [animals]);
+
+    useEffect(() => {
+        const sel = selectedAnimalIds ?? [];
+        setIsFiltering(sel.length > 0 && sel.length < allAnimalIds.length);
+    }, [selectedAnimalIds, allAnimalIds]);
+
+    const handleCoverClick = (buddyId?: string | null, nextDear?: DearLove) => {
+        if (!buddyId || !nextDear) return;
+        actions.selectByDear(nextDear);
+        setIsFiltering(false);
+    };
+
+    const selectedLabel = useMemo(() => {
+        const sel = new Set(selectedAnimalIds ?? []);
+        const names = (animals ?? []).filter((a) => sel.has(a.animal_uuid)).map((a) => a.name);
+
+        if (names.length === 0) return '';
+
+        return `${names.join(', ')}의 디얼러브`;
+    }, [animals, selectedAnimalIds]);
+
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
             <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] font-semibold text-[#5b7551] tracking-tight">
@@ -96,8 +108,6 @@ export default function NewLayout() {
 
             {!dearLove ? (
                 <div>
-                    {/* <EmptyMonthState animals={animals} selectedDate={selectedDate} /> */}
-
                     <EmptyMonthCollage animals={animals} dears={dearLoves} selectedYYYYMM={selectedDate} />
                 </div>
             ) : (
@@ -108,7 +118,9 @@ export default function NewLayout() {
                                 tooltip={`${currentBuddy?.name ?? ''} 버디룸 보러가기`}
                                 comment={
                                     <h2 className="text-[15px] mb-1 font-semibold text-[#5b7551] ">
-                                        {pageTitle} _ {currentBuddy?.name ?? ''} 버디
+                                        {isFiltering
+                                            ? selectedLabel
+                                            : `${pageTitle} _ ${currentBuddy?.name ?? ''} 버디`}
                                     </h2>
                                 }
                                 clickCss="w-full"
@@ -124,6 +136,7 @@ export default function NewLayout() {
                             handleCoverClick={handleCoverClick}
                             currentBuddyId={currentBuddyId ?? ''}
                             currentDearId={dearLove?.id ?? null}
+                            selectedAnimalIds={selectedAnimalIds}
                         />
                     </section>
 
@@ -132,7 +145,7 @@ export default function NewLayout() {
                     </div>
                     <main className=" mx-auto max-w-[1200px] px-3 mt-4">
                         <span className="flex justify-center mb-6 text-[12px] text-[#8f8f8f] text-shadow-2xs">
-                            {formatStamp(dearLove.date_at)}
+                            {formatStamp(filteredLoves[0]?.date_at)}
                         </span>
 
                         <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">

@@ -233,7 +233,7 @@ const Calendar = ({
                             >
                                 <div className="text-left relative">
                                     <span
-                                        className={`${calSize ? 'text-[16px]' : 'text-[14px]'} z-[6] relative ${dayReservations.length > 0 ? 'text-white font-bold text-[18px]' : ''}`}
+                                        className={`${calSize ? 'text-[16px]' : 'text-[14px]'} z-[6] relative ${dayReservations.length > 0 ? 'text-white font-bold' : ''}`}
                                     >
                                         {date?.date()}
                                     </span>

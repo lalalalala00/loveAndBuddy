@@ -45,7 +45,7 @@ export default function BuddyFilterBar({
     return (
         <div className="flex justify-end items-center mb-3">
             <div className="flex flex-col w-[920px]">
-                <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
+                <div className="flex flex-nowrap items-center justify-between gap-3 mt-3">
                     <div className="relative">
                         <button
                             className={cx(
