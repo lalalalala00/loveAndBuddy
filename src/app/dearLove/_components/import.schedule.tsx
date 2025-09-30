@@ -4,7 +4,8 @@ import ModalIos from '@/common/modal.ios';
 
 import { useEffect, useRef, useState } from 'react';
 import { ScheduleImportModal } from './import.schedule.modal';
-import { TimeSelect24 } from './import.time.selected';
+
+import { TimePickerField } from './time.picker';
 
 export function getTodayYYYYMMDDSeoul() {
     const nowSeoul = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
@@ -40,28 +41,27 @@ function formatWeekdayUnderscorePrettyDate(ts?: string | number | Date) {
     const d = toSeoulDate(ts);
     if (!d) return '';
 
-    const weekday = new Intl.DateTimeFormat('en-US', {
+    const weekday = new Intl.DateTimeFormat('ko-KR', {
         weekday: 'long',
         timeZone: 'Asia/Seoul',
     }).format(d);
 
-    const month = new Intl.DateTimeFormat('en-US', {
+    const month = new Intl.DateTimeFormat('ko-KR', {
         month: 'short',
         timeZone: 'Asia/Seoul',
     }).format(d);
 
-    const day = new Intl.DateTimeFormat('en-US', {
+    const day = new Intl.DateTimeFormat('ko-KR', {
         day: 'numeric',
         timeZone: 'Asia/Seoul',
     }).format(d);
 
-    const year = new Intl.DateTimeFormat('en-US', {
+    const year = new Intl.DateTimeFormat('ko-KR', {
         year: 'numeric',
         timeZone: 'Asia/Seoul',
     }).format(d);
 
-    // e.g. "Monday _ Oct 6, 2025"
-    return `${weekday} _ ${month} ${day}, ${year}`;
+    return `[ ${weekday} ]  ${month} ${day}, ${year}`;
 }
 
 const ImportSchedule = () => {
@@ -94,9 +94,6 @@ const ImportSchedule = () => {
     }, [pickerOpen]);
 
     const displayISO = `${selectedDate}${time ? `T${time}:00` : ''}`;
-
-    const timeText =
-        timeStart && timeEnd ? `${toKTime(timeStart)}–${toKTime(timeEnd)}` : timeStart ? toKTime(timeStart) : '';
 
     const handleImport = (v: {
         date?: string;
@@ -181,7 +178,7 @@ const ImportSchedule = () => {
             </div>
 
             <div className="w-full  bg-white p-2 rounded-lg">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 w-full">
                     <label className="block">
                         <span className="block text-xs text-gray-500 mb-1">장소</span>
                         <input
@@ -203,13 +200,12 @@ const ImportSchedule = () => {
                             placeholder="예: 성수동"
                         />
                     </label>
-
-                    <label className="block">
+                    <label className="block ">
                         <span className="block text-xs text-gray-500 mb-1">시간 (시작–종료)</span>
-                        <div className="flex items-center rounded-xl border border-[#e3ecdc] px-3 py-2 gap-2">
-                            <TimeSelect24 value={timeStart} onChange={setTimeStart} />
+                        <div className="flex items-center rounded-xl  gap-2 bg-white h-[38px]">
+                            <TimePickerField value={timeStart} onChange={setTimeStart} />
                             <span className="text-gray-400 shrink-0">–</span>
-                            <TimeSelect24 value={timeEnd} onChange={setTimeEnd} min={timeStart} />
+                            <TimePickerField value={timeEnd} onChange={setTimeEnd} min={timeStart} />
                         </div>
                     </label>
                 </div>
