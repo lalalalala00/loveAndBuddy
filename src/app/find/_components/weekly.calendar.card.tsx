@@ -1,6 +1,6 @@
 import { useBooking } from '@/context/useBookingContext';
 import { at0, getThisWeekRange, weekdayKo } from '@/utils/date';
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 export type Availability = { startHour: number; endHour: number };
 

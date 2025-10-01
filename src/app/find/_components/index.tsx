@@ -16,10 +16,12 @@ import { supabase } from '@/lib/supabaseClient';
 import { DUMMY_CARDS } from './data/cards.others';
 import { buildDateLabel, Filters, inRange } from '@/utils/date';
 import { DUMMY_LOVE_ANIMALS, DUMMY_LOVE_GROUPS } from './data/cards.love';
-import { filterBySpecies, groupByOwner } from './data/love.helpers';
 import { LoveGroupCard } from '@/utils/sign';
+import { useUserState } from '@/context/useUserContext';
+import LoveCollageFilter2 from '@/app/dearLove/_components/love.filter2';
 
 const Index = () => {
+    const { animals } = useUserState();
     const router = useRouter();
     const [selectedType, setSelectedType] = useState<number>(1);
     const [list, setList] = useState<CardOverviewRow[]>([]);
@@ -160,13 +162,18 @@ const Index = () => {
                     )}
                 </div>
             </div>
-            <div className="flex  justify-end items-center px-5 mb-3">
-                <div className="flex flex-col w-[920px] items-end">
-                    <SelectedPlace />
-
-                    <BuddyFilterBar onFiltersChange={setFilters} selectedType={selectedType} />
+            <div className="flex justify-between items-end mb-3 ">
+                <div className="flex justify-center w-full">
+                    <LoveCollageFilter2 />
+                </div>
+                <div className="flex  justify-end items-center px-5 w-[920px]">
+                    <div className="flex flex-col items-end">
+                        <SelectedPlace />
+                        <BuddyFilterBar onFiltersChange={setFilters} selectedType={selectedType} />
+                    </div>
                 </div>
             </div>
+
             <div className="flex px-5">
                 <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4 min-w-[306px] sticky top-4 h-[780px]">
                     <div className="relative mb-3 px-1 py-2 rounded-xl bg-gradient-to-br from-[#e3ecdc]/90 to-[#f3f7ee]/80 border border-[#d5e2c8] text-[#3c5732] text-center font-semibold text-[14px] tracking-tight shadow-[inset_2px_2px_5px_#ffffff,-2px_-2px_5px_#d5e2c8]">
