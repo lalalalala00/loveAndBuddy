@@ -131,87 +131,88 @@ export default function BuddyFilterBar({
                             </div>
                         )}
                     </div>
-
-                    <div className="flex items-center bg-white rounded-full border border-gray-200 p-1">
-                        {[
-                            { k: 'all', n: '전체' },
-                            { k: 'dog', n: '강아지' },
-                            { k: 'cat', n: '고양이' },
-                            { k: 'others', n: '다른 친구들' },
-                        ].map((opt) => (
-                            <button
-                                key={opt.k}
-                                className={cx(
-                                    'px-3 py-1.5 rounded-full text-[14px]',
-                                    species === (opt.k as Filters['species'])
-                                        ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                        : 'text-gray-700',
-                                )}
-                                onClick={() => setSpecies(opt.k as Filters['species'])}
-                                aria-pressed={species === opt.k}
-                            >
-                                {opt.n}
-                            </button>
-                        ))}
-                    </div>
-
-                    {selectedType === 1 && (
-                        <div className="flex items-center gap-2">
-                            <button
-                                className={cx(
-                                    'px-3 py-2 rounded-full border text-[14px]',
-                                    genderActive('female')
-                                        ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                        : 'border-gray-200 text-gray-700',
-                                )}
-                                onClick={() => toggleGender('female')}
-                                aria-pressed={genderActive('female')}
-                            >
-                                여성
-                            </button>
-                            <button
-                                className={cx(
-                                    'px-3 py-2 rounded-full border text-[14px]',
-                                    genderActive('male')
-                                        ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                        : 'border-gray-200 text-gray-700',
-                                )}
-                                onClick={() => toggleGender('male')}
-                                aria-pressed={genderActive('male')}
-                            >
-                                남성
-                            </button>
+                    <div className="flex">
+                        <div className="flex items-center bg-white rounded-full border border-gray-200 p-1 mr-2">
+                            {[
+                                { k: 'all', n: '전체' },
+                                { k: 'dog', n: '강아지' },
+                                { k: 'cat', n: '고양이' },
+                                { k: 'others', n: '다른 친구들' },
+                            ].map((opt) => (
+                                <button
+                                    key={opt.k}
+                                    className={cx(
+                                        'px-3 py-1.5 rounded-full text-[14px]',
+                                        species === (opt.k as Filters['species'])
+                                            ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                            : 'text-gray-700',
+                                    )}
+                                    onClick={() => setSpecies(opt.k as Filters['species'])}
+                                    aria-pressed={species === opt.k}
+                                >
+                                    {opt.n}
+                                </button>
+                            ))}
                         </div>
-                    )}
 
-                    <div className="flex items-center gap-2">
                         {selectedType === 1 && (
-                            <div className="flex items-center bg-white rounded-full border border-gray-200 p-1">
-                                {(['heart', 'manner', 'dearlove', 'trust'] as Filters['sortKey'][]).map((k) => (
-                                    <button
-                                        key={k}
-                                        className={cx(
-                                            'px-3 py-1.5 rounded-full text-[14px]',
-                                            sortKey === k
-                                                ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                                : 'text-gray-700',
-                                        )}
-                                        onClick={() => setSortKey(k)}
-                                        aria-pressed={sortKey === k}
-                                        title={`정렬: ${sortLabelMap[k]}`}
-                                    >
-                                        {sortLabelMap[k]}
-                                    </button>
-                                ))}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    className={cx(
+                                        'px-3 py-2 rounded-full border text-[14px]',
+                                        genderActive('female')
+                                            ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                            : 'border-gray-200 text-gray-700',
+                                    )}
+                                    onClick={() => toggleGender('female')}
+                                    aria-pressed={genderActive('female')}
+                                >
+                                    여성
+                                </button>
+                                <button
+                                    className={cx(
+                                        'px-3 py-2 rounded-full border text-[14px]',
+                                        genderActive('male')
+                                            ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                            : 'border-gray-200 text-gray-700',
+                                    )}
+                                    onClick={() => toggleGender('male')}
+                                    aria-pressed={genderActive('male')}
+                                >
+                                    남성
+                                </button>
                             </div>
                         )}
-                        <button
-                            className="px-3 py-2 rounded-full border border-gray-200 text-[14px] hover:bg-gray-50"
-                            onClick={() => setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))}
-                            title={sortDir === 'desc' ? '내림차순' : '오름차순'}
-                        >
-                            {sortDir === 'desc' ? '↧' : '↥'}
-                        </button>
+
+                        <div className="flex items-center gap-2">
+                            {selectedType === 1 && (
+                                <div className="flex items-center bg-white rounded-full border border-gray-200 p-1">
+                                    {(['heart', 'manner', 'dearlove', 'trust'] as Filters['sortKey'][]).map((k) => (
+                                        <button
+                                            key={k}
+                                            className={cx(
+                                                'px-3 py-1.5 rounded-full text-[14px]',
+                                                sortKey === k
+                                                    ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                                    : 'text-gray-700',
+                                            )}
+                                            onClick={() => setSortKey(k)}
+                                            aria-pressed={sortKey === k}
+                                            title={`정렬: ${sortLabelMap[k]}`}
+                                        >
+                                            {sortLabelMap[k]}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                            <button
+                                className="px-3 py-2 rounded-full border border-gray-200 text-[14px] hover:bg-gray-50"
+                                onClick={() => setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))}
+                                title={sortDir === 'desc' ? '내림차순' : '오름차순'}
+                            >
+                                {sortDir === 'desc' ? '↧' : '↥'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

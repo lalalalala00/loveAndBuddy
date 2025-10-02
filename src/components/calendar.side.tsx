@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { DearLove } from '@/utils/data';
 import type { SelectedDay } from './home/calendar';
 import { useUserState } from '@/context/useUserContext';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     item: SelectedDay | undefined;
@@ -24,6 +25,8 @@ const fallbackPhotos = [
 
 const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, buddyAvatar }: Props) => {
     if (!item) return null;
+
+    const router = useRouter();
 
     const { animals } = useUserState();
 
@@ -47,6 +50,12 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
         const show = pics.slice(0, 6);
         const extra = Math.max(pics.length - show.length, 0);
         return { show, extra };
+    };
+
+    const goDearLove = () => {
+        const firstId = item?.reservation?.[0]?.id;
+        if (!firstId) return;
+        router.push(`/dearLove?id=${encodeURIComponent(String(firstId))}`);
     };
 
     return (
@@ -130,7 +139,10 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
                         </div>
                     </div>
 
-                    <button className="text-[13px] custom-card custom-card-hover rounded-2xl w-full h-9">
+                    <button
+                        onClick={goDearLove}
+                        className="text-[13px] custom-card custom-card-hover rounded-2xl w-full h-9"
+                    >
                         dear.Love 보러가기
                     </button>
                 </>

@@ -28,6 +28,8 @@ const Index = () => {
     const [loadingList, setLoadingList] = useState(false);
     const [errorList, setErrorList] = useState<string | null>(null);
 
+    const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[] | null>(null);
+
     const [filters, setFilters] = useState<Filters>({
         dateKey: 'thisweek',
         species: 'all',
@@ -138,6 +140,21 @@ const Index = () => {
         });
     }, [loveFiltered]);
 
+    const selectedAnimals = useMemo(() => {
+        if (!selectedAnimalIds || !animals?.length) return [];
+
+        const byId = new Map(animals.map((a) => [a.animal_uuid, a]));
+        const _arr = selectedAnimalIds
+            .map((id) => {
+                const a = byId.get(id);
+                if (!a) return null;
+                return { id, name: a.name, isFirst: !!a.first, avatar_url: a.img };
+            })
+            .filter((v): v is { id: string; name: string; isFirst: boolean; avatar_url: string } => Boolean(v));
+
+        return [..._arr].sort((a, b) => Number(b.isFirst) - Number(a.isFirst));
+    }, [animals, selectedAnimalIds]);
+    console.log(selectedAnimals);
     return (
         <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">
@@ -163,8 +180,23 @@ const Index = () => {
                 </div>
             </div>
             <div className="flex justify-between items-end mb-3 ">
-                <div className="flex justify-center w-full">
-                    <LoveCollageFilter2 />
+                <div className="flex justify-center w-full flex-col items-center">
+                    {selectedType === 1 && (
+                        <>
+                            <LoveCollageFilter2 onChange={(ids) => setSelectedAnimalIds(ids)} />
+                            <div className="flex">
+                                {selectedAnimals.map((a, i) => (
+                                    <span key={a.id} className="flex">
+                                        <span
+                                            className={`mr-3 text-[13px] ${(a.isFirst || i == 0) && 'border px-2 rounded-lg'}`}
+                                        >
+                                            {a.name}
+                                        </span>
+                                    </span>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
                 <div className="flex  justify-end items-center px-5 w-[920px]">
                     <div className="flex flex-col items-end">
@@ -202,8 +234,7 @@ const Index = () => {
                         </span>
                     ) : (
                         <span className="text-[12px] flex justify-center">
-                            {' '}
-                            📅 오늘부터 <b className="mx-1">7일 이내로</b> 구하는 러브예요!
+                            {/* 📅 오늘부터 <b className="mx-1">7일 이내로</b> 구하는 러브예요! */}
                         </span>
                     )}
 
@@ -261,7 +292,7 @@ const Index = () => {
                     <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-x-4">
                         {filtered.map((item) => (
                             <div key={item.user_id} className="break-inside-avoid mb-4">
-                                <ListBox2 list={item} />
+                                <ListBox2 list={item} selectedAnimals={selectedAnimals} />
                             </div>
                         ))}
                         {!filtered.length && (

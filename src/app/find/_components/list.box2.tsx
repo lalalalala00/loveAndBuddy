@@ -5,8 +5,8 @@ import ModalIos from '@/common/modal.ios';
 import NameTag from '@/common/name.tag';
 import { CardOverviewRow } from './data/cards';
 import { supabase } from '@/lib/supabaseClient';
-import { Certificate } from '@/utils/sign';
-import { Booking, EMPTY_USER } from '@/utils/data';
+import { Animal, Certificate } from '@/utils/sign';
+import { Booking, EMPTY_SELECTED_ANIMALS_LIST, EMPTY_USER, SelectedAnimals } from '@/utils/data';
 import { useUserState } from '@/context/useUserContext';
 
 function combineDateTimeToISO(dateStr?: string | null, timeStr?: string | null) {
@@ -24,9 +24,9 @@ function combineDateTimeToUnixMs(dateStr?: string | null, timeStr?: string | nul
     return new Date(y, m - 1, d, hh, mm, 0).getTime(); // ms
 }
 
-type Props = { list: CardOverviewRow };
+type Props = { list: CardOverviewRow; selectedAnimals: SelectedAnimals[] };
 
-const ListBox2 = ({ list }: Props) => {
+const ListBox2 = ({ list, selectedAnimals }: Props) => {
     const { state, timeDate } = useBooking();
     const { getUser } = useUserState();
 
@@ -36,6 +36,8 @@ const ListBox2 = ({ list }: Props) => {
     const [actionMsg, setActionMsg] = useState<string | null>(null);
     const [infoData, setInfoData] = useState(false);
 
+    const [selectedDT, setSelectedDT] = useState<{ date: string; time: string }>({ date: '', time: '' });
+
     const [buddyBooking, setBuddyBooking] = useState<Booking>({
         user: EMPTY_USER,
         date: 0,
@@ -43,6 +45,7 @@ const ListBox2 = ({ list }: Props) => {
         place: '',
         uuid: '',
         buddy: EMPTY_USER,
+        animals: EMPTY_SELECTED_ANIMALS_LIST,
     });
 
     const certs = (list?.certificates_preview ?? []) as unknown as Certificate[];
@@ -77,8 +80,9 @@ const ListBox2 = ({ list }: Props) => {
                 user_birth_year: list.user_birth_year ?? '0000',
                 user_comment: list.user_comment ?? '화이팅',
             },
+            animals: selectedAnimals ?? EMPTY_SELECTED_ANIMALS_LIST,
         }));
-    }, [open, state.draft, list, getUser]);
+    }, [open, state.draft, list, getUser, selectedAnimals]);
 
     const handleClose = () => {
         setInfoData(false);
@@ -87,12 +91,7 @@ const ListBox2 = ({ list }: Props) => {
         setInfoDone(false);
     };
 
-    const isValidDate = (v?: string | null) => !!v && /^\d{4}-\d{2}-\d{2}$/.test(v);
-
-    const isValidTimeOrRange = (v?: string | null) =>
-        !!v && /^([01]\d|2[0-3]):[0-5]\d(\~([01]\d|2[0-3]):[0-5]\d)?$/.test(v!);
-
-    const canRequest = Boolean(timeDate && isValidDate(state.draft.date) && isValidTimeOrRange(state.draft.time));
+    const canRequest = Boolean(selectedDT.date && selectedDT.time.length > 1);
 
     const confirmAction = async () => {
         setActionMsg(null);
@@ -138,13 +137,16 @@ const ListBox2 = ({ list }: Props) => {
                     <NameTag imgCss="w-[60px] h-[60px]" find info={list} />
                 </div>
 
-                <div className="p-2 flex flex-col gap-2 min-h-[245px] overflow-visible">
+                <div className="p-2 flex flex-col justify-between gap-2 min-h-[245px] overflow-visible">
                     <div>
                         <div className="text-[12px] text-gray-500 ml-1 mt-2 px-2">
                             📸 사진촬영동의 · 🪪 신원인증 · ✔️ 인성검사완료
                         </div>
 
-                        <WeeklyCalendarCard availability={{ startHour: 9, endHour: 22 }} />
+                        <WeeklyCalendarCard
+                            availability={{ startHour: 9, endHour: 22 }}
+                            setSelectedDT={setSelectedDT}
+                        />
 
                         <div className="flex flex-col text-[13px] items-start w-full px-2 my-2">
                             {bullets.length ? (
@@ -162,7 +164,7 @@ const ListBox2 = ({ list }: Props) => {
                     <button
                         onClick={() => setOpen(true)}
                         disabled={!canRequest}
-                        className={`btn-card custom-card w-full rounded-lg py-2 text-[14px] cursor-pointer !bg-[#e6e6e6] ${!canRequest ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        className={`btn-card custom-card w-full rounded-lg py-2 text-[14px] cursor-pointer ${!canRequest ? 'opacity-60 cursor-not-allowed bg-[#e6e6e6]' : ''}`}
                         title={!canRequest ? '날짜/시간을 먼저 선택해주세요' : '예약하기'}
                     >
                         예약하기
@@ -193,11 +195,11 @@ const ListBox2 = ({ list }: Props) => {
                             <h3 className="text-[15px] font-semibold mb-2">예약 정보 확인</h3>
                             <ul className="text-[14px] text-gray-700 space-y-1 mb-3">
                                 <li>버디: {buddyBooking?.buddy.name ?? '-'}</li>
-                                <li>반려동물: {state.draft.pet?.name ?? '-'}</li>
+                                <li>반려동물: {selectedAnimals.map((item) => item.name).join(', ') ?? '-'}</li>
                                 <li>동네: {state.draft.location ?? '-'}</li>
                                 <li>장소: {state.draft.place ?? '-'}</li>
                                 <li>
-                                    일시: {state.draft.date ?? '-'} {state.draft.time ?? ''}
+                                    일시: {selectedDT.date ?? '-'} {selectedDT.time ?? ''}
                                 </li>
                             </ul>
                             {actionMsg && <div className="mt-2 text-[12px] text-rose-600">{actionMsg}</div>}

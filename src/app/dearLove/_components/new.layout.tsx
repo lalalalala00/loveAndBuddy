@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import FileNameBox from './file.name.box';
 import DiaryMessage from './diary.message';
 import DateSelected from './date.selected';
@@ -15,9 +15,14 @@ import ModalIos from '@/common/modal.ios';
 import { useDearLoveIndex } from '@/hooks/useDearLove';
 import EmptyMonthCollage from './empty.state2';
 import { formatStamp } from '@/utils/date';
+import { useSearchParams } from 'next/navigation';
+import { useClearQuery } from '@/hooks/useClearQuery';
 
 export default function NewLayout() {
     const { animals, dearLoves = [] } = useUserState();
+    const clearQuery = useClearQuery();
+    const searchParams = useSearchParams();
+    const paramDearId = searchParams.get('id');
 
     const [selectedDate, setSelectedDate] = useState<string>(() => {
         const now = new Date();
@@ -33,7 +38,6 @@ export default function NewLayout() {
     const { state, actions } = useDearLoveIndex(filteredDearLoves, getUserById);
     const { sortedDearLoves, dearLove, currentBuddy, currentBuddyId, buddyCache } = state;
 
-    const [selectedAnimal, setSelectedAnimal] = useState<string[]>([]);
     const [selectedPhoto, setSelectedPhoto] = useState(false);
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
@@ -50,6 +54,31 @@ export default function NewLayout() {
     };
 
     const targetLoves = useMemo(() => (dearLove ? [dearLove] : sortedDearLoves), [dearLove, sortedDearLoves]);
+    const pendingIdRef = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (!paramDearId || dearLoves.length === 0) return;
+
+        const target = dearLoves.find((d) => String(d.id) === String(paramDearId));
+        if (!target) return;
+
+        const ym = (target.date_at ?? '').slice(0, 7); // 'YYYY-MM'
+        if (ym && ym !== selectedDate) {
+            pendingIdRef.current = String(target.id);
+            setSelectedDate(ym);
+        } else {
+            actions.selectByDear(target);
+        }
+    }, [paramDearId, dearLoves, selectedDate, actions]);
+
+    useEffect(() => {
+        if (!pendingIdRef.current || filteredDearLoves.length === 0) return;
+        const target = filteredDearLoves.find((d) => String(d.id) === pendingIdRef.current);
+        if (target) {
+            actions.selectByDear(target);
+            pendingIdRef.current = null;
+        }
+    }, [filteredDearLoves, actions]);
 
     const filteredLoves = useMemo(() => {
         if (!selectedAnimalIds || selectedAnimalIds.length === 0) return targetLoves;
@@ -86,6 +115,8 @@ export default function NewLayout() {
     const handleCoverClick = (buddyId?: string | null, nextDear?: DearLove) => {
         if (!buddyId || !nextDear) return;
         actions.selectByDear(nextDear);
+
+        clearQuery(['id']);
         setIsFiltering(false);
     };
 

@@ -19,6 +19,15 @@ export const EMPTY_USER: User = {
     user_comment: '',
 };
 
+export const EMPTY_SELECTED_ANIMALS_LIST: SelectedAnimals[] = [];
+
+export type SelectedAnimals = {
+    name: string;
+    id: string;
+    isFirst: boolean;
+    avatar_url: string;
+};
+
 export type Booking = {
     user: User; // 예약 상대
     date: number; //  unix timestamp는 number로 두는 게 안전
@@ -27,6 +36,7 @@ export type Booking = {
 
     uuid: string; //uuid
     buddy: User;
+    animals: SelectedAnimals[];
 };
 
 export type CardKind = 'buddy' | 'love';

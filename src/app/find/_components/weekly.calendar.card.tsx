@@ -4,12 +4,22 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 export type Availability = { startHour: number; endHour: number };
 
+const toKSTDateStr = (d: Date) =>
+    new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(d);
+
 export default function WeeklyCalendarCard({
     modal,
     availability = { startHour: 9, endHour: 22 },
+    setSelectedDT,
 }: {
     modal?: boolean;
     availability?: Availability;
+    setSelectedDT: Dispatch<SetStateAction<{ date: string; time: string }>>;
 }) {
     const { setDate, setTime } = useBooking();
 
@@ -112,6 +122,11 @@ export default function WeeklyCalendarCard({
               : `${fmtHour(range.start)} ~ ${fmtHour(range.end + 1)} (${range.end - range.start + 1}시간)`;
 
     const weekDays = getWeekDays(today);
+
+    useEffect(() => {
+        const dateStr = selectedDateObj ? toKSTDateStr(selectedDateObj) : '';
+        setSelectedDT({ date: dateStr, time: selectionLabel });
+    }, [selectedDay, range]);
 
     const fullMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
