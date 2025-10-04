@@ -20,6 +20,7 @@ const NameTag = ({
     love,
     small,
     asap,
+    user,
 }: {
     info: CardOverviewRow;
     imgCss?: string;
@@ -28,6 +29,7 @@ const NameTag = ({
     love?: boolean;
     small?: boolean;
     asap?: boolean;
+    user?: boolean;
 }) => {
     const mannerEmoji = getMannerEmoji(4);
 
@@ -49,10 +51,12 @@ const NameTag = ({
                     src={
                         info?.card_kind === 'buddy'
                             ? info?.avatar_url
-                            : (info?.animals[0].img ?? '/project/buddy_sit_1.png')
+                            : user
+                              ? info?.avatar_url
+                              : (info?.animals[0].img ?? '/project/buddy_sit_1.png')
                     }
                     alt=""
-                    className={` object-cover rounded-full ${imgCss ? imgCss : 'w-[60px] h-[60px]'} flex justify-center`}
+                    className={` object-cover rounded-full shadow ${imgCss ? imgCss : 'w-[60px] h-[60px]'} flex justify-center`}
                 />
                 {!small ? (
                     <div className="flex-1 flex justify-end items-center">
@@ -73,7 +77,7 @@ const NameTag = ({
                 onClick={() => setBuddySelected(!buddySelected)}
             >
                 <span className="px-1 inline-block text-[12px] font-semibold">
-                    {info?.card_kind === 'buddy' ? info?.name : info?.owner_nickname}
+                    {info?.card_kind === 'buddy' ? info?.name : user ? info?.name : info?.owner_nickname}
                 </span>
                 <span className="text-gray-400 text-[12px]">›</span>
 
@@ -135,15 +139,15 @@ const NameTag = ({
             </div>
             <div className={`${find || love ? 'flex' : ''} ${tagCss}`}>
                 <div className="flex items-center gap-1 text-[12px] text-[#666]">
-                    ꯁꯧ {info?.heart ?? info?.animals[0].heart} · 🍃 {info?.manner ?? info?.animals[0].manner} · ✎ꪑ{' '}
-                    {info?.dear_love}
+                    ꯁꯧ {(info?.heart ?? user) ? '10' : info?.animals[0].heart} · 🍃{' '}
+                    {(info?.manner ?? user) ? '9' : info?.animals[0].manner} · ✎ꪑ {user ? '68' : info?.dear_love}
                 </div>
-                {find && asap && (
+                {find && asap && !user && (
                     <div className="flex items-center gap-1 text-[12px] text-[#666] ml-2">
                         | {info?.gender} · {getDecadeLabel(info?.user_birth_year) || 30} · {info?.animal_type ?? 'dog'}
                     </div>
                 )}
-                {love && asap && (
+                {love && asap && !user && (
                     <div className="flex items-center gap-1 text-[12px] text-[#666] ml-2">
                         | {info?.level} · {getAgeFromYear(info?.animals[0].birth_year) || '7'}살 ·{' '}
                         {info?.animals[0].animal_type ?? 'dog'}

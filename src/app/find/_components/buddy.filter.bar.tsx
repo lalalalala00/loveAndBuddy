@@ -15,7 +15,7 @@ export default function BuddyFilterBar({
     selectedType: number;
 }) {
     const [dateOpen, setDateOpen] = useState(false);
-    const [dateKey, setDateKey] = useState<Filters['dateKey']>('thisweek');
+    const [dateKey, setDateKey] = useState<Filters['dateKey']>('none');
 
     const [species, setSpecies] = useState<Filters['species']>('all');
     const [genders, setGenders] = useState<Filters['genders']>([]);
@@ -45,19 +45,21 @@ export default function BuddyFilterBar({
     return (
         <div className="flex justify-end items-center mb-3">
             <div className="flex flex-col w-[920px]">
-                <div className="flex flex-nowrap items-center justify-between gap-3 mt-3">
+                <div className="flex flex-nowrap items-center justify-between gap-3 mt-3 ">
                     <div className="relative">
-                        <button
-                            className={cx(
-                                'px-3 py-2 rounded-full border text-[14px]',
-                                dateKey !== 'none'
-                                    ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
-                                    : 'border-gray-200 text-gray-700',
-                            )}
-                            onClick={() => setDateOpen((v) => !v)}
-                        >
-                            {dateLabel}
-                        </button>
+                        {selectedType === 0 && (
+                            <button
+                                className={cx(
+                                    'px-3 py-2 rounded-full border text-[14px]',
+                                    dateKey !== 'none'
+                                        ? 'bg-[#aec3991e] border-[#aec399] text-green-800'
+                                        : 'border-gray-200 text-gray-700',
+                                )}
+                                onClick={() => setDateOpen((v) => !v)}
+                            >
+                                {dateLabel}
+                            </button>
+                        )}
 
                         {dateOpen && (
                             <div className="absolute z-10 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-md p-2">
@@ -131,7 +133,7 @@ export default function BuddyFilterBar({
                             </div>
                         )}
                     </div>
-                    <div className="flex">
+                    <div className="flex max-md:flex-col">
                         <div className="flex items-center bg-white rounded-full border border-gray-200 p-1 mr-2">
                             {[
                                 { k: 'all', n: '전체' },

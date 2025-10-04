@@ -53,7 +53,7 @@ export default function EmptyMonthCollage({
         return Array.from(new Set(arr));
     }, [animals]);
 
-    const { bgTiles, cardA, cardB, hero } = useMemo(() => {
+    const { bgTiles, cardA, cardB } = useMemo(() => {
         const shuffled = seededShuffle(allDearUrls, 'all');
         const bgTiles = shuffled.slice(0, 12);
 
@@ -61,28 +61,27 @@ export default function EmptyMonthCollage({
         const cardA = rest.slice(0, 3);
         const cardB = rest.slice(3, 6);
 
-        const hero = petUrls[0] ?? shuffled[0] ?? '';
-
-        return { bgTiles, cardA, cardB, hero };
+        return { bgTiles, cardA, cardB };
     }, [allDearUrls, petUrls]);
 
-    const emptyMessage = (selectedDate: string) => {
+    const dateValue = (value: string) => {
         const today = new Date();
-        const [y, m] = selectedDate.split('-').map(Number);
+        const [y, m] = value.split('-').map(Number);
 
         const selected = new Date(y, m - 1, 1);
+        return selected.getTime() - new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+    };
 
-        const diff = selected.getTime() - new Date(today.getFullYear(), today.getMonth(), 1).getTime();
-
-        if (diff > 0) {
+    const emptyMessage = (selectedDate: string) => {
+        if (dateValue(selectedDate) > 0) {
             return '이 달의 이야기는 아직 시작되지 않았어요. 곧 새로운 디얼러브로 채워질 거예요 ✿';
-        } else if (diff < 0) {
+        } else if (dateValue(selectedDate) < 0) {
             return `${selectedYYYYMM.slice(5, 7)}월의 디얼러브는 기록되지 않았지만, 마음속에 소중히 남아있을 거예요 ♡`;
         } else {
             return '이 달의 이야기는 아직 남겨지지 않았어요. 지금 이 순간을 기록해보는 건 어떨까요?';
         }
     };
-
+    console.log(selectedYYYYMM);
     return (
         <section className="relative mx-auto max-w-[1200px] px-4 mt-8">
             <div className=" flex items-center justify-center mb-6">
@@ -186,9 +185,9 @@ export default function EmptyMonthCollage({
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                                 </div>
                             ))}
+
                             <div className="p-2 rounded-xl flex flex-col justify-between border border-[#e3ecdc] bg-white shadow-sm text-[13px] text-gray-700">
                                 <span className="p-2">
-                                    {' '}
                                     {animals.map((a) => a.name).join(', ')}와 함께한 하루를 기록해 보세요. 사진을
                                     업로드하면 이 달의 디얼러브가 채워져요 ✦
                                 </span>

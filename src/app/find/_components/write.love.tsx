@@ -1,31 +1,34 @@
 'use client';
 
-import AnimalCards, { RepresentativePreview } from '@/common/animal.card.select';
-import AnimalCardVertical, { Animal } from '@/common/animal.card.vertical';
 import ModalIos from '@/common/modal.ios';
 import NameTag from '@/common/name.tag';
 import SelectedPlace from '@/common/selected.place';
+import { Animal } from '@/utils/sign';
 
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import AddressModal, { AddrState } from './address.modal';
 import { PrivacyNote } from '@/utils/comment';
 import Tooltip from '@/common/tooltip';
 import AnimalSelectedForm from '@/common/animal.select.form';
-
-function cx(...c: (string | false | null | undefined)[]) {
-    return c.filter(Boolean).join(' ');
-}
+import { useUserState } from '@/context/useUserContext';
+import { Option } from '@/common/selected.box';
 
 const WriteLove = () => {
+    const { getUser } = useUserState();
     const [saveBase, setSaveBase] = useState<boolean>(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [loveComment, setLoveComment] = useState<string>('');
 
-    const [location, setLocation] = useState<number>(0);
+    const [locationType, setLocationType] = useState<number>(0);
 
     const [addrModal, setAddrModal] = useState<boolean>(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [addAddress, setAddAddress] = useState<string>('');
     const [addrError, setAddrError] = useState<string>('');
     const [addr, setAddr] = useState<AddrState>({ postcode: '', address: '', detail: '' });
+    const [selectedAnimals, setSelectedAnimals] = useState<Animal[] | undefined>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [location, setLocation] = useState<Option[]>([]);
 
     const hasAddr = Boolean(addr.address && addr.detail);
 
@@ -38,55 +41,57 @@ const WriteLove = () => {
     return (
         <div className="flex h-full justify-between items-center flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="flex items-center w-full rounded-t-2xl">
-                <NameTag love asap small />
+                <NameTag love asap small user info={getUser} />
             </div>
             <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
             <div className="flex flex-col items-center w-full justify-between mt-6">
                 <div className="flex flex-col w-1/2">
-                    <AnimalSelectedForm />
-                    <div className="h-[60px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex items-center">
-                        <SelectedPlace />
+                    <AnimalSelectedForm setSelectedAnimals={setSelectedAnimals} />
+                    <div className="h-[60px] rounded-xl p-3 mb-3  border-[#e3ecdc] border  hover:bg-[#f5f7ee81] bg-white transition flex items-center">
+                        <SelectedPlace setLocation={setLocation} />
                     </div>
-                    <div className="h-full shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex flex-col">
+                    <div className="h-full shadow rounded-xl p-3 mb-3  flex flex-col bg-[#f5f7ee81]">
                         <span>❀ 장소</span>
-                        <div className="flex mt-3 px-2 items-center justify-between">
-                            <div className="flex">
-                                {locationList.map((item, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setLocation(item.value)}
-                                        className={`${item.value === location ? 'custom-card shadow' : 'border border-gray-200'} px-4 py-2 bg-white mr-3 last:mr-0 rounded-xl flex justify-center items-center  text-[14px]`}
-                                    >
-                                        {item.label}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <button
-                                onClick={() => setAddrModal(!addrModal)}
-                                className={`${addr.address ? 'custom-card' : 'border-2 border-dashed border-gray-300 bg-white'} text-[14px]  rounded-xl px-3 py-2 h-full `}
-                            >
-                                {hasAddr ? `ꤶ 주소 수정하기` : `+ 주소 추가하기`}
-                            </button>
-                        </div>
-
-                        {addr.address ? (
-                            <div className="px-2 mt-3 text-[12px] text-gray-600">
-                                <div className="flex items-center gap-2">
-                                    <Tooltip comment="🔒" tooltip="매칭 확정 후 시터에게만 공유됩니다." />
-                                    <span className="inline-flex px-2 py-0.5 rounded-lg bg-white/70 border border-[#e3ecdc]">
-                                        {addr.postcode}
-                                    </span>
-                                    <span className="truncate">{addr.address}</span>
-                                    <span className="truncate">• {addr.detail}</span>
+                        <div className="bg-white rounded-xl">
+                            <div className="flex mt-3 px-2 items-center justify-between ">
+                                <div className="flex">
+                                    {locationList.map((item, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => setLocationType(item.value)}
+                                            className={`${item.value === locationType ? 'custom-card shadow' : 'border border-gray-200'} px-4 py-2 bg-white mr-3 last:mr-0 rounded-xl flex justify-center items-center  text-[14px]`}
+                                        >
+                                            {item.label}
+                                        </button>
+                                    ))}
                                 </div>
+
+                                <button
+                                    onClick={() => setAddrModal(!addrModal)}
+                                    className={`${addr.address ? 'custom-card' : 'border-2 border-dashed border-gray-300 bg-white'} text-[14px]  rounded-xl px-3 py-2 h-full `}
+                                >
+                                    {hasAddr ? `ꤶ 주소 수정하기` : `+ 주소 추가하기`}
+                                </button>
                             </div>
-                        ) : (
-                            <PrivacyNote variant="short" />
-                        )}
+
+                            {addr.address ? (
+                                <div className="px-2 mt-3 text-[12px] text-gray-600">
+                                    <div className="flex items-center gap-2">
+                                        <Tooltip comment="🔒" tooltip="매칭 확정 후 시터에게만 공유됩니다." />
+                                        <span className="inline-flex px-2 py-0.5 rounded-lg bg-white/70 border border-[#e3ecdc]">
+                                            {addr.postcode}
+                                        </span>
+                                        <span className="truncate">{addr.address}</span>
+                                        <span className="truncate">• {addr.detail}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <PrivacyNote variant="short" />
+                            )}
+                        </div>
                     </div>
                     <div className="h-[130px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex flex-col">
-                        <span>❀ 00의 한마디 -`♡´-</span>
+                        <span>❀ {selectedAnimals?.map((item) => item.name).join(', ')}의 한마디 -`♡´-</span>
                         <textarea
                             className="w-full h-[100px] bg-white rounded-xl shadow mt-2 border-0 resize-none p-2 focus:outline-0 px-3"
                             onChange={(e) => setLoveComment(e.target.value)}
@@ -113,7 +118,7 @@ const WriteLove = () => {
                 handleModalState={() => setAddrModal(false)}
                 title="주소 추가하기"
                 width="420px"
-                height="60%"
+                height="650px"
                 leftComment="저장하기"
                 leftAction={saveAddress}
             >
@@ -132,15 +137,3 @@ const locationList = [
     { label: '위탁', value: 3 },
     { label: '그 외', value: 4 },
 ];
-
-const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" {...props}>
-        <path strokeWidth="2" strokeLinecap="round" d="M12 5v14M5 12h14" />
-    </svg>
-);
-
-const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" {...props}>
-        <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
-    </svg>
-);

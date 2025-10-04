@@ -32,7 +32,7 @@ export type Booking = {
     user: User; // 예약 상대
     date: number; //  unix timestamp는 number로 두는 게 안전
     place: string; // 장소 라벨 (애견카페 등)
-    location: string; // 동네
+    location: string[]; // 동네
 
     uuid: string; //uuid
     buddy: User;

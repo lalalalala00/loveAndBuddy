@@ -8,19 +8,24 @@ import Calendar from './calendar';
 import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+
 import CommunityList from '../commu.list';
 import WriteIndex from '../commu.write.index';
+import { useWindowSize } from '@/hooks/useHooks';
 
 const blocks = ['cal', 'toki', 'comm', 'write'];
 const Index = () => {
-    const [selectedClose, setSelectedClose] = useState<string[]>(['comm', 'write']);
+    const _media = useWindowSize();
+    const [selectedClose, setSelectedClose] = useState<string[]>(
+        _media.x <= 768 ? ['comm', 'write', 'toki'] : ['comm', 'write'],
+    );
 
     const [calExtension, setCalExtension] = useState<number>(2);
     const [layout, setLayout] = useState([
-        { i: 'cal', x: 0, y: 0, w: 2, h: 3 },
+        { i: 'cal', x: 0, y: 0, w: 2, h: 4 },
         { i: 'write', x: 2, y: 3, w: 1, h: 1 },
         { i: 'comm', x: 2, y: 0, w: 1, h: 1 },
-        { i: 'toki', x: 2, y: 0, w: 1, h: 2 },
+        { i: 'toki', x: 2, y: 0, w: 1, h: 3 },
         // { i: 'cal', x: 0, y: 0, w: 2, h: 2 },
         // { i: 'write', x: 2, y: 3, w: 1, h: 1 },
         // { i: 'comm', x: 2, y: 0, w: 1, h: 1 },
@@ -30,7 +35,6 @@ const Index = () => {
     useEffect(() => {
         setLayout((prev) => prev.map((item) => (item.i === 'cal' ? { ...item, w: calExtension } : item)));
     }, [calExtension, selectedClose]);
-    console.log(calExtension);
 
     const toggleClose = (value: string) => {
         if (!value) return;
@@ -46,8 +50,8 @@ const Index = () => {
     //  const visibleBlocks = blocks.filter(b => !selectedClose.includes(b));
 
     return (
-        <div className="mt-5 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] rounded-b-2xl">
-            <div className="bg-[#f9fbf6] w-full h-10 flex items-center px-5 rounded-t-xl border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
+        <div className="mt-5 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] rounded-b-2xl max-md:mt-0 max-md:h-[100vh] max-md:mb-20">
+            <div className="max-md:hidden bg-[#f9fbf6] w-full h-10 flex items-center px-5 rounded-t-xl border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
                 {closeTap
                     .filter((item) => selectedClose.includes(item.value))
                     .map((item) => (
@@ -64,7 +68,7 @@ const Index = () => {
             </div>
 
             <GridLayout
-                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh]"
+                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh] max-md:h-full! max-md:bg-none"
                 // style={{ backgroundImage: "url(/cha/1_11.png)", backgroundSize: "cover" }}
                 layout={layout.filter((item) => !selectedClose.includes(item.i))}
                 cols={3}

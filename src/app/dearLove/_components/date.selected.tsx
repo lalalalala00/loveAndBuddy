@@ -78,7 +78,7 @@ export default function DateSelected({
                 </button>
 
                 <div className="py-1">
-                    <span className="text-[22px] md:text-[24px] font-bold lowercase text-[#5b7551]">
+                    <span className="text-[22px] md:text-[24px] max-md:text-[16px] font-bold lowercase text-[#5b7551]">
                         ˚₊·{' '}
                         <button
                             onClick={() => setOpenMonthPicker(true)}

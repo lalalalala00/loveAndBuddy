@@ -13,6 +13,7 @@ import { useUserState } from '@/context/useUserContext';
 import { getUserById } from '@/common/get.user.by.id';
 import { useDearLoveIndex } from '@/hooks/useDearLove';
 import { DearLove } from '@/utils/data';
+import { useWindowSize } from '@/hooks/useHooks';
 
 interface Buddy {
     name: string;
@@ -52,6 +53,7 @@ const Calendar = ({
     dayjs.tz.setDefault('Asia/Seoul');
 
     const { dearLoves = [] } = useUserState();
+    const _media = useWindowSize();
 
     const { state, actions } = useDearLoveIndex(dearLoves, getUserById);
     const { sortedDearLoves, dearLove, currentBuddy, currentBuddyId, buddyCache } = state;
@@ -127,19 +129,29 @@ const Calendar = ({
         else if (!calSize && dayContents) width = 2;
         else if (!calSize && !dayContents) width = 1;
 
+        if (_media.x <= 768) {
+            if (!calSize && !dayContents) width = 3;
+        }
+
         setCalExtension(width);
     }, [calSize, dayContents]);
 
+    useEffect(() => {
+        if (_media.x <= 768) {
+            setCalSize(false);
+        }
+    }, []);
+
     return (
         <div
-            className={`mx-auto flex  ${!calSize ? 'px-2' : 'px-4'} ${!calSize && !dayContents && 'w-[400px]'} ${!calSize && dayContents && 'w-[830px]'}`}
+            className={`mx-auto flex max-md:flex-col ${!calSize ? 'px-2 max-md:px-0' : 'px-4'} ${!calSize && !dayContents && 'w-[400px] max-md:w-full!'} ${!calSize && dayContents && 'w-[830px]'} max-md:w-full! max-md:min-w-[385px] max-md:h-full!`}
             style={{
                 height: !calSize ? '530px' : '730px',
                 // width: !calSize ? "400px" : "780px",
             }}
         >
-            <div className={`${!calSize ? 'w-full min-w-0' : 'w-[790px] min-w-[790px]'}`}>
-                <div className="flex justify-between items-center w-full">
+            <div className={`${!calSize ? 'w-full min-w-0' : 'w-[790px] min-w-[790px]'}  max-md:mb-5`}>
+                <div className="flex justify-between items-center w-full max-md:w-full!">
                     <button
                         onClick={() => setSelectedClose('cal')}
                         className="h-[14px] w-[14px] rounded-full bg-red-500 flex justify-center items-center cursor-pointer"
@@ -160,6 +172,7 @@ const Calendar = ({
                                 'flex items-center justify-center gap-1 h-8 px-3 rounded-xl',
                                 'bg-white border border-[#e3ecdc] hover:bg-[#f8fbf4] shadow',
                                 'text-[#51683b] transition',
+                                'max-md:hidden',
                             ].join(' ')}
                         >
                             {calSize ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
@@ -179,7 +192,7 @@ const Calendar = ({
                     </div>
                 </div>
                 <div className={`relative flex justify-center ${calSize ? 'mb-6' : 'mb-4 mt-1.5'} `}>
-                    <div className="w-1/2 flex justify-between items-center">
+                    <div className="w-1/2 flex justify-between items-center max-md:w-full!">
                         <button
                             onClick={prevMonth}
                             className="px-3 py-1 rounded-lg hover:bg-[#f8fbf4] border border-[#e3ecdc]"
@@ -200,7 +213,7 @@ const Calendar = ({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-7 text-center text-sm text-gray-500 w-full bg-[#f9efd34c] py-2 rounded-t-lg mb-1">
+                <div className="grid grid-cols-7 text-center text-sm text-gray-500 w-full bg-[#f9efd34c] py-2 rounded-t-lg mb-1 ">
                     {daysOfWeek.map((day) => (
                         <div key={day} className="first:text-red-500 font-semibold">
                             <p>{day}</p>
@@ -208,7 +221,7 @@ const Calendar = ({
                     ))}
                 </div>
 
-                <div className="grid grid-cols-7 text-center  w-full">
+                <div className="grid grid-cols-7 text-center  w-full ">
                     {generateCalendar().map((date, i) => {
                         const key = date?.tz().format('YYYY-MM-DD');
                         const dayReservations = key ? (dearMapByDay[key] ?? []) : [];
@@ -274,7 +287,7 @@ const Calendar = ({
             </div>
             {dayContents && (
                 <div
-                    className={`${dayContents && calSize ? 'min-w-[400px] ml-6' : 'min-w-[385px] ml-4'}  h-[95%] border border-[#e3ecdc] ml-4 rounded-2xl`}
+                    className={`${dayContents && calSize ? 'min-w-[400px] ml-6' : 'min-w-[385px] ml-4'}  h-[95%] border border-[#e3ecdc] ml-4 rounded-2xl max-md:ml-0 max-md:w-full `}
                 >
                     <div className="flex justify-between items-center border-b-2 border-[#e3ecdc]  px-4 py-3 text-[14px]">
                         <span className="text-[#9dbb80]">date.</span>
@@ -282,7 +295,7 @@ const Calendar = ({
                         <span className="text-[#9dbb80] lowercase">{day}</span>
                     </div>
                     <div
-                        className={`${selectedDay && selectedDay?.reservation.length >= 1 ? '' : 'bg-[#f3f7ee]'} h-[calc(100%-47px)] rounded-b-2xl`}
+                        className={`${selectedDay && selectedDay?.reservation.length >= 1 ? '' : 'bg-[#f3f7ee]'} h-[calc(100%-47px)] max-md:h-full! rounded-b-2xl`}
                     >
                         <CalendarSideContent
                             item={selectedDay}

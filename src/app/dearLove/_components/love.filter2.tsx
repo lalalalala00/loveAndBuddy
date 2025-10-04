@@ -42,7 +42,7 @@ export default function LoveCollageFilter2({ onChange }: { onChange?: (selectedI
     };
 
     return (
-        <section className="">
+        <section className="max-md:flex max-md:justify-end max-md:w-full max-md:mb-3">
             {animals.map((item, i) => {
                 const id = item.animal_uuid;
                 const on = sel.has(id);

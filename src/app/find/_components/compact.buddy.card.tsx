@@ -6,9 +6,10 @@ import { CardOverviewRow } from './data/cards';
 
 const CompactBuddyCard = ({ list }: { list: CardOverviewRow }) => {
     const [checkModal, setCheckModal] = useState<boolean>(false);
+    const [selectedDT, setSelectedDT] = useState<{ date: string; time: string }>({ date: '', time: '' });
 
     return (
-        <div className="relative w-full max-w-[280px] custom-card-bg-white px-2 py-1 rounded-2xl my-4 flex flex-col  text-[#444]">
+        <div className="relative w-full max-w-[280px] max-md:w-[300px] border border-[#e3ecdc] bg-white/80 shadow px-2 py-2.5 rounded-2xl my-4 flex flex-col  text-[#444]">
             <NameTag imgCss="w-[64px] h-[64px]" find asap info={list} />
             <div className="absolute top-2 right-2 mt-1 text-[10px] text-green-700 bg-[#eaf2e0] px-2 py-[2px] rounded-full">
                 ✔️ 인증 완료
@@ -21,7 +22,7 @@ const CompactBuddyCard = ({ list }: { list: CardOverviewRow }) => {
 
             <button
                 onClick={() => setCheckModal(!checkModal)}
-                className="mt-3 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition"
+                className="mt-2 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition"
             >
                 📅 스케줄 확인하기
             </button>
@@ -35,7 +36,11 @@ const CompactBuddyCard = ({ list }: { list: CardOverviewRow }) => {
                 leftComment="예약 요청 보내기"
             >
                 <div className="flex flex-col items-start justify-center w-full h-full">
-                    <WeeklyCalendarCard modal />
+                    <WeeklyCalendarCard
+                        modal
+                        availability={{ startHour: 9, endHour: 22 }}
+                        setSelectedDT={setSelectedDT}
+                    />
                     <div className="px-4 py-2 flex flex-col">
                         <span>location</span>
                         <span>location</span>

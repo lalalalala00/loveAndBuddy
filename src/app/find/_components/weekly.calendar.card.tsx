@@ -16,12 +16,18 @@ export default function WeeklyCalendarCard({
     modal,
     availability = { startHour: 9, endHour: 22 },
     setSelectedDT,
+    infoData,
 }: {
     modal?: boolean;
     availability?: Availability;
-    setSelectedDT: Dispatch<SetStateAction<{ date: string; time: string }>>;
+    setSelectedDT?: Dispatch<SetStateAction<{ date: string; time: string }>>;
+    infoData?: boolean;
 }) {
     const { setDate, setTime } = useBooking();
+
+    const [soldOut, setSoldOut] = useState<Record<string, Set<number>>>({});
+
+    const [coloredLevel, setColoredLevel] = useState<Record<string, number>>({});
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -33,6 +39,7 @@ export default function WeeklyCalendarCard({
     const t = at0(today);
 
     const selectedDateObj = selectedDay !== null ? new Date(today.getFullYear(), today.getMonth(), selectedDay) : null;
+    const selectedDateKey = selectedDateObj ? toKSTDateStr(selectedDateObj) : '';
 
     const getWeekDays = (date: Date) => {
         const day = date.getDay();
@@ -45,15 +52,6 @@ export default function WeeklyCalendarCard({
             return d;
         });
     };
-
-    // const handleDate = (d: Date) => {
-    //     const isPast = at0(d) < t;
-    //     if (isPast) {
-    //         setSelectedDay(null);
-    //     } else {
-    //         setSelectedDay(d.getDate());
-    //     }
-    // };
 
     const handleDate = (d: Date) => {
         const isPast = at0(d) < t;
@@ -72,14 +70,6 @@ export default function WeeklyCalendarCard({
         for (let h = availability.startHour; h <= availability.endHour; h++) arr.push(h);
         return arr;
     }, [availability]);
-
-    const disabledHour = (hour: number) => {
-        if (selectedDay === null) return true;
-        const selected = new Date(today.getFullYear(), today.getMonth(), selectedDay);
-        const isToday = selected.toDateString() === today.toDateString();
-        if (!isToday) return false;
-        return hour <= today.getHours();
-    };
 
     const fmtHour = (h: number) => `${String(h).padStart(2, '0')}:00`;
 
@@ -128,7 +118,68 @@ export default function WeeklyCalendarCard({
         setSelectedDT({ date: dateStr, time: selectionLabel });
     }, [selectedDay, range]);
 
-    const fullMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+    useEffect(() => {
+        if (!infoData) return;
+
+        if (!selectedDateKey || range.start === null || range.end === null) return;
+
+        setSoldOut((prev) => {
+            const set = new Set(prev[selectedDateKey] ?? []);
+            for (let h = range.start!; h <= range.end!; h++) set.add(h);
+            return { ...prev, [selectedDateKey]: set };
+        });
+    }, [infoData, selectedDateKey, range.start, range.end]);
+
+    const disabledHour = (hour: number) => {
+        if (selectedDay === null) return true;
+
+        const selected = new Date(today.getFullYear(), today.getMonth(), selectedDay);
+        const isToday = selected.toDateString() === today.toDateString();
+        if (isToday && hour <= today.getHours()) return true;
+
+        if (selectedDateKey && soldOut[selectedDateKey]?.has(hour)) return true;
+
+        return false;
+    };
+
+    useEffect(() => {
+        if (!infoData) return;
+        if (!selectedDateKey || range.start === null || range.end === null) return;
+
+        setSoldOut((prev) => {
+            const set = new Set(prev[selectedDateKey] ?? []);
+            for (let h = range.start!; h <= range.end!; h++) set.add(h);
+            return { ...prev, [selectedDateKey]: set };
+        });
+
+        const level = timeSlots.length - (range.end - range.start + 1);
+        setColoredLevel((prev) => ({ ...prev, [selectedDateKey]: level }));
+    }, [infoData, selectedDateKey, range.start, range.end, timeSlots.length]);
+
+    const GREEN = { r: 0xb2, g: 0xd2, b: 0xa4 };
+    const ORANGE = { r: 0xf5, g: 0x9e, b: 0x0b };
+    const RED = { r: 0xef, g: 0x44, b: 0x44 };
+    const ALPHA = 0xd8 / 255;
+
+    const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
+
+    function triGradientColor(value: number, max = 14) {
+        const t = 1 - Math.max(0, Math.min(value, max)) / max;
+        let r: number, g: number, b: number;
+
+        if (t <= 0.5) {
+            const k = t / 0.5; // 0~1
+            r = mix(GREEN.r, ORANGE.r, k);
+            g = mix(GREEN.g, ORANGE.g, k);
+            b = mix(GREEN.b, ORANGE.b, k);
+        } else {
+            const k = (t - 0.5) / 0.5; // 0~1
+            r = mix(ORANGE.r, RED.r, k);
+            g = mix(ORANGE.g, RED.g, k);
+            b = mix(ORANGE.b, RED.b, k);
+        }
+        return `rgba(${r}, ${g}, ${b}, ${ALPHA})`;
+    }
 
     return (
         <div className={`${modal ? 'w-full' : ''}  bg-[#f7f9f6ee] rounded-t-lg shadow`}>
@@ -155,6 +206,8 @@ export default function WeeklyCalendarCard({
                             const isToday = d.toDateString() === today.toDateString();
                             const isSunday = d.getDay() === 0;
                             const selectDay = d.getDate() === selectedDay;
+                            const dayKey = toKSTDateStr(d);
+                            const levelForDay = coloredLevel[dayKey];
 
                             return (
                                 <div
@@ -164,7 +217,7 @@ export default function WeeklyCalendarCard({
                                         'cursor-pointer flex flex-col items-center',
                                         at0(d) < t ? 'cursor-not-allowed' : '',
                                         isToday ? 'bg-[#fff]' : '',
-                                        selectDay ? 'border border-black rounded-sm' : '',
+                                        selectDay ? 'border border-[#6ab91f] rounded-sm' : '',
                                         modal ? 'justify-between' : 'justify-end',
                                     ].join(' ')}
                                 >
@@ -182,8 +235,16 @@ export default function WeeklyCalendarCard({
                                     <div
                                         className={[
                                             'h-2 w-[90%] rounded-t-sm',
-                                            at0(d) < t ? 'bg-gray-200' : 'bg-[#b2d2a4d8]',
+                                            // at0(d) < t ? 'bg-gray-200' : 'bg-[#b2d2a4d8]',
                                         ].join(' ')}
+                                        style={{
+                                            backgroundColor:
+                                                at0(d) < t
+                                                    ? '#e5e7eb'
+                                                    : levelForDay === undefined
+                                                      ? '#b2d2a4d8'
+                                                      : triGradientColor(levelForDay, 14),
+                                        }}
                                     />
                                 </div>
                             );
@@ -260,6 +321,8 @@ export default function WeeklyCalendarCard({
                         {timeSlots.map((h) => {
                             const disabled = disabledHour(h);
                             const active = isActive(h);
+                            const isSold = !!selectedDateKey && !!soldOut[selectedDateKey]?.has(h);
+
                             return (
                                 <button
                                     key={h}
@@ -268,10 +331,12 @@ export default function WeeklyCalendarCard({
                                     className={[
                                         'px-2 py-1 rounded-md text-[12px] border',
                                         disabled
-                                            ? 'cursor-not-allowed text-gray-400 border-gray-200 bg-gray-50'
+                                            ? isSold
+                                                ? 'cursor-not-allowed text-gray-400 border-gray-200 bg-gray-50'
+                                                : 'cursor-not-allowed text-gray-400 border-gray-200 bg-gray-50'
                                             : active
-                                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                              : 'border-gray-200 bg-white hover:border-emerald-300',
+                                              ? 'border-[#9dbb80] bg-[#f9efd34c] font-semibold'
+                                              : 'border-gray-200 bg-white hover:border-emerald-600',
                                     ].join(' ')}
                                 >
                                     {fmtHour(h)}
@@ -298,6 +363,9 @@ export default function WeeklyCalendarCard({
                     <span className={`${modal ? 'text-[14px] p-2 inline-flex justify-start w-full' : 'text-[13px]'} `}>
                         {selectedDay}일 ({weekdayKo(selectedDateObj!, 'short')}) {selectionLabel}
                     </span>
+                    <button onClick={() => setSelectedDay(null)} className="text-[11px] text-gray-500 underline">
+                        접어두기
+                    </button>
                 </div>
             )}
         </div>

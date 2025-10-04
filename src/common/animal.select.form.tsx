@@ -1,13 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AnimalSelect, { RepresentativePreview } from './animal.card.select';
 import AnimalCardVertical from './animal.card.vertical';
 import ModalIos from './modal.ios';
 import { Animal } from '@/utils/sign';
 import { useUserState } from '@/context/useUserContext';
 
-const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
+const AnimalSelectedForm = ({
+    dear,
+    setSelectedAnimals,
+}: {
+    dear?: boolean;
+    setSelectedAnimals?: Animal | undefined;
+}) => {
     const { animals } = useUserState();
     const [addAnimal, setAddAnimal] = useState<boolean>(false);
     const [draftAnimals, setDraftAnimals] = useState<Animal[]>([]);
@@ -43,10 +49,10 @@ const AnimalSelectedForm = ({ dear }: { dear?: boolean }) => {
         });
     };
 
-    const toNameLine = (name?: string | string[]) => {
-        if (!name) return '';
-        return Array.isArray(name) ? name.join(', ') : name;
-    };
+    // useEffect(() => {
+    //     if (!displayList) return;
+    //     setSelectedAnimals(displayList);
+    // }, [addAnimal]);
 
     return (
         <div>

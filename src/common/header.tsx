@@ -136,8 +136,8 @@ const Header = () => {
     };
 
     return (
-        <div>
-            <div className="mt-5 mx-auto w-full flex items-center justify-between rounded-3xl bg-[#f9fbf6] px-6 py-3 border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
+        <div className="relative">
+            <div className="max-md:hidden mt-5 mx-auto w-full flex items-center justify-between rounded-3xl bg-[#f9fbf6] px-6 py-3 border border-white/20 shadow-[4px_4px_10px_#f3f7ee,-4px_-4px_10px_#ffffff]">
                 <div className="flex items-center">
                     <button
                         onClick={() => router.push('/')}
@@ -227,6 +227,94 @@ const Header = () => {
             <SignUpModal isOpen={signUpModal} onClose={() => setSignUpModal(!signUpModal)} />
             <LoginModal isOpen={signModal} onClose={() => setSignModal(!signModal)} onOpenSignUp={handleSignUp} />
             <SettingModal isOpen={settingModal} handleModalState={() => setSettingModal(!settingModal)} />
+            {/* === Mobile Header (≤ md) === */}
+            <div className="md:hidden relative">
+                {/* 상단: 내 정보 / 로그인 */}
+                <div className="sticky top-0 z-40 px-3 py-5 bg-[#f9fbf6] border-b border-white/40">
+                    <div className="flex items-center justify-between">
+                        {/* 좌: 로고/홈 */}
+                        <button
+                            onClick={() => router.push('/')}
+                            className="flex items-center gap-2"
+                            aria-label="go home"
+                        >
+                            <img src="/logo/soom_gr.png" alt="logo" className="w-7 h-7 rounded-full" />
+                            <span className="text-[#9dbb80] font-bold text-[14px]">soom</span>
+                        </button>
+
+                        {/* 우: 내 정보 / 로그인 */}
+                        <div className={`${getUser ? 'flex items-center' : ''}`}>
+                            {!getUser ? (
+                                <button
+                                    onClick={() => setSignModal(true)}
+                                    className="px-3 py-1.5 rounded-full bg-white text-[13px] shadow"
+                                >
+                                    로그인
+                                </button>
+                            ) : (
+                                <div className="flex items-center gap-1">
+                                    <span className="inline-flex items-center gap-1  p-1 rounded-lg">
+                                        {ROLE_META[getUser?.type]?.emoji}{' '}
+                                        <span className="text-[12px] mr-1 font-semibold">{getUser.name}</span>
+                                    </span>
+
+                                    <div className="h-7 flex ">
+                                        <div
+                                            className="w-8 flex items-center custom-card justify-center mr-1 rounded-l-xl rounded-r-sm"
+                                            onClick={() => setSettingModal(!settingModal)}
+                                        >
+                                            <Tooltip tooltip="내 정보 수정하기" comment="⚙️" clickCss="text-[13px]" />
+                                        </div>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="px-3 py-2 text-[12px] font-semibold text-gray-600 rounded-r-xl rounded-l-sm custom-card flex items-center"
+                                            aria-label="logout"
+                                        >
+                                            logout
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* 본문 패딩: 바텀탭 높이만큼 여백 */}
+                <div className="pb-[68px] max-md:pb-4" />
+
+                {/* 하단: 바텀 탭 네비게이션 */}
+                <nav
+                    className="
+      fixed bottom-0 left-0 right-0 z-40
+      bg-white/30 backdrop-blur border-t border-gray-200
+      overflow-hidden
+       
+    "
+                    // pb-[calc(env(safe-area-inset-bottom,0)+8px)]
+                    aria-label="bottom navigation"
+                >
+                    <div className="grid grid-cols-3 overflow-hidden">
+                        {typeMenu.map((item) => {
+                            const active = isActive(item.url);
+                            return (
+                                <button
+                                    key={item.url}
+                                    onClick={() => router.push(item.url)}
+                                    className={[
+                                        'flex flex-col items-center justify-center px-4 py-3',
+                                        active
+                                            ? 'text-emerald-700 bg-emerald-50 font-semibold'
+                                            : 'text-gray-700 bg-white/30',
+                                    ].join(' ')}
+                                    aria-current={active ? 'page' : undefined}
+                                >
+                                    <span className="text-[12px]">{item.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </nav>
+            </div>
         </div>
     );
 };

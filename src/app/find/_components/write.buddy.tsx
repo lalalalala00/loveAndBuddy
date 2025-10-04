@@ -2,23 +2,29 @@
 
 import NameTag from '@/common/name.tag';
 import SelectedPlace from '@/common/selected.place';
+import { useUserState } from '@/context/useUserContext';
 import { Filters } from '@/utils/date';
 import { useState } from 'react';
+
+import { Option } from '@/common/selected.box';
 
 function cx(...c: (string | false | null | undefined)[]) {
     return c.filter(Boolean).join(' ');
 }
 
 const WriteBuddy = () => {
+    const { getUser } = useUserState();
     const [saveBase, setSaveBase] = useState<boolean>(false);
     const [buddyComment, setBuddyComment] = useState<string>('');
     const [species, setSpecies] = useState<Filters['species']>('all');
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [location, setLocation] = useState<Option[]>([]);
+
     return (
         <div className="flex h-full justify-between items-center flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="flex items-center w-full rounded-t-2xl">
-                <NameTag find asap small />
-                <button>버디 정보 가져오기</button>
+                <NameTag find asap small user info={getUser} />
             </div>
             <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
             <div className="flex flex-col items-center w-full justify-between mt-6 h-[600px]">
@@ -47,7 +53,7 @@ const WriteBuddy = () => {
                     </div>
 
                     <div className="h-[60px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex items-center">
-                        <SelectedPlace />
+                        <SelectedPlace setLocation={setLocation} />
                     </div>
                     <div className="h-[130px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81]">
                         <span>자격증 정보</span>
@@ -63,7 +69,7 @@ const WriteBuddy = () => {
                         </div>
                     </div>
                     <div className="h-[130px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex flex-col">
-                        <span>❀ 00 버디의 한마디 -`♡´-</span>
+                        <span>❀ {getUser?.name} 버디의 한마디 -`♡´-</span>
                         <textarea
                             className="w-full h-[100px] bg-white rounded-xl shadow mt-2 border-0 resize-none p-2 focus:outline-0 px-3"
                             onChange={(e) => setBuddyComment(e.target.value)}

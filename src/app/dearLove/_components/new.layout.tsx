@@ -17,6 +17,7 @@ import EmptyMonthCollage from './empty.state2';
 import { formatStamp } from '@/utils/date';
 import { useSearchParams } from 'next/navigation';
 import { useClearQuery } from '@/hooks/useClearQuery';
+import React from 'react';
 
 export default function NewLayout() {
     const { animals, dearLoves = [] } = useUserState();
@@ -131,7 +132,7 @@ export default function NewLayout() {
 
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
-            <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] font-semibold text-[#5b7551] tracking-tight">
+            <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] max-md:text-[13px] font-semibold text-[#5b7551] tracking-tight">
                 -`♥´- dear.love_〘 {animals.map((a) => a.name).join(', ')} 〙 -`♥´-
             </div>
 
@@ -144,11 +145,11 @@ export default function NewLayout() {
             ) : (
                 <>
                     <section className="mx-auto flex-col max-w-[1200px] px-3 mt-2 mb-8 flex ">
-                        <div className="flex justify-between items-end w-full mb-1 px-2 z-20">
+                        <div className="flex justify-between items-end w-full mb-1 px-2 z-20 max-md:flex-col-reverse max-md:items-start">
                             <Tooltip
                                 tooltip={`${currentBuddy?.name ?? ''} 버디룸 보러가기`}
                                 comment={
-                                    <h2 className="text-[15px] mb-1 font-semibold text-[#5b7551] ">
+                                    <h2 className="text-[15px] mb-1 font-semibold text-[#5b7551] max-md:text-[13px]  ">
                                         {isFiltering
                                             ? selectedLabel
                                             : `${pageTitle} _ ${currentBuddy?.name ?? ''} 버디`}
@@ -179,47 +180,78 @@ export default function NewLayout() {
                             {formatStamp(filteredLoves[0]?.date_at)}
                         </span>
 
-                        <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
-                            {filteredLoves.map((item) =>
-                                item.photos.map((photo, i) => (
-                                    <div key={i} className="mb-2 break-inside-avoid w-full">
-                                        {i === 0 && (
-                                            <div className="mb-2">
-                                                <FileNameBox
-                                                    bgImg={dearLove?.representative_img ?? '/cover/3.png'}
-                                                    textColor=""
-                                                    dearLove={dearLove}
-                                                    currentBuddy={currentBuddy as BuddyLite | null}
-                                                />
-                                            </div>
-                                        )}
-                                        {i === 3 && (
-                                            <div className="mb-2">
-                                                <DiaryMessage text={item?.comment ?? ''} />
-                                            </div>
-                                        )}
-                                        <button
-                                            onClick={() => handlePhotoClick(i, item.photos)}
-                                            className="group w-full rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
-                                        >
-                                            <img
-                                                src={photo}
-                                                alt=""
-                                                loading="lazy"
-                                                decoding="async"
-                                                className={`block w-full min-w-full object-cover ${item.comment ? 'rounded-t-xl' : 'rounded-xl'}`}
-                                            />
-                                            {/* {item.comment && (
-                                                <div className="p-2">
-                                                    <p className="text-[14px] md:text-[15px] leading-4 text-gray-800">
-                                                        {item.comment}
-                                                    </p>
-                                                </div>
-                                            )} */}
-                                        </button>
+                        <div className="md:hidden columns-2 gap-2 [column-fill:_balance]">
+                            {filteredLoves.map((item, gi) => (
+                                <React.Fragment key={`m-${gi}`}>
+                                    <div className="mb-2 [column-span:all]">
+                                        <FileNameBox
+                                            bgImg={dearLove?.representative_img ?? '/cover/3.png'}
+                                            textColor=""
+                                            dearLove={dearLove}
+                                            currentBuddy={currentBuddy as BuddyLite | null}
+                                        />
                                     </div>
-                                )),
-                            )}
+
+                                    <div className="mb-2 [column-span:all]">
+                                        <DiaryMessage text={item?.comment ?? ''} />
+                                    </div>
+
+                                    {item.photos.map((photo, i) => (
+                                        <div key={`m-${gi}-${i}`} className="break-inside-avoid mb-2 w-full">
+                                            <button
+                                                onClick={() => handlePhotoClick(i, item.photos)}
+                                                className="block w-full rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
+                                            >
+                                                <img
+                                                    src={photo}
+                                                    alt=""
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className="block w-full h-auto object-cover rounded-xl"
+                                                />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </React.Fragment>
+                            ))}
+                        </div>
+
+                        <div className="hidden md:block">
+                            <div className="columns-2 md:columns-4 gap-2 [column-fill:_balance]">
+                                {filteredLoves.map((item, gi) =>
+                                    item.photos.map((photo, i) => (
+                                        <div key={`d-${gi}-${i}`} className="mb-2 break-inside-avoid w-full">
+                                            {i === 0 && (
+                                                <div className="mb-2">
+                                                    <FileNameBox
+                                                        bgImg={dearLove?.representative_img ?? '/cover/3.png'}
+                                                        textColor=""
+                                                        dearLove={dearLove}
+                                                        currentBuddy={currentBuddy as BuddyLite | null}
+                                                    />
+                                                </div>
+                                            )}
+                                            {i === 3 && (
+                                                <div className="mb-2">
+                                                    <DiaryMessage text={item?.comment ?? ''} />
+                                                </div>
+                                            )}
+                                            <button
+                                                onClick={() => handlePhotoClick(i, item.photos)}
+                                                className="group w-full rounded-xl border border-[#dfe9d7] bg-white/95 shadow-sm overflow-hidden transition hover:shadow-md hover:-translate-y-0.5"
+                                            >
+                                                <img
+                                                    src={photo}
+                                                    alt=""
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className={`block w-full min-w-full object-cover ${item.comment ? 'rounded-t-xl' : 'rounded-xl'}`}
+                                                />
+                                            </button>
+                                        </div>
+                                    )),
+                                )}
+                            </div>
                         </div>
                     </main>
                 </>

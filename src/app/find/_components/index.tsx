@@ -15,10 +15,73 @@ import { CardOverviewRow } from './data/cards';
 import { supabase } from '@/lib/supabaseClient';
 import { DUMMY_CARDS } from './data/cards.others';
 import { buildDateLabel, Filters, inRange } from '@/utils/date';
-import { DUMMY_LOVE_ANIMALS, DUMMY_LOVE_GROUPS } from './data/cards.love';
+import { DUMMY_LOVE_GROUPS } from './data/cards.love';
 import { LoveGroupCard } from '@/utils/sign';
 import { useUserState } from '@/context/useUserContext';
 import LoveCollageFilter2 from '@/app/dearLove/_components/love.filter2';
+import { Option } from '@/common/selected.box';
+import { Chip } from '@/common/animal.card.select';
+
+// 주 시작(월요일)로 맞춘 at0
+const at0Local = (d: Date) => {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+};
+
+function getRangeFromFilters(f: Filters): { start: Date; end: Date } | null {
+    const today = at0Local(new Date());
+    switch (f.dateKey) {
+        case 'none':
+            return null;
+        case 'today': {
+            const start = today;
+            const end = new Date(start);
+            end.setDate(end.getDate() + 1);
+            end.setMilliseconds(-1);
+            return { start, end };
+        }
+        case 'tomorrow': {
+            const start = new Date(today);
+            start.setDate(start.getDate() + 1);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 1);
+            end.setMilliseconds(-1);
+            return { start, end };
+        }
+        case 'thisweek': {
+            // 월~일
+            const dow = (today.getDay() + 6) % 7; // 월=0
+            const start = new Date(today);
+            start.setDate(start.getDate() - dow);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 7);
+            end.setMilliseconds(-1);
+            return { start, end };
+        }
+        case 'weekend': {
+            const dow = (today.getDay() + 6) % 7; // 월=0
+            const sat = new Date(today);
+            sat.setDate(sat.getDate() + (5 - dow));
+            const sunEnd = new Date(today);
+            sunEnd.setDate(sunEnd.getDate() + (7 - dow));
+            sunEnd.setMilliseconds(-1);
+            return { start: at0Local(sat), end: sunEnd };
+        }
+        case 'custom': {
+            if (!f.dateFrom || !f.dateTo) return null;
+            const [y1, m1, d1] = f.dateFrom.split('-').map(Number);
+            const [y2, m2, d2] = f.dateTo.split('-').map(Number);
+            const start = at0Local(new Date(y1, (m1 ?? 1) - 1, d1 ?? 1));
+            const end = at0Local(new Date(y2, (m2 ?? 1) - 1, d2 ?? 1));
+            end.setDate(end.getDate() + 1);
+            end.setMilliseconds(-1); // inclusive
+            return { start, end };
+        }
+        default:
+            return null;
+    }
+}
 
 const Index = () => {
     const { animals } = useUserState();
@@ -29,6 +92,8 @@ const Index = () => {
     const [errorList, setErrorList] = useState<string | null>(null);
 
     const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[] | null>(null);
+
+    const [location, setLocation] = useState<Option[]>([]);
 
     const [filters, setFilters] = useState<Filters>({
         dateKey: 'thisweek',
@@ -140,6 +205,32 @@ const Index = () => {
         });
     }, [loveFiltered]);
 
+    const loveSorted = useMemo(() => {
+        const range = getRangeFromFilters(filters); // ← 여기서 날짜 범위 계산
+        const parse = (s?: string) => {
+            if (!s) return null;
+            const [y, m, d] = s.split('-').map(Number);
+            return at0Local(new Date(y, (m ?? 1) - 1, d ?? 1));
+        };
+
+        const inRange = (dt: Date) => {
+            if (!range) return true;
+            return dt >= range.start && dt <= range.end;
+        };
+
+        const filteredByDate = loveFiltered.filter((g) => {
+            if (!g.date) return false;
+            const dt = parse(g.date);
+            return !!dt && inRange(dt);
+        });
+
+        return filteredByDate.sort((a, b) => {
+            const da = parse(a.date)?.getTime() ?? Number.POSITIVE_INFINITY;
+            const db = parse(b.date)?.getTime() ?? Number.POSITIVE_INFINITY;
+            return da - db;
+        });
+    }, [loveFiltered, filters]);
+
     const selectedAnimals = useMemo(() => {
         if (!selectedAnimalIds || !animals?.length) return [];
 
@@ -154,10 +245,10 @@ const Index = () => {
 
         return [..._arr].sort((a, b) => Number(b.isFirst) - Number(a.isFirst));
     }, [animals, selectedAnimalIds]);
-    console.log(selectedAnimals);
+
     return (
-        <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
-            <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700">
+        <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff] max-md:mt-0">
+            <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700 max-md:text-[12px]">
                 -`♥´- find.MyDearDay_〘
                 <div className="px-2 flex items-center">
                     {type.map((item, i) => (
@@ -171,26 +262,36 @@ const Index = () => {
                     ))}
                 </div>
                 〙 -`♥´-
-                <div className="absolute top-1/2 right-0">
+                <div className="absolute top-1/2 right-5 -translate-y-1/2 max-md:top-0">
                     {selectedType === 0 ? (
-                        <button onClick={() => router.push('/find/write/love')}>버디 요청하기</button>
+                        <button
+                            className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                            onClick={() => router.push('/find/write/love')}
+                        >
+                            버디 요청하기
+                        </button>
                     ) : (
-                        <button onClick={() => router.push('/find/write/buddy')}>버디 소개 올리기</button>
+                        <button
+                            className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                            onClick={() => router.push('/find/write/buddy')}
+                        >
+                            버디 소개 올리기
+                        </button>
                     )}
                 </div>
             </div>
-            <div className="flex justify-between items-end mb-3 ">
+            <div className="flex justify-between items-end mb-3 max-md:flex-col">
                 <div className="flex justify-center w-full flex-col items-center">
                     {selectedType === 1 && (
                         <>
                             <LoveCollageFilter2 onChange={(ids) => setSelectedAnimalIds(ids)} />
-                            <div className="flex">
+                            <div className="flex mt-1">
                                 {selectedAnimals.map((a, i) => (
                                     <span key={a.id} className="flex">
                                         <span
-                                            className={`mr-3 text-[13px] ${(a.isFirst || i == 0) && 'border px-2 rounded-lg'}`}
+                                            className={`mr-3 text-[13px] ${(a.isFirst || i == 0) && 'bg-amber-100 rounded-lg'}`}
                                         >
-                                            {a.name}
+                                            <Chip>{a.name}</Chip>
                                         </span>
                                     </span>
                                 ))}
@@ -200,14 +301,14 @@ const Index = () => {
                 </div>
                 <div className="flex  justify-end items-center px-5 w-[920px]">
                     <div className="flex flex-col items-end">
-                        <SelectedPlace />
+                        <SelectedPlace setLocation={setLocation} />
                         <BuddyFilterBar onFiltersChange={setFilters} selectedType={selectedType} />
                     </div>
                 </div>
             </div>
 
-            <div className="flex px-5">
-                <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4 min-w-[306px] sticky top-4 h-[780px]">
+            <div className="flex px-5 max-md:flex-col">
+                <div className="w-1/4 mr-5 rounded-2xl shadow-md bg-[#f3f7ee] p-4 min-w-[306px] sticky top-4 h-[780px] max-md:w-full max-md:h-[370px] max-md:mb-10 max-md:relative">
                     <div className="relative mb-3 px-1 py-2 rounded-xl bg-gradient-to-br from-[#e3ecdc]/90 to-[#f3f7ee]/80 border border-[#d5e2c8] text-[#3c5732] text-center font-semibold text-[14px] tracking-tight shadow-[inset_2px_2px_5px_#ffffff,-2px_-2px_5px_#d5e2c8]">
                         {selectedType === 0 ? (
                             <span className="inline-flex items-center">
@@ -224,7 +325,7 @@ const Index = () => {
                         )}
                     </div>
                     {selectedType === 1 ? (
-                        <span className="text-[12px] flex justify-center">
+                        <span className="text-[12px] flex justify-center bg-white/60 py-1 rounded-lg">
                             <Tooltip
                                 comment="6가지 조건을 모두 만족한"
                                 tooltip="하트 20개 이상, 디얼러브 20장 이상, 매너점수 8점 이상, 수의 관련 자격증, 펫시터 교육 수료, 반려동물 경험 인증"
@@ -233,8 +334,8 @@ const Index = () => {
                             믿을 수 있는 buddy예요.
                         </span>
                     ) : (
-                        <span className="text-[12px] flex justify-center">
-                            {/* 📅 오늘부터 <b className="mx-1">7일 이내로</b> 구하는 러브예요! */}
+                        <span className="text-[12px] flex justify-center bg-white/60 py-1 rounded-lg">
+                            📅 오늘부터 <b className="mx-1">7일 이내의</b> 러브 카드만 노출됩니다.
                         </span>
                     )}
 
@@ -248,14 +349,14 @@ const Index = () => {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-gray-500 text-sm p-3">
-                                        오늘부터 7일 안에 가능한 Love 카드가 없어요.
+                                    <div className="flex justify-center items-center h-[400px]">
+                                        <div className="text-gray-500 text-sm p-3">조건에 맞는 러브가 없어요.</div>
                                     </div>
                                 )}
                             </div>
                         ) : (
                             <>
-                                <div className="">
+                                <div className="max-md:flex max-md:w-full">
                                     {list
                                         .filter(
                                             (it) =>
@@ -264,7 +365,7 @@ const Index = () => {
                                                 (it.manner ?? 0) >= 8,
                                         )
                                         .map((item) => (
-                                            <div key={item.user_id} className="break-inside-avoid mb-3">
+                                            <div key={item.user_id} className="break-inside-avoid mb-3 max-md:mr-2">
                                                 <CompactBuddyCard list={item} />
                                             </div>
                                         ))}
@@ -281,18 +382,18 @@ const Index = () => {
                     </div>
                 </div>
                 {selectedType === 0 ? (
-                    <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-2">
-                        {loveFiltered.map((item, i) => (
+                    <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-2 max-md:w-full">
+                        {loveSorted.map((item, i) => (
                             <div key={i} className="mb-3 break-inside-avoid">
                                 <LoveList list={item} />
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-x-4">
+                    <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-x-4 max-md:w-full">
                         {filtered.map((item) => (
                             <div key={item.user_id} className="break-inside-avoid mb-4">
-                                <ListBox2 list={item} selectedAnimals={selectedAnimals} />
+                                <ListBox2 list={item} selectedAnimals={selectedAnimals} location={location} />
                             </div>
                         ))}
                         {!filtered.length && (

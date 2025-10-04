@@ -4,6 +4,7 @@ import type { DearLove } from '@/utils/data';
 import type { SelectedDay } from './home/calendar';
 import { useUserState } from '@/context/useUserContext';
 import { useRouter } from 'next/navigation';
+import { useWindowSize } from '@/hooks/useHooks';
 
 type Props = {
     item: SelectedDay | undefined;
@@ -27,6 +28,7 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
     if (!item) return null;
 
     const router = useRouter();
+    const _media = useWindowSize();
 
     const { animals } = useUserState();
 
@@ -37,7 +39,7 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
     }, [item]);
 
     const cardWidth = dayContents && calSize ? 'w-[375px]' : 'w-[360px]';
-    const listHeight = dayContents && calSize ? 'h-[530px]' : 'h-[340px]';
+    const listHeight = dayContents && calSize ? (_media.x < 768 ? 'h-full' : 'h-[530px]') : 'h-[340px]';
 
     const formatTime = (v?: string | number | null) => {
         if (!v) return '';
@@ -59,7 +61,7 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
     };
 
     return (
-        <div className="flex flex-col justify-between items-center h-full rounded-xl p-2">
+        <div className="flex flex-col justify-between items-center h-full rounded-xl p-2 max-md:min-h-[500px] max-md:mb-20">
             {item?.reservation.length >= 1 ? (
                 <>
                     <div>
@@ -67,7 +69,9 @@ const CalendarSideContent = ({ item, dayContents, calSize, resolveBuddyName, bud
                             -`♥´- dear.Love_〘 <b className="px-2">{loveNames.join(', ') || '—'}</b> 〙 -`♥´-
                         </span>
 
-                        <div className={`overflow-y-scroll no-scrollbar ${listHeight}`}>
+                        <div
+                            className={`overflow-y-scroll no-scrollbar ${listHeight} max-md:h-auto! max-md:overflow-auto`}
+                        >
                             {item.reservation.map((dl, i) => {
                                 const buddyName = resolveBuddyName(dl.buddy_user_id);
                                 const { show, extra } = gridPhotos(dl);
