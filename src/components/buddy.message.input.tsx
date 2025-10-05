@@ -1,15 +1,23 @@
 import { supabase } from '@/lib/supabaseClient';
 import { useState } from 'react';
 
-const BuddyMessageInput = ({ chatRoomId, senderId }: { chatRoomId: string; senderId: string }) => {
+const BuddyMessageInput = ({
+    chatRoomId,
+    senderId,
+    disabled = false,
+}: {
+    chatRoomId: string;
+    senderId: string;
+    disabled?: boolean;
+}) => {
     const [content, setContent] = useState('');
 
     const sendMessage = async () => {
         if (!content.trim()) return;
 
-        const { error } = await supabase.from('messages').insert([
+        const { error } = await supabase.from('chat_messages').insert([
             {
-                chat_room_id: chatRoomId,
+                room_id: chatRoomId,
                 sender_id: senderId,
                 content: content,
             },
@@ -23,7 +31,7 @@ const BuddyMessageInput = ({ chatRoomId, senderId }: { chatRoomId: string; sende
     };
 
     const safeSend = () => {
-        if (!content.trim() /*|| sending*/) return;
+        if (!content.trim() || disabled) return;
         sendMessage();
     };
 
@@ -35,31 +43,31 @@ const BuddyMessageInput = ({ chatRoomId, senderId }: { chatRoomId: string; sende
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     onKeyDown={(e) => {
-                        // Enter 전송 (Shift+Enter는 줄바꿈 대신 무시)
+                        if (disabled) return;
                         if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
                             e.preventDefault();
                             safeSend();
                         }
-                        // Ctrl/Cmd + Enter도 전송
                         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                             e.preventDefault();
                             safeSend();
                         }
                     }}
-                    placeholder="메시지를 입력하세요"
+                    placeholder={disabled ? '예약을 수락하면 입력할 수 있어요' : '메시지를 입력하세요'}
                     className="w-full h-11 bg-transparent py-1 text-[14px] focus:outline-none placeholder:text-gray-400"
                     aria-label="메시지 입력"
+                    disabled={disabled}
                 />
             </div>
 
             <button
                 onClick={safeSend}
-                disabled={!content.trim() /*|| sending*/}
+                disabled={disabled || !content.trim()}
                 className={[
                     'h-11 px-4 rounded-xl transition',
-                    content.trim() /*&& !sending*/
-                        ? 'custom-card custom-card-hover'
-                        : 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed',
+                    disabled || !content.trim()
+                        ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                        : 'custom-card custom-card-hover',
                 ].join(' ')}
                 aria-label="전송"
                 title="Enter로 전송, Shift+Enter는 줄바꿈 미지원"

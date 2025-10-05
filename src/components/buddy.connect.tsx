@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { useUserState } from '@/context/useUserContext';
 
-const FIXED_ROOM_ID = '6e43ecea-3772-4926-983d-8688acc9fb8d';
+const FIXED_ROOM_ID = '22f9514e-3dad-4749-a3d9-372ead014fec';
 const FIXED_SENDER_ID = '6dc3998b-b201-4c89-bb1e-6400d92c79a5';
 
 type ChatSummary = {
@@ -20,7 +20,7 @@ type ChatSummary = {
 
 function mapRpcRow(raw: any): ChatSummary {
     return {
-        roomId: raw.chat_room_id ?? raw.room_id ?? raw.id ?? '',
+        roomId: raw.room_id ?? '',
         partnerName: raw.partner_name ?? raw.name ?? '이름없음',
         partnerAvatar: raw.partner_avatar ?? '/cha/1_12.png',
         lastMessage: raw.last_message ?? '',
@@ -29,7 +29,13 @@ function mapRpcRow(raw: any): ChatSummary {
     };
 }
 
-export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (value: string) => void }) {
+export default function BuddyConnect({
+    setSelectedClose,
+    initialRoom,
+}: {
+    setSelectedClose?: (value: string) => void;
+    initialRoom?: { roomId: string; partnerName: string };
+}) {
     const { getUser } = useUserState();
     const [expanded, setExpanded] = useState(false);
     const [inRoom, setInRoom] = useState(false);
@@ -40,7 +46,29 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
     const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
     const [activePartnerName, setActivePartnerName] = useState<string>('');
 
-    const userId = getUser?.uuid;
+    const userId = getUser?.id;
+
+    useEffect(() => {
+        const onOpen = (e: any) => {
+            const { roomId, partnerName } = e.detail || {};
+            if (!roomId) return;
+            setActiveRoomId(roomId);
+            setActivePartnerName(partnerName || '');
+            setInRoom(true);
+            setExpanded(true);
+        };
+        window.addEventListener('open-buddy-room', onOpen);
+        return () => window.removeEventListener('open-buddy-room', onOpen);
+    }, []);
+
+    useEffect(() => {
+        const onRefresh = (e: any) => {
+            const next: ChatSummary[] = e.detail?.items ?? [];
+            setItems(next);
+        };
+        window.addEventListener('refresh-buddy-list', onRefresh);
+        return () => window.removeEventListener('refresh-buddy-list', onRefresh);
+    }, []);
 
     useEffect(() => {
         let mounted = true;
@@ -48,7 +76,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
             setLoading(true);
             setErr('');
             const { data, error } = await supabase.rpc('get_chat_list_for_user', { uid: userId });
-
+            console.log(error);
             if (!mounted) return;
 
             // if (error) {
@@ -57,7 +85,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
             // }
 
             const mapped = Array.isArray(data) ? data.map(mapRpcRow) : [];
-            console.log(mapped);
+            console.log(mapped, '000');
             const fallback: ChatSummary = {
                 roomId: FIXED_ROOM_ID,
                 partnerName: 'cheerrry_',
@@ -83,7 +111,7 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
         return () => {
             mounted = false;
         };
-    }, [userId, activeRoomId]);
+    }, [userId]);
 
     const unreadTotal = useMemo(() => items.reduce((a, c) => a + (c.unread || 0), 0), [items]);
 
@@ -101,6 +129,15 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
 
     const backToList = () => setInRoom(false);
 
+    useEffect(() => {
+        if (initialRoom?.roomId) {
+            setActiveRoomId(initialRoom.roomId);
+            setActivePartnerName(initialRoom.partnerName || '');
+            setInRoom(true);
+            setExpanded(true);
+        }
+    }, [initialRoom]);
+
     return (
         <div
             className={[
@@ -110,11 +147,11 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                 expanded ? 'h-[520px] w-[400px]' : 'h-[200px] w-[400px]',
             ].join(' ')}
         >
-            {unreadTotal > 0 && (
+            {/* {unreadTotal > 0 && (
                 <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-red-500 flex justify-center items-center text-white font-semibold text-[12px] shadow">
                     {unreadTotal}
                 </div>
-            )}
+            )} */}
 
             <div className="w-full flex items-center py-2 px-3">
                 <div className="flex-1 flex justify-start">
@@ -149,18 +186,25 @@ export default function BuddyConnect({ setSelectedClose }: { setSelectedClose: (
                             ‹
                         </button>
                         <div className="flex items-center gap-2">
-                            <img
-                                src="/cha/1_12.png"
-                                alt=""
-                                className="w-6 h-6 rounded-full object-cover ring-1 ring-[#e3ecdc]"
-                            />
+                            {items.map((it) => (
+                                <img
+                                    key={it.roomId}
+                                    src={it.partnerAvatar}
+                                    alt=""
+                                    className="w-6 h-6 rounded-full object-cover ring-1 ring-[#e3ecdc]"
+                                />
+                            ))}
                             <span className="text-[13px] font-medium">{activePartnerName}</span>
                         </div>
                         <button className="px-2 py-1 rounded-lg text-[13px] hover:bg-[#f8fbf4]">•••</button>
                     </div>
 
                     <div className="flex-1 p-2">
-                        <BuddyMessageRoom chatRoomId={activeRoomId} senderId={userId} />
+                        <BuddyMessageRoom
+                            chatRoomId={activeRoomId}
+                            senderId={userId}
+                            activePartnerName={activePartnerName}
+                        />
                     </div>
                 </div>
             ) : (

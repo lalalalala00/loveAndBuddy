@@ -17,7 +17,7 @@ const blocks = ['cal', 'toki', 'comm', 'write'];
 const Index = () => {
     const _media = useWindowSize();
     const [selectedClose, setSelectedClose] = useState<string[]>(
-        _media.x <= 768 ? ['comm', 'write', 'toki'] : ['comm', 'write'],
+        _media.x > 768 ? ['comm', 'write', 'toki'] : ['comm', 'write'],
     );
 
     const [calExtension, setCalExtension] = useState<number>(2);
@@ -68,7 +68,7 @@ const Index = () => {
             </div>
 
             <GridLayout
-                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh] max-md:h-full! max-md:bg-none"
+                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh] max-md:h-full! max-md:bg-none max-md:flex max-md:justify-center"
                 // style={{ backgroundImage: "url(/cha/1_11.png)", backgroundSize: "cover" }}
                 layout={layout.filter((item) => !selectedClose.includes(item.i))}
                 cols={3}

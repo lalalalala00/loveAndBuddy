@@ -1,6 +1,6 @@
 'use client';
 
-export default function Recume() {
+export default function Resume() {
     return (
         <div className="p-4 h-[700px] overflow-scroll no-scrollbar leading-relaxed text-[15px] text-gray-800 pb-10">
             <p>
@@ -61,7 +61,7 @@ export default function Recume() {
             <p className="mt-4">
                 앞으로도 저는 배움과 도전을 두려워하지 않고, 기획과 개발을 아우르는 하이브리드 역량을 더욱 발전시켜
                 나가겠습니다. 귀사에서의 경험을 통해 사용자에게 가치 있는 서비스를 만들어내고, 함께 성장하는 팀의
-                일원으로 기여하고 싶습니다.
+                일원으로 기여하고 싶습니다. 감사합니다.
             </p>
         </div>
     );

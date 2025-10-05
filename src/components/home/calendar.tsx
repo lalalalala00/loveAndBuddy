@@ -55,16 +55,14 @@ const Calendar = ({
     const { dearLoves = [] } = useUserState();
     const _media = useWindowSize();
 
-    const { state, actions } = useDearLoveIndex(dearLoves, getUserById);
-    const { sortedDearLoves, dearLove, currentBuddy, currentBuddyId, buddyCache } = state;
+    const { state } = useDearLoveIndex(dearLoves, getUserById);
+    const { sortedDearLoves, buddyCache } = state;
 
-    const [calSize, setCalSize] = useState<boolean>(true);
+    const [calSize, setCalSize] = useState<boolean | null>(null);
     const [selectedDay, setSelectedDay] = useState<SelectedDay>();
     const [day, setDay] = useState<string>('');
     const [currentDate, setCurrentDate] = useState(dayjs());
     const [dayContents, setDayContents] = useState<boolean>(false);
-
-    const [reservationModal, setReservationModal] = useState<boolean>(false);
 
     const startOfMonth = currentDate.startOf('month');
     const endOfMonth = currentDate.endOf('month');
@@ -86,8 +84,6 @@ const Calendar = ({
         }
         return map;
     }, [sortedDearLoves]);
-
-    const resolveBuddyName = (id?: string | null) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '');
 
     const generateCalendar = () => {
         const calendar: (dayjs.Dayjs | null)[] = [];
@@ -116,12 +112,6 @@ const Calendar = ({
         }
     };
 
-    const toVM = (arr: DearLove[]): ReservationVM[] =>
-        arr.map((d) => ({
-            buddyName: resolveBuddyName(d.buddy_user_id),
-            date: d.date_at ? dayjs(d.date_at).valueOf() : 0,
-        }));
-
     useEffect(() => {
         let width = 1;
         if (calSize && !dayContents) width = 2;
@@ -129,28 +119,34 @@ const Calendar = ({
         else if (!calSize && dayContents) width = 2;
         else if (!calSize && !dayContents) width = 1;
 
-        if (_media.x <= 768) {
-            if (!calSize && !dayContents) width = 3;
-        }
-
         setCalExtension(width);
     }, [calSize, dayContents]);
 
-    useEffect(() => {
-        if (_media.x <= 768) {
-            setCalSize(false);
-        }
-    }, []);
+    const isMobile = _media.x <= 768;
 
+    useEffect(() => {
+        if (isMobile) {
+            setCalExtension((prev) => (prev !== 1 ? 1 : prev));
+            return;
+        }
+
+        const next = calSize ? (dayContents ? 3 : 2) : dayContents ? 2 : 1;
+
+        setCalExtension((prev) => (prev !== next ? next : prev));
+    }, [_media.x, isMobile, calSize, dayContents, setCalExtension]);
+    useEffect(() => {
+        setCalSize(!isMobile);
+    }, [isMobile]);
+    console.log(isMobile);
     return (
         <div
-            className={`mx-auto flex max-md:flex-col ${!calSize ? 'px-2 max-md:px-0' : 'px-4'} ${!calSize && !dayContents && 'w-[400px] max-md:w-full!'} ${!calSize && dayContents && 'w-[830px]'} max-md:w-full! max-md:min-w-[385px] max-md:h-full!`}
+            className={`mx-auto flex max-md:flex-col ${!calSize ? 'px-2 max-md:px-0' : 'px-4'} ${!calSize && !dayContents && 'w-[400px] max-md:w-full!'} ${!calSize && dayContents && 'w-[830px]'} max-md:w-full! max-md:max-w-full! max-md:min-w-[350px]! max-md:h-full!`}
             style={{
                 height: !calSize ? '530px' : '730px',
                 // width: !calSize ? "400px" : "780px",
             }}
         >
-            <div className={`${!calSize ? 'w-full min-w-0' : 'w-[790px] min-w-[790px]'}  max-md:mb-5`}>
+            <div className={`${!calSize ? 'w-full min-w-0' : 'w-[790px] min-w-[790px]'}  max-md:mb-5 `}>
                 <div className="flex justify-between items-center w-full max-md:w-full!">
                     <button
                         onClick={() => setSelectedClose('cal')}

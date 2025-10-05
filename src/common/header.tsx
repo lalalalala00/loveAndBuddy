@@ -279,10 +279,8 @@ const Header = () => {
                     </div>
                 </div>
 
-                {/* 본문 패딩: 바텀탭 높이만큼 여백 */}
                 <div className="pb-[68px] max-md:pb-4" />
 
-                {/* 하단: 바텀 탭 네비게이션 */}
                 <nav
                     className="
       fixed bottom-0 left-0 right-0 z-40
@@ -293,8 +291,8 @@ const Header = () => {
                     // pb-[calc(env(safe-area-inset-bottom,0)+8px)]
                     aria-label="bottom navigation"
                 >
-                    <div className="grid grid-cols-3 overflow-hidden">
-                        {typeMenu.map((item) => {
+                    <div className="grid grid-cols-4 overflow-hidden">
+                        {mtypeMenu.map((item) => {
                             const active = isActive(item.url);
                             return (
                                 <button
@@ -303,7 +301,7 @@ const Header = () => {
                                     className={[
                                         'flex flex-col items-center justify-center px-4 py-3',
                                         active
-                                            ? 'text-emerald-700 bg-emerald-50 font-semibold'
+                                            ? 'text-[#9dbb80] bg-[#f3f6f0] font-semibold'
                                             : 'text-gray-700 bg-white/30',
                                     ].join(' ')}
                                     aria-current={active ? 'page' : undefined}
@@ -321,15 +319,15 @@ const Header = () => {
 
 const typeMenu = [
     // { label: "home", url: "/" },
-    { label: 'find.MyDearDay', url: '/find' },
+    { label: 'find.myDearDay', url: '/find' },
     { label: 'dear.Love', url: '/dearLove' },
     { label: 'our.dailyMoments', url: '/dailyMoments' },
 ];
-
-const userType: { label: UserStateType; type: number; menu: string }[] = [
-    { label: 'love', type: 0, menu: 'find buddy' },
-    { label: 'lovuddy', type: 2, menu: 'find love & buddy' },
-    { label: 'buddy', type: 1, menu: 'find love' },
+const mtypeMenu = [
+    { label: 'home', url: '/' },
+    { label: 'find.myDearDay', url: '/find' },
+    { label: 'dear.Love', url: '/dearLove' },
+    { label: 'our.dailyMoments', url: '/dailyMoments' },
 ];
 
 export default Header;

@@ -229,13 +229,13 @@ const ImportSchedule = () => {
 const picks = [
     {
         id: 'p1',
-        animals: [{ id: 'a1', name: '샤넬', img: '/placeholder/avatar.png' }],
-        buddyName: 'buddy',
+        animals: [{ id: 'a1', name: '샤넬', img: '/cha/1_2.png' }],
+        buddyName: '원썬한태양',
         neighborhood: '성수동',
         place: '서울숲',
         date: '2025-10-06',
         timeStart: '14:00',
-        timeEnd: '15:00',
+        timeEnd: '16:00',
     },
 ];
 

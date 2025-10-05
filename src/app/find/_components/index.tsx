@@ -21,6 +21,7 @@ import { useUserState } from '@/context/useUserContext';
 import LoveCollageFilter2 from '@/app/dearLove/_components/love.filter2';
 import { Option } from '@/common/selected.box';
 import { Chip } from '@/common/animal.card.select';
+import BuddyConnect from '@/components/buddy.connect';
 
 // 주 시작(월요일)로 맞춘 at0
 const at0Local = (d: Date) => {
@@ -95,6 +96,13 @@ const Index = () => {
 
     const [location, setLocation] = useState<Option[]>([]);
 
+    const [onChat, setOnChat] = useState<boolean>(false);
+    const [chatInit, setChatInit] = useState<null | { roomId: string; partnerName: string }>(null);
+
+    const handleOpenChat = (roomId: string, partnerName: string) => {
+        setChatInit({ roomId, partnerName });
+        setOnChat(true);
+    };
     const [filters, setFilters] = useState<Filters>({
         dateKey: 'thisweek',
         species: 'all',
@@ -385,7 +393,7 @@ const Index = () => {
                     <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-2 max-md:w-full">
                         {loveSorted.map((item, i) => (
                             <div key={i} className="mb-3 break-inside-avoid">
-                                <LoveList list={item} />
+                                <LoveList list={item} onOpenChat={handleOpenChat} />
                             </div>
                         ))}
                     </div>
@@ -402,6 +410,11 @@ const Index = () => {
                     </div>
                 )}
             </div>
+            {onChat && (
+                <div className="fixed bottom-6 right-6 z-[80]">
+                    <BuddyConnect setSelectedClose={() => setOnChat(false)} initialRoom={chatInit ?? undefined} find />
+                </div>
+            )}
         </div>
     );
 };

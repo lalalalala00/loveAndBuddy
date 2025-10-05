@@ -1,12 +1,53 @@
 import { Chip } from '@/common/animal.card.select';
 
 import NameTag from '@/common/name.tag';
+import { useUserState } from '@/context/useUserContext';
+import { supabase } from '@/lib/supabaseClient';
 import { getAgeFromYear } from '@/utils/date';
 import { LoveGroupCard } from '@/utils/sign';
 import { useState } from 'react';
 
-const LoveList = ({ list }: { list: LoveGroupCard }) => {
+type Props = { list: LoveGroupCard; onOpenChat?: (roomId: string, partnerName: string) => void };
+
+const LoveList = ({ list, onOpenChat }: Props) => {
     const [openAnimalsInfo, setOpenAnimalsInfo] = useState<boolean>(false);
+    const { getUser, setLoveChatData } = useUserState();
+    const [pending, setPending] = useState(false);
+
+    const startChat = async (love: LoveGroupCard) => {
+        if (pending) return;
+        const myId = getUser?.id;
+
+        const partnerId = (love as LoveGroupCard).owner_uuid;
+        const partnerName = (love as LoveGroupCard).owner_nickname;
+
+        if (!myId || !partnerId) {
+            console.warn('유저/상대 ID 누락');
+            return;
+        }
+        console.log('ok');
+        try {
+            setPending(true);
+            const { data, error } = await supabase.rpc('ensure_chat_room', { uid: myId, pid: partnerId });
+            if (error) throw error;
+
+            const roomId = data?.[0]?.room_id;
+            if (!roomId) throw new Error('room_id not returned');
+            onOpenChat?.(roomId, partnerName);
+            setLoveChatData(love);
+            console.log('ok2');
+            window.dispatchEvent(
+                new CustomEvent('open-buddy-room', {
+                    detail: { roomId, partnerName },
+                }),
+            );
+        } catch (e) {
+            console.error('[startChat]', e);
+        } finally {
+            setPending(false);
+        }
+    };
+
     return (
         <div className="rounded-2xl w-full h-auto shadow group">
             <div className="flex flex-col items-center bg-[rgb(246,246,246)] border-b border-[rgb(227,227,227)] rounded-t-2xl">
@@ -104,7 +145,10 @@ const LoveList = ({ list }: { list: LoveGroupCard }) => {
                     <span className="ml-3 font-semibold">{list?.animals[0]?.comment} ❣</span>
                 </div>
 
-                <button className={`btn-card custom-card w-full rounded-lg py-2  text-[14px] cursor-pointer`}>
+                <button
+                    onClick={() => startChat(list)}
+                    className={`btn-card custom-card w-full rounded-lg py-2  text-[14px] cursor-pointer`}
+                >
                     대화하기
                 </button>
             </div>

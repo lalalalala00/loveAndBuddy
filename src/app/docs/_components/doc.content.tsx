@@ -946,7 +946,6 @@ export default function DocContent() {
                             </ul>
                         </div>
                         <JoinWalkWhy />
-                        <JoinWalkRevenue />
                     </div>
                 </Section>
             </Card>
@@ -954,7 +953,7 @@ export default function DocContent() {
             {/* Closing */}
             <Card>
                 <Section id="closing__role" title="본인 역할 & 기여">
-                    <p>기획 · UI/UX · 프론트엔드 · DB 설계. 실 구현은 핵심 플로우 중심으로 mock API를 사용하여 시연.</p>
+                    <p>기획 · UX/UI · 프론트엔드 · DB 설계. 실 구현은 핵심 플로우 중심으로 mock API를 사용하여 시연.</p>
                 </Section>
                 <Divider />
                 <Section id="closing__next" title="향후 개선">

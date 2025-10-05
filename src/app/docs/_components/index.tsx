@@ -7,7 +7,8 @@ import DocHero from './doc.here';
 import DocContent from './doc.content';
 import Header from './header';
 import ModalIos from '@/common/modal.ios';
-import Recume from './resume';
+
+import Resume from './resume';
 
 export type Active = { groupId: string; itemId: string } | null;
 
@@ -122,7 +123,7 @@ export default function DocsPortfolio() {
                 width="700px"
                 height="810px"
             >
-                <Recume />
+                <Resume />
             </ModalIos>
 
             <Footer />

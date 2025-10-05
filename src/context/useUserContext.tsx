@@ -1,7 +1,7 @@
 'use client';
 
 import { DearLove, User } from '@/utils/data';
-import { Animal, Certificate } from '@/utils/sign';
+import { Animal, Certificate, LoveGroupCard } from '@/utils/sign';
 import {
     createContext,
     useContext,
@@ -32,6 +32,9 @@ interface UserContext {
     dearLoves: DearLove[];
     setDearLoves: Dispatch<SetStateAction<DearLove[]>>;
 
+    loveChatData: LoveGroupCard | null;
+    setLoveChatData: Dispatch<SetStateAction<LoveGroupCard | null>>;
+
     /** 파생: 유저 + 자격증 */
     userWithCerts: UserWithCerts | null;
     /** 파생: 유저 + 자격증 + 애니멀 */
@@ -50,6 +53,7 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [animals, setAnimals] = useState<Animal[]>([]);
     const [dearLoves, setDearLoves] = useState<DearLove[]>([]);
+    const [loveChatData, setLoveChatData] = useState<LoveGroupCard | null>(null);
 
     const userWithCerts = useMemo<UserWithCerts | null>(() => {
         if (!getUser) return null;
@@ -83,6 +87,8 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
                 setAnimals,
                 dearLoves,
                 setDearLoves,
+                loveChatData,
+                setLoveChatData,
 
                 userWithCerts,
                 userFull,

@@ -5,7 +5,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O1
   {
     card_kind: 'love',
-    owner_uuid: 'own-o-ffff-aaaa-bbbb-000000000006',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '캣러버',
     dear_love: 42,
     date: '2025-10-09',
@@ -50,7 +50,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O2
   {
     card_kind: 'love',
-    owner_uuid: 'own-c-3333-3333-3333-ccccccccccc0',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '솜사탕집사',
     dear_love: 17,
     date: '2025-10-29',
@@ -110,7 +110,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O3
   {
     card_kind: 'love',
-    owner_uuid: 'own-b-2222-2222-2222-bbbbbbbbbbb0',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '모찌아빠',
     dear_love: 28,
     date: '2025-10-17',
@@ -140,7 +140,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O4
   {
     card_kind: 'love',
-    owner_uuid: 'own-f-6666-6666-6666-fffffffffff0',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '보리가루',
     dear_love: 19,
     date: '2025-10-18',
@@ -185,8 +185,8 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O5
   {
     card_kind: 'love',
-    owner_uuid: 'own-d-4444-4444-4444-ddddddddddd0',
-    owner_nickname: '초코언니',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_nickname: '펌킨도넛',
     dear_love: 26,
     date: '2025-10-19',
     start_time: '10:00',
@@ -215,7 +215,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O6
   {
     card_kind: 'love',
-    owner_uuid: 'own-e-5555-5555-5555-eeeeeeeeeee0',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '라떼맘',
     dear_love: 37,
     date: '2025-10-21',
@@ -245,7 +245,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O7
   {
     card_kind: 'love',
-    owner_uuid: 'own-g-7777-7777-7777-777777777770',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '단추집사',
     dear_love: 23,
     date: '2025-10-19',
@@ -275,7 +275,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O8
   {
     card_kind: 'love',
-    owner_uuid: 'own-h-8888-8888-8888-888888888880',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '쿠로아빠',
     dear_love: 49,
     date: '2025-10-16',
@@ -320,7 +320,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O10
   {
     card_kind: 'love',
-    owner_uuid: 'own-l-cccc-dddd-eeee-000000000003',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '새싹',
     dear_love: 20,
     date: '2025-10-17',
@@ -350,7 +350,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O11
   {
     card_kind: 'love',
-    owner_uuid: 'own-m-dddd-eeee-ffff-000000000004',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '도치맘',
     dear_love: 16,
     date: '2025-10-22',
@@ -395,7 +395,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O12
   {
     card_kind: 'love',
-    owner_uuid: 'own-p-aaaa-cccc-dddd-000000000007',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '특별한친구',
     dear_love: 9,
     date: '2025-10-19',
@@ -425,7 +425,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O13
   {
     card_kind: 'love',
-    owner_uuid: 'own-k-bbbb-cccc-dddd-000000000002',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '라쿤보호자',
     dear_love: 54,
     date: '2025-10-21',
@@ -470,7 +470,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O14
   {
     card_kind: 'love',
-    owner_uuid: 'own-j-aaaa-bbbb-cccc-000000000001',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '호두집사',
     dear_love: 29,
     date: '2025-10-18',
@@ -530,7 +530,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O15
   {
     card_kind: 'love',
-    owner_uuid: 'own-p-1111-2222-3333-444444444444',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '코코보호자',
     dear_love: 22,
     date: '2025-10-26',
@@ -560,7 +560,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O16
   {
     card_kind: 'love',
-    owner_uuid: 'own-p-5555-6666-7777-888888888888',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '레오가족',
     dear_love: 46,
     date: '2025-10-28',
@@ -590,7 +590,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O17
   {
     card_kind: 'love',
-    owner_uuid: 'own-p-9999-aaaa-bbbb-cccccccccccc',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '루비가족',
     dear_love: 30,
     date: '2025-10-29',
@@ -620,7 +620,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O18
   {
     card_kind: 'love',
-    owner_uuid: 'own-p-dddd-eeee-ffff-000000000000',
+    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
     owner_nickname: '메이집사',
     dear_love: 25,
     date: '2025-10-23',
