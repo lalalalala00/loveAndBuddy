@@ -1,5 +1,6 @@
 'use client';
 
+import { useUserState } from '@/context/useUserContext';
 import { useMemo } from 'react';
 
 type Animal = { name: string; image?: string | null; avatar_url?: string | null };
@@ -44,6 +45,7 @@ export default function EmptyMonthCollage({
     dears: Dear[];
     selectedYYYYMM: string; // 'YYYY-MM'
 }) {
+    const { getUser } = useUserState();
     const imgs = animals.map((a) => a.img).filter(Boolean) as string[];
 
     const allDearUrls = useMemo(() => extractAllUrls(dears), [dears]);
@@ -89,6 +91,11 @@ export default function EmptyMonthCollage({
                     {emptyMessage(selectedYYYYMM)}
                 </p>
             </div>
+            {!getUser && (
+                <button className="flex justify-center items-center w-full py-2 mb-5">
+                    <span className="px-6 py-2 border rounded-lg ">로그인하기</span>
+                </button>
+            )}
             <div className="relative rounded-3xl border border-[#e3ecdc] bg-[#f3f7ee] shadow-[6px_8px_24px_#eef6e6,inset_-6px_-8px_24px_#ffffff] overflow-hidden">
                 <div className="grid grid-cols-2 opacity-40 blur-[2px] sm:grid-cols-3 md:grid-cols-4 gap-1 p-2">
                     {bgTiles.length ? (
@@ -108,7 +115,7 @@ export default function EmptyMonthCollage({
                         <div className="col-span-full flex items-center justify-center p-12">
                             <div className="w-28 h-28 rounded-full bg-white/80 border border-[#e3ecdc] shadow-inner flex items-center justify-center">
                                 <span className="text-[#5b7551] font-bold text-2xl">
-                                    {(animals[0]?.name ?? 'Love').slice(0, 2)}
+                                    {getUser ? (animals[0]?.name ?? 'Love').slice(0, 2) : 'Love'}
                                 </span>
                             </div>
                         </div>

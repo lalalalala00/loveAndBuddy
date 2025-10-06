@@ -85,7 +85,7 @@ function getRangeFromFilters(f: Filters): { start: Date; end: Date } | null {
 }
 
 const Index = () => {
-    const { animals } = useUserState();
+    const { animals, getUser } = useUserState();
     const router = useRouter();
     const [selectedType, setSelectedType] = useState<number>(1);
     const [list, setList] = useState<CardOverviewRow[]>([]);
@@ -270,23 +270,27 @@ const Index = () => {
                     ))}
                 </div>
                 〙 -`♥´-
-                <div className="absolute top-1/2 right-5 -translate-y-1/2 max-md:top-0">
-                    {selectedType === 0 ? (
-                        <button
-                            className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
-                            onClick={() => router.push('/find/write/love')}
-                        >
-                            버디 요청하기
-                        </button>
-                    ) : (
-                        <button
-                            className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
-                            onClick={() => router.push('/find/write/buddy')}
-                        >
-                            버디 소개 올리기
-                        </button>
-                    )}
-                </div>
+                {getUser && (
+                    <div className="absolute top-1/2 right-5 -translate-y-1/2 max-md:top-0">
+                        {selectedType === 0
+                            ? (getUser?.type === 'love' || getUser.type === 'lovuddy') && (
+                                  <button
+                                      className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                                      onClick={() => router.push('/find/write/love')}
+                                  >
+                                      러브 카드 등록
+                                  </button>
+                              )
+                            : (getUser?.type === 'buddy' || getUser.type === 'lovuddy') && (
+                                  <button
+                                      className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                                      onClick={() => router.push('/find/write/buddy')}
+                                  >
+                                      버디 카드 등록
+                                  </button>
+                              )}
+                    </div>
+                )}
             </div>
             <div className="flex justify-between items-end mb-3 max-md:flex-col">
                 <div className="flex justify-center w-full flex-col items-center">
@@ -374,7 +378,11 @@ const Index = () => {
                                         )
                                         .map((item) => (
                                             <div key={item.user_id} className="break-inside-avoid mb-3 max-md:mr-2">
-                                                <CompactBuddyCard list={item} />
+                                                <CompactBuddyCard
+                                                    list={item}
+                                                    selectedAnimals={selectedAnimals}
+                                                    location={location}
+                                                />
                                             </div>
                                         ))}
 

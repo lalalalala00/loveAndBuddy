@@ -2,6 +2,7 @@
 
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import DocsSearchLight from './doc.search.light';
+import { useRouter } from 'next/navigation';
 
 export default function Header({
     setSidebarOpen,
@@ -12,6 +13,7 @@ export default function Header({
     resume: boolean;
     setResume: Dispatch<SetStateAction<boolean>>;
 }) {
+    const router = useRouter();
     const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -72,7 +74,7 @@ export default function Header({
                             GitHub
                         </a>
                         <button
-                            onClick={() => setResume(!resume)}
+                            onClick={() => router.push('/resume')}
                             className="inline-flex items-center h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm"
                         >
                             Resume

@@ -11,11 +11,11 @@ const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const admin = createClient(URL, SRK,  { auth: { autoRefreshToken: false, persistSession: false } });
 const anon  = createClient(URL, ANON, { auth: { autoRefreshToken: false, persistSession: false } });
 
-// ✅ 스키마 컬럼명
+
 const OWNER_COL = 'owner_uuid';
 const KEY_COL   = 'animal_uuid';
 
-// 유틸
+
 const isUuid = (v: any) =>
   typeof v === 'string' &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const { profile, animals, certificates } = body ?? {};
 
-    // ---- (1) 프로필 업데이트 ----
+    // ---- 프로필 업데이트 ----
     if (profile) {
       const patch: Record<string, any> = {};
       if (typeof profile.name === 'string')      patch.name = profile.name.trim();
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // ---- (2) 동물 업데이트 (replace + upsert + 정리) ----
+    // ----  동물 업데이트 (replace + upsert + 정리) ----
     if (animals?.replace && Array.isArray(animals.items)) {
       // 기존 소유 동물 PK 목록
       const { data: oldList, error: oldErr } = await admin
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
             comment: (a.comment ?? '').trim(),
             img: a.img ?? '',
             first: !!(a.first ?? (idx === 0)),          // 우선 표기
-            // owner_nickname 같은 파생 필드가 필요하면 여기서도 갱신 가능
+      
           };
         });
 
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
       }
 
       // upsert (PK 기준)
-      const keepIds = new Set(rows.map(r => r[KEY_COL] as string)); // upsert 전부터 keep 집합 확보
+      const keepIds = new Set(rows.map(r => r[KEY_COL] as string)); 
       const { data: upserted, error: upErr } = await admin
         .from('animals')
         .upsert(rows, { onConflict: KEY_COL })
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // ---- (3) 자격증 업데이트 ----
+    // ---- 자격증 업데이트 ----
     if (certificates?.replace && Array.isArray(certificates.items)) {
       const { data: oldList, error: oldErr } = await admin
         .from('certificates')

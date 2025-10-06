@@ -20,7 +20,7 @@ import { useClearQuery } from '@/hooks/useClearQuery';
 import React from 'react';
 
 export default function NewLayout() {
-    const { animals, dearLoves = [] } = useUserState();
+    const { animals, dearLoves = [], getUser } = useUserState();
     const clearQuery = useClearQuery();
     const searchParams = useSearchParams();
     const paramDearId = searchParams.get('id');
@@ -133,7 +133,7 @@ export default function NewLayout() {
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
             <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] max-md:text-[13px] font-semibold text-[#5b7551] tracking-tight">
-                -`♥´- dear.love_〘 {animals.map((a) => a.name).join(', ')} 〙 -`♥´-
+                -`♥´- dear.love_〘 {getUser ? animals.map((a) => a.name).join(', ') : '???'} 〙 -`♥´-
             </div>
 
             <DateSelected setSelectedDate={setSelectedDate} />

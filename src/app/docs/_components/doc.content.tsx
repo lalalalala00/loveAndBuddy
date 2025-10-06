@@ -874,17 +874,7 @@ export default function DocContent() {
                                 <li>
                                     추가 슬롯: <b>₩1,900/월 · 1슬롯</b> (6개 초과분부터 적용)
                                 </li>
-                                <li>
-                                    멀티펫 번들 예약 시 플랫폼 수수료 할인(동시간·동버디 조건)
-                                    <ul className="list-disc pl-5 mt-1 space-y-1">
-                                        <li>
-                                            2마리: 수수료 <b>-5%</b>
-                                        </li>
-                                        <li>
-                                            3마리: 수수료 <b>-10%</b>
-                                        </li>
-                                    </ul>
-                                </li>
+                                <li>멀티펫 번들 예약 시 플랫폼 수수료 할인(동시간·동버디 조건)</li>
                             </ul>
                         </div>
 
@@ -952,14 +942,23 @@ export default function DocContent() {
 
             {/* Closing */}
             <Card>
-                <Section id="closing__role" title="본인 역할 & 기여">
+                {/* <Section id="closing__role" title="본인 역할 & 기여">
                     <p>기획 · UX/UI · 프론트엔드 · DB 설계. 실 구현은 핵심 플로우 중심으로 mock API를 사용하여 시연.</p>
+                </Section> */}
+                <Section id="closing__role" title="본인 역할 & 기여">
+                    <ul>
+                        <li>End-to-End: 기획 · UX/UI · 프론트엔드 · DB 스키마 설계</li>
+                        <li>Auth: 이메일 로그인, 회원가입, 프로필(정보 수정) — Supabase Auth</li>
+                        <li>콘텐츠: Dear Love 피드 조회 — Supabase DB/Storage</li>
+                        <li>실시간: 1:1 채팅 — Supabase Realtime</li>
+                    </ul>
                 </Section>
+
                 <Divider />
                 <Section id="closing__next" title="향후 개선">
                     <ul className="list-disc pl-5 space-y-1">
                         <li>
-                            <b>Supabase 실 DB 연결 & RLS 정책 정비</b>
+                            <b>Supabase 실 DB 연결(1차) & RLS 정책 정비</b>
                             <ul className="list-disc pl-5 mt-1 space-y-1">
                                 <li>
                                     스키마 확정: <i>users / animals / certificates / bookings / messages / dear_love</i>

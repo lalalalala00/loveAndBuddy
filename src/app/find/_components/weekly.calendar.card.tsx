@@ -1,5 +1,4 @@
-import { useBooking } from '@/context/useBookingContext';
-import { at0, getThisWeekRange, weekdayKo } from '@/utils/date';
+import { at0, weekdayKo } from '@/utils/date';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 export type Availability = { startHour: number; endHour: number };
@@ -23,8 +22,6 @@ export default function WeeklyCalendarCard({
     setSelectedDT?: Dispatch<SetStateAction<{ date: string; time: string }>>;
     infoData?: boolean;
 }) {
-    const { setDate, setTime } = useBooking();
-
     const [soldOut, setSoldOut] = useState<Record<string, Set<number>>>({});
 
     const [coloredLevel, setColoredLevel] = useState<Record<string, number>>({});
@@ -62,7 +59,6 @@ export default function WeeklyCalendarCard({
         }
         setSelectedDay(d.getDate());
         setRange({ start: null, end: null });
-        setDate(d.toISOString().slice(0, 10));
     };
 
     const timeSlots = useMemo(() => {
@@ -77,7 +73,7 @@ export default function WeeklyCalendarCard({
         if (disabledHour(h)) return;
         if (range.start === null || range.end === null) {
             setRange({ start: h, end: h });
-            setTime(`${fmtHour(h)}~${fmtHour(h + 1)}`);
+
             return;
         }
 
@@ -98,8 +94,6 @@ export default function WeeklyCalendarCard({
         }
 
         setRange({ start, end });
-
-        setTime(`${fmtHour(start)}~${fmtHour(end + 1)}`);
     };
 
     const isActive = (h: number) => range.start !== null && range.end !== null && h >= range.start && h <= range.end;
@@ -115,7 +109,7 @@ export default function WeeklyCalendarCard({
 
     useEffect(() => {
         const dateStr = selectedDateObj ? toKSTDateStr(selectedDateObj) : '';
-        setSelectedDT({ date: dateStr, time: selectionLabel });
+        setSelectedDT?.({ date: dateStr, time: selectionLabel });
     }, [selectedDay, range]);
 
     useEffect(() => {
@@ -200,7 +194,7 @@ export default function WeeklyCalendarCard({
                 {!isExpanded ? (
                     <div
                         className={`grid grid-cols-7 text-[12px] border border-[#f3f6f0] rounded-lg
-                    divide-x divide-[#f3f6f0] ${modal ? 'h-18' : 'h-8'}`}
+                    divide-x divide-[#f3f6f0] ${modal ? 'h-14' : 'h-8'}`}
                     >
                         {weekDays.map((d, i) => {
                             const isToday = d.toDateString() === today.toDateString();
@@ -344,25 +338,35 @@ export default function WeeklyCalendarCard({
                             );
                         })}
                     </div>
+                    <div className="flex justify-between items-center mt-2">
+                        {range.start !== null && (
+                            <button
+                                className=" text-[11px] text-gray-500 underline"
+                                onClick={() => {
+                                    setRange({ start: null, end: null });
+                                }}
+                            >
+                                선택 해제
+                            </button>
+                        )}
 
-                    {range.start !== null && (
-                        <button
-                            className="mt-2 text-[11px] text-gray-500 underline"
-                            onClick={() => {
-                                setRange({ start: null, end: null });
-                                setTime('');
-                            }}
-                        >
-                            선택 해제
-                        </button>
-                    )}
+                        {modal && (
+                            <button
+                                onClick={() => setSelectedDay(null)}
+                                className="text-[11px] text-gray-500 underline"
+                            >
+                                접어두기
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
-            {selectedDay !== null && (
+            {selectedDay !== null && !modal && (
                 <div className="px-2 py-1 flex justify-between">
                     <span className={`${modal ? 'text-[14px] p-2 inline-flex justify-start w-full' : 'text-[13px]'} `}>
                         {selectedDay}일 ({weekdayKo(selectedDateObj!, 'short')}) {selectionLabel}
                     </span>
+
                     <button onClick={() => setSelectedDay(null)} className="text-[11px] text-gray-500 underline">
                         접어두기
                     </button>

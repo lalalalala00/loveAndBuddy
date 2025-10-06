@@ -1,4 +1,4 @@
-import Resume from '@/app/docs/_components/resume';
+import Resume from './resume';
 
 const Index = () => {
     return (

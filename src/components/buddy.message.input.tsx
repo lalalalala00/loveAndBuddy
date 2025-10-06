@@ -37,14 +37,13 @@ const BuddyMessageInput = ({
 
     return (
         <div className="flex items-center gap-2  w-full">
-            {/* 입력 박스 */}
             <div className="flex-1 flex items-center rounded-xl border border-[#e3ecdc] bg-white shadow-inner px-3 ">
                 <input
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     onKeyDown={(e) => {
                         if (disabled) return;
-                        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+                        if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
                             safeSend();
                         }

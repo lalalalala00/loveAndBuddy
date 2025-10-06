@@ -1,12 +1,16 @@
-import ModalIos from '@/common/modal.ios';
 import NameTag from '@/common/name.tag';
 import { useState } from 'react';
-import WeeklyCalendarCard from './weekly.calendar.card';
 import { CardOverviewRow } from './data/cards';
+import BookingModal from './booking.modal';
+import { Option } from '@/common/selected.box';
+import { SelectedAnimals } from '@/utils/data';
 
-const CompactBuddyCard = ({ list }: { list: CardOverviewRow }) => {
+type Props = { list: CardOverviewRow; selectedAnimals: SelectedAnimals[]; location: Option[] };
+
+const CompactBuddyCard = ({ list, selectedAnimals, location }: Props) => {
     const [checkModal, setCheckModal] = useState<boolean>(false);
     const [selectedDT, setSelectedDT] = useState<{ date: string; time: string }>({ date: '', time: '' });
+    const [infoData, setInfoData] = useState(false);
 
     return (
         <div className="relative w-full max-w-[280px] max-md:w-[300px] border border-[#e3ecdc] bg-white/80 shadow px-2 py-2.5 rounded-2xl my-4 flex flex-col  text-[#444]">
@@ -17,7 +21,7 @@ const CompactBuddyCard = ({ list }: { list: CardOverviewRow }) => {
             <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-0.5" />
             <div className="flex flex-col items-start w-full px-2 text-left text-[12px]">
                 <span className="text-gray-800 ">❀ {list.name} 버디의 한마디 -`♡´-</span>
-                <span className="ml-3 font-semibold ">{list.user_comment}</span>
+                <span className="ml-3 font-semibold text-black ">{list.user_comment}</span>
             </div>
 
             <button
@@ -26,28 +30,22 @@ const CompactBuddyCard = ({ list }: { list: CardOverviewRow }) => {
             >
                 📅 스케줄 확인하기
             </button>
-            <ModalIos
-                isOpen={checkModal}
-                handleModalState={() => setCheckModal(!checkModal)}
-                title=""
-                width="480px"
-                height="640px"
-                leftAction={() => console.log('hi')}
-                leftComment="예약 요청 보내기"
-            >
-                <div className="flex flex-col items-start justify-center w-full h-full">
-                    <WeeklyCalendarCard
-                        modal
-                        availability={{ startHour: 9, endHour: 22 }}
-                        setSelectedDT={setSelectedDT}
-                    />
-                    <div className="px-4 py-2 flex flex-col">
-                        <span>location</span>
-                        <span>location</span>
-                        <span>location</span>
-                    </div>
-                </div>
-            </ModalIos>
+
+            <BookingModal
+                open={checkModal}
+                onClose={() => {
+                    setInfoData(false);
+                    setCheckModal(false);
+                }}
+                infoData={infoData}
+                setInfoData={setInfoData}
+                list={list}
+                selectedDT={selectedDT}
+                selectedAnimals={selectedAnimals}
+                location={location}
+                modal
+                setSelectedDT={setSelectedDT}
+            />
         </div>
     );
 };

@@ -16,10 +16,6 @@ function allPetsEasy(diffs: number[]) {
   return diffs.length > 0 && diffs.every((d) => d <= 3);
 }
 
-/** 러브 수수료율 프로모션 규칙
- * - 조건(AND): isLoyalMember === true && allPetsEasy === true
- * - 2마리: -5%p, 3마리: -10%p (최저 0%까지, 음수 금지)
- */
 export function loveFeeRateWithPromo(base: number, pets: number, isLoyalMember: boolean, diffs: number[]) {
   const eligible = isLoyalMember && allPetsEasy(diffs);
   if (!eligible) return base;
@@ -57,18 +53,4 @@ export function settleJoinWalk(input: JoinWalkInput) {
     rates: { commission: input.commissionRate, loveFee: loveFeeRate },
     promoApplied: loveFeeRate !== input.loveFeeRate,
   };
-}
-
-/** 취소/지연 정책(기본값 예시) */
-export const CXL_POLICY = {
-  over48h:    0.0, // 48시간 초과: 수수료 0
-  '24to48h':  0.2, // 24~48시간: 20%
-  within24h:  0.5, // 24시간 이내: 50%
-  noShow:     0.8, // 노쇼: 80%
-} satisfies Record<CancelWindow, number>;
-
-/** 취소 수수료 계산 (서비스 금액 gross 기준) */
-export function calcCancellationFee(grossKRW: number, window: CancelWindow) {
-  const rate = CXL_POLICY[window];
-  return KRW(grossKRW * rate);
 }

@@ -2,14 +2,19 @@ import ModalIos from '@/common/modal.ios';
 import { useUserState } from '@/context/useUserContext';
 import AnimalsForm, { defaultAnimal } from './sign.animals.form';
 import { useEffect, useState } from 'react';
-import AnimalCardVertical, { Animal } from '@/common/animal.card.vertical';
+
 import Tooltip from '@/common/tooltip';
-import { getMannerEmoji } from '@/common/buddy.name.tag';
 import CertificatesForm from './sign.certificateField.form';
-import { Certificate } from '@/utils/sign';
+import { Animal, Certificate } from '@/utils/sign';
 import { supabase } from '@/lib/supabaseClient';
 import { getDecadeLabel } from '@/utils/date';
 import { Chip } from '@/common/animal.card.select';
+
+export const getMannerEmoji = (score: number) => {
+    if (score >= 9) return '🌸';
+    if (score >= 6) return '🍃';
+    return '🌿';
+};
 
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
     const { getUser, certificates, animals } = useUserState();
@@ -17,7 +22,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
     const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animals);
 
-    const [profilePreview, setProfilePreview] = useState<string>(''); // 미리보기
+    const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
 
     const [certs, setCerts] = useState<Certificate[]>([]);
@@ -147,7 +152,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 console.warn('avatar upload skipped:', e);
             }
 
-            // 유효성 검사
             const isUuid = (v: any) =>
                 typeof v === 'string' &&
                 /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
@@ -156,7 +160,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             let seenFirst = false;
 
             const animalsPayload = mergedAnimals
-                .filter((a) => a.name?.trim() || a.img) // 빈 폼 제거
+                .filter((a) => a.name?.trim() || a.img)
                 .map((a, idx) => {
                     let first =
                         typeof (a as any).owner === 'boolean' ? (a as any).owner : ((a as any).first ?? idx === 0);
@@ -165,7 +169,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                         else seenFirst = true;
                     }
 
-                    // 공통 필드
                     const base: any = {
                         name: a.name?.trim() ?? '',
                         birth_year: a.birth_year ? Number(a.birth_year) : null,

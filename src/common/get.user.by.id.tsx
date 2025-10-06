@@ -1,4 +1,3 @@
-// api/users.ts
 import { supabase } from '@/lib/supabaseClient';
 
 export type BuddyLite = {

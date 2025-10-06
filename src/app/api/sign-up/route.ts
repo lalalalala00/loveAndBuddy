@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       animals = [], certs = [],
     } = body ?? {};
 
-    // 1) 프로필 업데이트
+
     const patch: any = {
       ...(typeof name === 'string' ? { name: name.trim() } : {}),
       ...(typeof nickname === 'string' ? { user_nickname: nickname.trim() } : {}),
@@ -41,7 +41,6 @@ export async function POST(req: Request) {
       if (error) return NextResponse.json({ ok:false, error:error.message }, { status:400 });
     }
 
-    // 2) 동물 upsert (owner_id = uid)
     if (Array.isArray(animals) && animals.length) {
       const upserts = animals.map((a:any, idx:number) => ({
         owner_uuid: uid,
@@ -60,7 +59,7 @@ export async function POST(req: Request) {
       if (error) return NextResponse.json({ ok:false, error:error.message }, { status:400 });
     }
 
-    // 3) 자격증 upsert (user_id = uid)
+
     if (Array.isArray(certs) && certs.length) {
       const upserts = certs.map((c:any) => ({
         user_id: uid,

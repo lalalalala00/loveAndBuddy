@@ -1,4 +1,4 @@
-import { CardKind } from "./data";
+
 
 export type Role = 'love' | 'buddy' | 'lovuddy';
 

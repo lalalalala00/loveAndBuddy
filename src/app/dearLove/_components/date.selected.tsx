@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { months } from './filepage';
 import ModalIos from '@/common/modal.ios';
 
 export default function DateSelected({
@@ -190,3 +189,18 @@ export default function DateSelected({
         </section>
     );
 }
+
+export const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+];

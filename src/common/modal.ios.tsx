@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+
 const ModalIos = ({
     children,
     width,
@@ -19,7 +22,18 @@ const ModalIos = ({
     leftComment?: string;
     leftAction?: () => void;
 }) => {
-    return (
+    useEffect(() => {
+        if (!isOpen) return;
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = prev;
+        };
+    }, [isOpen]);
+
+    if (!isOpen) return null;
+
+    return createPortal(
         isOpen && (
             <div className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-[2px] flex justify-center items-center">
                 <div
@@ -62,7 +76,8 @@ const ModalIos = ({
                     </div>
                 </div>
             </div>
-        )
+        ),
+        document.body,
     );
 };
 

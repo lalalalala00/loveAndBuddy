@@ -20,11 +20,9 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
     const [err, setErr] = useState('');
     const [success, setSuccess] = useState<boolean>(false);
 
-    // 폼 하위 컴포넌트 상태
     const [animalsForm, setAnimalsForm] = useState<Animal[]>([EMPTY_ANIMAL]);
     const [certs, setCerts] = useState<Certificate[]>([]);
 
-    // 프로필 이미지
     const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
 
@@ -97,7 +95,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             setErr('');
             setSuccess(false);
 
-            // 1) 관리자 계정 생성 (Auth)
             const r = await fetch('/api/dev-create-user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -106,7 +103,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             const j = await r.json().catch(() => ({}));
             if (!r.ok || !j.ok) throw new Error(j.error || '관리자 생성 실패');
 
-            // 2) 로그인 → 세션 확보
             const { error: siErr } = await supabase.auth.signInWithPassword({
                 email: v.email,
                 password: v.password,
@@ -116,7 +112,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             const { data: userData } = await supabase.auth.getUser();
             if (!userData?.user) throw new Error('세션 없음(로그인 실패)');
 
-            // 3) (선택) 아바타 업로드
             let avatarUrl: string | null = v.avatar_url || null;
             try {
                 avatarUrl = await uploadAvatarAndGetUrl(userData.user.id);
@@ -128,22 +123,20 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             const accessToken = sess.session?.access_token;
             if (!accessToken) throw new Error('세션 토큰 없음');
 
-            // 4) Payload 정리
             const animalsPayload = (animalsForm ?? []).map((a: any, idx: number) => ({
                 kname: a.name?.trim() ?? '',
-                birth_year: a.birth_year ? Number(a.birth_year) : null, // 서버에서 int4로 저장
+                birth_year: a.birth_year ? Number(a.birth_year) : null,
                 variety: a.variety ?? '',
                 color: a.color ?? '',
                 personality: a.personality ?? 'introvert',
-                level: String(a.level ?? '0'), // DB는 text
+                level: String(a.level ?? '0'),
                 comment: a.comment ?? '',
                 img: a.img ?? '',
-                first: typeof a.first === 'boolean' ? a.first : idx === 0, // 대표 자동 지정
+                first: typeof a.first === 'boolean' ? a.first : idx === 0,
             }));
 
             const certsPayload = (certs ?? []).map(({ file, preview, ...rest }: any) => rest);
 
-            // 5) 프로필 + 동물 + 자격증 저장 (서버에서 auth.uid() 사용해 owner_id 매핑)
             const res = await fetch('/api/sign-up', {
                 method: 'POST',
                 headers: {
@@ -166,7 +159,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             if (!res.ok || !j2.ok) throw new Error(j2.error || '서버 저장 실패');
 
             setSuccess(true);
-            // 초기화
+
             setV(EMPTY_SIGNUP_FORM);
             setAnimalsForm([EMPTY_ANIMAL]);
             setCerts([]);
