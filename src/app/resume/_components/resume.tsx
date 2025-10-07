@@ -47,11 +47,20 @@ export function Section({
     );
 }
 
+function Callout({ title, children }: { title: string; children: React.ReactNode }) {
+    return (
+        <div className="my-4 rounded-xl border border-emerald-100 bg-emerald-50/40 p-3">
+            <div className="text-[13px] font-semibold text-emerald-800">{title}</div>
+            <div className="mt-1 text-[14px] text-gray-800">{children}</div>
+        </div>
+    );
+}
+
 /*************************************
  * StickyToc (scrollspy)
  *************************************/
 const TOC_ITEMS = [
-    { id: 'intro', label: '자기소개' },
+    { id: 'intro', label: '자기소개서' },
     { id: 'works', label: '대표 작업' },
     { id: 'uxui', label: 'UX/UI 리디자인' },
     { id: 'three', label: 'Three.js 뷰어' },
@@ -109,8 +118,8 @@ export function BeforeAfter({
     comment?: ReactNode;
 }) {
     return (
-        <div>
-            {caption && <div className="text-sm text-gray-600 mb-2">{caption}</div>}
+        <div className="mb-4 border p-3 rounded-xl border-gray-200">
+            {caption && <div className="text-sm text-gray-600 mb-2 border-b border-gray-100 mx-2">{caption}</div>}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <figure className="rounded-xl overflow-hidden border bg-white">
                     <img src={before} alt="before" className="w-full h-full object-cover" />
@@ -122,7 +131,7 @@ export function BeforeAfter({
                     <figcaption className="px-2 py-1 text-xs bg-white/80">After</figcaption>
                 </figure>
             </div>
-            {comment && <div className="mt-4 px-2 text-[15px] list-disc">&#8226; {comment}</div>}
+            {comment && <div className="mt-4 px-2 pb-2 text-[15px] list-disc bg-gray-50 rounded-b-xl">{comment}</div>}
         </div>
     );
 }
@@ -149,8 +158,11 @@ export function ThreeViewer({ children }: { children?: React.ReactNode }) {
 }
 
 export default function Resume() {
+    const ref = useRef<HTMLVideoElement>(null);
+    const [playing, setPlaying] = useState(false);
+
     return (
-        <div className="min-h-screen bg-white text-[15px] text-gray-800">
+        <div className="min-h-screen bg-white text-[15px] text-gray-800 ">
             {/* Hero */}
             <header className="max-w-4xl mx-auto px-4 py-8 flex items-end justify-between">
                 <div>
@@ -165,8 +177,8 @@ export default function Resume() {
 
             <StickyToc />
 
-            {/* 자기소개 (사용자 제공 본문 삽입) */}
-            <Section id="intro" title="자기소개">
+            {/* 자기소개서 (사용자 제공 본문 삽입) */}
+            <Section id="intro" title="자기소개서">
                 <div className="leading-relaxed space-y-4">
                     <p>
                         저는 디자인 소품을 제작·판매하는 쇼핑몰을 운영하면서 자연스럽게 웹사이트와 커뮤니티에 대한
@@ -237,84 +249,180 @@ export default function Resume() {
                 <div className="flex justify-center">
                     <div className="w-[864px] flex justify-start flex-col">
                         <span>해외 nft 프로젝트 외주로 프론트엔드와 ux/ui 수정</span>
-                        <p className="mb-3">문제정의 → 접근/의사결정 → 결과. 핵심 포인트 3개:</p>
-                        <ol className="list-decimal pl-5 space-y-1 mb-4">
-                            <li>정보구조 재배치로 탐색 단계 3→2단계 단축</li>
-                            <li>타이포 스케일/여백 정리로 가독성 개선</li>
-                            <li>행동 버튼 일관화로 전환 유도</li>
-                        </ol>
                     </div>
+                </div>
+                {/* public/resume/ 아래에 파일이 있다고 가정 */}
+                <video
+                    className="w-full rounded-xl"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    // poster="/resume/main_d.png"
+                >
+                    <source src="/resume/main.mov" type="video/quicktime" />
+                    브라우저가 동영상을 지원하지 않습니다.
+                </video>
+                <div className="mb-3">
+                    <p>
+                        민팅은 <b>NFT 클래스(속성) 선택 → 민팅 실행</b>의 순서로 진행됩니다. 출시 직전 스펙 변경으로{' '}
+                        <b>클래스가 3개 → 5개</b>로 확대되었으나, 학습 비용과 화면 밀도를 고려해
+                        <b>UI는 3개의 카드만 노출</b>하도록 유지했습니다. 대신{' '}
+                        <b>실제 민팅 로직과 백엔드/컨트랙트는 5개 클래스를 처리</b>할 수 있도록 프론트·백 분리 설계로
+                        대응했습니다.
+                    </p>
+                    <p className="mt-2 text-gray-700">
+                        결과적으로 사용자는 복잡도가 낮은 동일한 인터랙션으로 민팅을 진행하면서도, 서비스는 확장된
+                        클래스 체계를 그대로 수용합니다. (카드 수 노출과 비즈니스 로직을 분리하여, 제품 출시 전후의 사양
+                        변경에도 <b>UI 안정성</b>과 <b>확장성</b>을 확보)
+                    </p>
                 </div>
 
                 <BeforeAfter
-                    before="/resume/IMG_3846.JPG"
-                    after="/resume/main.png"
-                    caption="주요 화면 전/후 비교"
+                    before="/resume/main_c.png"
+                    after="/resume/main_d.png"
+                    caption="메인 화면 — 정보 계층/대비/행동 유도 재정의"
                     comment={
                         <>
-                            <span>기존 카드 디자인에서 가독성 추가, ui디자인 추가 </span>
+                            <div>
+                                • <b>문제</b>: 전반적으로 낮은 대비, 탭/카드/CTA 위계 불명확 → 첫 행동 지점이 흐림
+                            </div>
+                            <div>
+                                • <b>개선</b>: 탭 하이라이트·섹션 헤더·카드 그림자/라운드 재설계, CTA 라인 높이/색
+                                일관화
+                            </div>
+                            <div>
+                                • <b>효과</b>: 첫 진입 시 흐름 파악 개선, 주요 버튼 주목도↑, 시각적 피로도↓
+                            </div>
                         </>
                     }
                 />
                 <BeforeAfter
-                    before="/resume/IMG_3851.PNG"
-                    after="/resume/selected_1.png"
-                    caption="nft 선택"
+                    before="/resume/modal_c.png"
+                    after="/resume/modal_d.png"
+                    caption="계급 구조 모달 — 과포화 색상 정리/가이드 강화"
                     comment={
                         <>
-                            <span>
-                                기존 카드 디자인에서 가독성 추가, ui디자인 추가, 클래스별 이해하기 힘들다. 각자 앞에
-                                상징색을 넣어 가독성 올림{' '}
-                            </span>
+                            <div>
+                                • <b>문제</b>: 네온톤 과다·포인트 난립으로 가독성 저하, 계층 구조 인지 어려움
+                            </div>
+                            <div>
+                                • <b>개선</b>: 섹션별 <b>얇은 상징색 라인</b>으로 레벨링, 본문은 중립 톤 유지, 호버
+                                아웃라인 통일
+                            </div>
+                            <div>
+                                • <b>효과</b>: 구조 파악 속도↑, 다크 테마 내 텍스트 대비/집중도↑
+                            </div>
                         </>
                     }
                 />
+                <div className="mb-3">
+                    <p>
+                        합성은 보유한 NFT 중 <b>동일 레벨 2장</b>을 선택해 <b>상위 레벨 1장</b>을 생성하는 흐름입니다.
+                        이때 오선택과 왕복 클릭을 줄이기 위해 <b>비선택 항목 제거 & 선택 항목 상단 고정</b>,{' '}
+                        <b>등급 컬러 라벨</b>,<b>상태 토큰화(기본/호버/선택/비활성)</b>를 일관 적용해{' '}
+                        <b>조건 충족 여부</b>가 즉시 보이도록 했습니다.
+                    </p>
+                    <p className="mt-2 text-gray-700">
+                        조건을 만족하지 못한 경우에는 토스트 대신 <b>전용 Empty/제약 안내</b> 뷰로{' '}
+                        <b>왜 진행이 불가한지</b>와<b>다음 행동(재선택)</b>을 명확히 제시하고, 조건을 충족하면{' '}
+                        <b>요약 정보(VP·레벨 정렬)</b>와 <b>활성화된 CTA</b>로 확정 단계까지의 인지·조작 비용을
+                        낮춥니다.
+                    </p>
+                </div>
+
                 <BeforeAfter
-                    before="/resume/IMG_3852.PNG"
-                    after="/resume/selected_nft.png"
-                    caption="nft 선택"
+                    before="/resume/card_c.png"
+                    after="/resume/card_d.png"
+                    caption="NFT 카드 — 가독성/정보 블록 분리"
                     comment={
                         <>
-                            <span>
-                                기존 같은 클래스가 아닌 경우 토스트 - 사용자 이해못함 스탭으로 직관적으로 보여줌.{' '}
-                            </span>
-                            <span>같으 ㄴ클래스만 강화가 된다는 안내가 따로 없으므로 ~ 두단계로 보옂줌</span>
+                            <div>
+                                • <b>문제</b>: 배경과 카드 톤이 비슷해 경계가 흐리고 텍스트 대비 부족
+                            </div>
+                            <div>
+                                • <b>개선</b>: 배경 톤 다운 + 카드 대비↑, 이미지/메타 영역 분리, 텍스트 대비/간격 재조정
+                            </div>
+                            <div>
+                                • <b>효과</b>: 리스트 스캔 속도↑, 카드별 핵심 정보 인지율↑
+                            </div>
                         </>
                     }
                 />
-                <BeforeAfter before="/resume/IMG_3849.JPG" after="/resume/select_com.png" caption="nft 선택 완료" />
+
                 <BeforeAfter
-                    before="/resume/IMG_3847.JPG"
-                    after="/resume/empty_box.png"
+                    before="/resume/select_c.png"
+                    after="/resume/select_b_d.png"
+                    caption="NFT 선택 리스트 — 등급 컬러 시스템/상태 구분"
                     comment={
                         <>
-                            <span>기존 뒷배경과 연한 카드 색으로 가독성 떨어짐</span>
+                            <div>
+                                • <b>문제</b>: 등급이 텍스트 중심이라 한눈 구분 어려움, 선택/호버/비활성 상태가 유사
+                            </div>
+                            <div>
+                                • <b>개선</b>: 등급별 <b>상징색 라벨, 호버시 상징색 보더</b> 적용,
+                                상태(기본/호버/선택/비활성) 토큰화
+                            </div>
+                            <div>
+                                • <b>효과</b>: 등급 인지 즉시성↑, 오동작/오선택 감소
+                            </div>
                         </>
                     }
                 />
+
                 <BeforeAfter
-                    before="/resume/IMG_3851.PNG"
-                    after="/resume/select_2.png"
-                    caption="nft 선택된 배열"
+                    before="/resume/select_none_c.png"
+                    after="/resume/select_none_d.png"
+                    caption="동일 레벨 없음 — 토스트 → 전용 가이드 화면"
                     comment={
                         <>
-                            <span>
-                                기존 선택 가능한 nft와 선택 불가능한 nft가 연하게 블러처리된 상황으로 가독성이 떨어져
-                                선택할 수 없는 nft는 배열에서 제외, 선택된 nft는 0번쨰 배열로 변경
-                            </span>
+                            <div>
+                                • <b>문제</b>: 토스트만으로 제약 전달 → 사용자가 왜 진행 불가인지 놓침
+                            </div>
+                            <div>
+                                • <b>개선</b>: <b>Empty/제약 안내</b> 전용 뷰 + 재선택 CTA 구성
+                            </div>
+                            <div>
+                                • <b>효과</b>: 실패 원인 명확화, 재시도 경로 단축
+                            </div>
                         </>
                     }
                 />
+
                 <BeforeAfter
-                    before="/resume/IMG_3855.JPG"
-                    after="/resume/modal.png"
-                    caption="클래스 랭크 모달"
+                    before="/resume/select_b_c.png"
+                    after="/resume/select_card_d.png"
+                    caption="선택/비선택 구분 — 비선택 제거 & 선택 고정"
                     comment={
                         <>
-                            <span>
-                                과한 컬러감과 모든 포인트로 인해 가독성 떨어짐. nft 리스트와 마찬가지로 상징 색 컬러를
-                                넣어 통일감, 가독성 올림, 마우스 호버시 보더 새엉
-                            </span>
+                            <div>
+                                • <b>문제</b>: ‘선택 불가’ 카드를 연하게만 표시해 리스트 가독성 저하
+                            </div>
+                            <div>
+                                • <b>개선</b>: 선택 불가 항목 <b>배열 제외</b>, 선택된 NFT는 리스트 상단(0번 인덱스)
+                                고정
+                            </div>
+                            <div>
+                                • <b>효과</b>: 유효 선택지 집중, 스크롤/탐색 비용↓
+                            </div>
+                        </>
+                    }
+                />
+
+                <BeforeAfter
+                    before="/resume/card_on_c.png"
+                    after="/resume/card_on_d.png"
+                    caption="2개 선택 완료 — 요약 정보/CTA 활성 상태 정비"
+                    comment={
+                        <>
+                            <div>
+                                • <b>문제</b>: 선택 완료 후 정보 배치가 들쭉날쭉, 버튼 활성 기준이 즉시 안 보임
+                            </div>
+                            <div>
+                                • <b>개선</b>: 두 카드의 <b>VP·레벨 정렬</b>, 활성/비활성 버튼 대비 및 카피 개선
+                            </div>
+                            <div>
+                                • <b>효과</b>: 완료 조건 인지↑, 불필요한 클릭/왕복 감소
+                            </div>
                         </>
                     }
                 />
@@ -389,44 +497,6 @@ export default function Resume() {
                         <li>
                             <strong className="font-semibold text-gray-900">안정성/사용성</strong>: 로딩·에러 상태
                             처리와 세부 인터랙션 튜닝으로 조작감과 체감 성능 개선.
-                        </li>
-                    </ol>
-                </div>
-
-                <div className="flex justify-center">
-                    {' '}
-                    <iframe
-                        src="https://dev-dao-api.unchainx.io/x-guardians/viewer/365"
-                        className="w-[560px] h-[700px] rounded-xl"
-                    />
-                    <ol className="list-disc pl-5 space-y-1 mb-4 text-[14px] w-1/3">
-                        <li>
-                            <strong>UX/UI & 컨셉</strong>: 컬러 시스템·레이아웃·상태 전환을 정비해 사용 흐름을
-                            단순화하고 브랜드 톤을 일관되게 적용.
-                        </li>
-                        <li>
-                            <strong>액션 시스템</strong>: 총 선택 후 슈팅/레이저건/도넛건/부스터/비행 등 액션 추가, 액션
-                            간 전환 플로우 설계.
-                        </li>
-                        <li>
-                            <strong>모션 디테일</strong>: 숨쉬기(Idle), 자동 회전, 마우스 드래그 회전 → 스프링 복귀 등
-                            자연스러운 상호작용 구현.
-                        </li>
-                        <li>
-                            <strong>오디오 연동</strong>: BGM·사운드 이펙트(총성 등) 추가 및 재생/음소거/볼륨 제어.
-                        </li>
-                        <li>
-                            <strong>파티클 이펙트</strong>: 크기·개수 랜덤 분포 기반 파티클 생성으로 장면 몰입감
-                            강화(퍼포먼스 고려한 스폰/소거 처리).
-                        </li>
-                        <li>
-                            <strong>캡처·강화·NFT 파이프라인</strong>: 캡처 후 백엔드 전송 및 강화→NFT 생성까지 연동.
-                            메타마스크 지갑 인증으로 본인 계정에 한해 캡처/NFT 생성 가능(해당 사이트는 정책상 캡처
-                            비활성).
-                        </li>
-                        <li>
-                            <strong>안정성/사용성</strong>: 로딩·에러 상태 처리와 세부 인터랙션 튜닝으로 조작감과 체감
-                            성능 개선.
                         </li>
                     </ol>
                 </div>

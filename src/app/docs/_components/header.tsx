@@ -3,6 +3,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import DocsSearchLight from './doc.search.light';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Header({
     setSidebarOpen,
@@ -73,12 +74,14 @@ export default function Header({
                         >
                             GitHub
                         </a>
-                        <button
-                            onClick={() => router.push('/resume')}
+                        <Link
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://www.notion.so/2851583f171480089ed0c43434f0529b?source=copy_link"
                             className="inline-flex items-center h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm"
                         >
                             Resume
-                        </button>
+                        </Link>
                     </div>
 
                     <button
