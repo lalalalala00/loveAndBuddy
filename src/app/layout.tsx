@@ -4,7 +4,7 @@ import './globals.css';
 import { UserStateProvider } from '@/context/useUserContext';
 
 import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+import '@/styles/vendor/react-resizable.css';
 
 export const metadata: Metadata = {
     title: 'soom',
