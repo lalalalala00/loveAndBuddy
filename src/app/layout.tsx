@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { UserStateProvider } from '@/context/useUserContext';
 
-import 'react-grid-layout/css/styles.css';
+import '@/styles/vendor/react-grid-layout.css';
 import '@/styles/vendor/react-resizable.css';
 
 export const metadata: Metadata = {

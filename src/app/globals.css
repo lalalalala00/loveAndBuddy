@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 @import 'tailwindcss';
 
@@ -36,21 +34,6 @@ body {
 
 button {
     cursor: pointer;
-}
-
-.cormorant-cormorant {
-    font-family: 'Cormorant', serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-}
-
-.roboto-roboto {
-    font-family: 'Roboto', sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-variation-settings: 'wdth' 100;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -231,118 +214,4 @@ matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */
     transition: none !important;
     width: auto !important;
     height: auto !important;
-}
-
-@keyframes heart-float {
-    0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100px) scale(1.8);
-        opacity: 0;
-    }
-}
-
-@keyframes heart-pop {
-    0% {
-        transform: scale(0.5);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1.4);
-        opacity: 0;
-    }
-}
-
-.heart-float {
-    animation: heart-float 1.2s ease-in-out forwards;
-}
-
-.heart-pop {
-    animation: heart-pop 0.7s ease-out forwards;
-}
-
-@keyframes floatUp {
-    0% {
-        transform: translateY(0) scale(0.8);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-80px) scale(1.2);
-        opacity: 0;
-    }
-}
-
-
-/* globals.css */
-@layer utilities {
-  .stamp-dots::after {
-    content: "";
-    position: absolute;
-    inset: -1px;                   /* 살짝 밖으로 빼서 더 자연스럽게 */
-    pointer-events: none;
-    --gap: 14px;                   /* 점 간격 조절 */
-    --dot: 2.5px;                  /* 점 반지름(대략) */
-    background:
-      radial-gradient(currentColor var(--dot), transparent calc(var(--dot) + 0.2px))
-        calc(var(--gap)/2) 2px / var(--gap) var(--gap) repeat-x,                 /* 위 */
-      radial-gradient(currentColor var(--dot), transparent calc(var(--dot) + 0.2px))
-        calc(var(--gap)/2) calc(100% - 2px) / var(--gap) var(--gap) repeat-x,   /* 아래 */
-      radial-gradient(currentColor var(--dot), transparent calc(var(--dot) + 0.2px))
-        2px calc(var(--gap)/2) / var(--gap) var(--gap) repeat-y,                 /* 왼쪽 */
-      radial-gradient(currentColor var(--dot), transparent calc(var(--dot) + 0.2px))
-        calc(100% - 2px) calc(var(--gap)/2) / var(--gap) var(--gap) repeat-y;    /* 오른쪽 */
-    color: rgba(0,0,0,.75);        /* 점선 색 */
-    border-radius: 1rem;           /* 카드 라운드와 맞춤 */
-  }
-}
-
-
-@layer components {
-  /* 카드 전체에 랜덤 회전/이동 적용 */
-  .collage-item {
-    transform: translate(var(--tx,0px), var(--ty,0px)) rotate(var(--rot,0deg));
-  }
-
-  /* 폴라로이드 프레임 */
-  .polaroid {
-    @apply absolute left-3 right-3 top-5 bottom-8
-           bg-white rounded-[12px] border border-[#e7e7e7]
-           shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden;
-  }
-
-  /* 상단 와시테이프 (색/각도는 변수로) */
-  .tape {
-    position: absolute;
-    left: 22px; right: 22px; top: -6px;
-    height: 18px;
-    background: var(--tape, #fde68a);
-    opacity: .85;
-    transform: rotate(var(--tape-rot, 0deg));
-    border-radius: 3px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
-    /* 종이 질감 느낌 */
-    background-image:
-      linear-gradient(transparent 0 40%, rgba(255,255,255,.35) 40% 55%, transparent 55%),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.35) 0 2px, transparent 2px 4px);
-    mix-blend-mode: multiply;
-  }
-
-  /* 이름 라벨 (하단 여백에) */
-  .name-tag {
-    @apply absolute left-4 right-12 bottom-2
-           text-[12px] font-medium text-gray-800 truncate;
-  }
-
-  /* 체크 배지 */
-  .badge {
-    @apply absolute right-2 bottom-2 w-7 h-7 rounded-full
-           flex items-center justify-center text-[12px] font-bold;
-  }
-  .badge-on  { @apply bg-emerald-500 text-white shadow; }
-  .badge-off { @apply bg-white/90 text-gray-500 border border-[#e3ecdc]; }
 }
