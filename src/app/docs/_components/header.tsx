@@ -49,7 +49,7 @@ export default function Header({
                         </svg>
                     </button>
                     <div className="flex items-center gap-2">
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200 shadow-inner">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl custom-card shadow-inner">
                             LB
                         </span>
                         <span className="font-semibold tracking-tight">soom — Docs</span>
@@ -67,7 +67,7 @@ export default function Header({
                             서비스 체험하기
                         </a>
                         <a
-                            href=""
+                            href="https://github.com/lalalalala00"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm"
@@ -100,7 +100,6 @@ export default function Header({
                         <span className="text-sm text-neutral-600 dark:text-neutral-300">검색 (⌘/Ctrl K)</span>
                     </button>
                     <DocsSearchLight open={searchOpen} onClose={() => setSearchOpen(false)} />
-                    <DarkToggle />
                 </div>
             </div>
         </header>
