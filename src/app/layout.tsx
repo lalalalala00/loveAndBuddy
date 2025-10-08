@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+
 import './globals.css';
 import { UserStateProvider } from '@/context/useUserContext';
-import MainLayout from '@/common/Layout';
+
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
 export const metadata: Metadata = {
     title: 'soom',
