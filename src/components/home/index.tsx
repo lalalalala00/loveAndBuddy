@@ -7,7 +7,7 @@ import Calendar from './calendar';
 
 import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+// import 'react-resizable/css/styles.css';
 
 import CommunityList from '../commu.list';
 import WriteIndex from '../commu.write.index';
