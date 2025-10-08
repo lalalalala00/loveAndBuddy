@@ -1,6 +1,6 @@
 'use client';
 
-import NameTag from '@/common/name.tag';
+import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 import SelectedPlace from '@/common/selected.place';
 import { useUserState } from '@/context/useUserContext';
 import { Filters } from '@/utils/date';
@@ -24,7 +24,7 @@ const WriteBuddy = () => {
     return (
         <div className="flex h-full justify-between items-center flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="flex items-center w-full rounded-t-2xl">
-                <NameTag find asap small user info={getUser} />
+                <NameTag find asap small user info={getUser as unknown as NameTagInfoMinimal} />
             </div>
             <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
             <div className="flex flex-col items-center w-full justify-between mt-6 h-[600px]">

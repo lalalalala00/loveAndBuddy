@@ -1,34 +1,58 @@
-import { Animal } from "@/utils/sign";
 
+import type { Animal as SignAnimal } from '@/utils/sign';
 
 export type Species = 'all' | 'dog' | 'cat' | 'others';
 
-export function mapToSpecies(animal_type: Animal['animal_type']): Exclude<Species, 'all'> {
+export function mapToSpecies(
+  animal_type: SignAnimal['animal_type']
+): Exclude<Species, 'all'> {
   return animal_type === 'dog' ? 'dog' : animal_type === 'cat' ? 'cat' : 'others';
 }
 
-export function filterBySpecies(rows: Animal[], species: Species) {
+export function filterBySpecies<T extends { animal_type: SignAnimal['animal_type'] }>(
+  rows: T[],
+  species: Species
+): T[] {
   if (species === 'all') return rows;
   return rows.filter((r) => mapToSpecies(r.animal_type) === species);
 }
 
-export type OwnerGroup = {
+export type OwnerGroup<T> = {
   owner_uuid: string;
   owner_nickname: string;
-  items: Animal[];
+  items: T[];
 };
 
-export function groupByOwner(rows: Animal[]): OwnerGroup[] {
-  const map: Record<string, OwnerGroup> = {};
+export type AnimalLite = Pick<
+  SignAnimal,
+  'owner_uuid' | 'owner_nickname' | 'animal_type' | 'animal_uuid' | 'name' | 'img'
+> & {
+  date?: string | null;       
+  start_time?: string | null; 
+};
+
+const toTs = (date?: string | null, time?: string | null) => {
+  if (!date) return 0;
+  const dt = time ? `${date}T${time}:00` : `${date}T00:00:00`;
+  const n = Date.parse(dt);
+  return Number.isFinite(n) ? n : 0;
+};
+
+export function groupByOwner<T extends AnimalLite>(rows: T[]): OwnerGroup<T>[] {
+  const map = new Map<string, OwnerGroup<T>>();
+
   for (const it of rows) {
-    if (!map[it.owner_uuid]) {
-      map[it.owner_uuid] = { owner_uuid: it.owner_uuid, owner_nickname: it.owner_nickname, items: [] };
-    }
-    map[it.owner_uuid].items.push(it);
+    if (!it.owner_uuid) continue; 
+    const g =
+      map.get(it.owner_uuid) ??
+      { owner_uuid: it.owner_uuid, owner_nickname: it.owner_nickname ?? '', items: [] };
+    g.items.push(it);
+    map.set(it.owner_uuid, g);
   }
 
-  Object.values(map).forEach((g) =>
-    g.items.sort((a, b) => (a.date + a.start_time).localeCompare(b.date + b.start_time))
-  );
-  return Object.values(map);
+  const groups = Array.from(map.values());
+  for (const g of groups) {
+    g.items.sort((a, b) => toTs(a.date, a.start_time) - toTs(b.date, b.start_time));
+  }
+  return groups;
 }

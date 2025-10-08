@@ -5,7 +5,7 @@ import Papa from 'papaparse';
 import SelectedBox from '@/common/selected.box';
 import SelectedBoxMulti from '@/common/selected.box.multi';
 
-type Option = { code: string; name: string };
+type Option = { code?: string; name: string };
 
 const CSV_PATH = '/lawd.csv';
 
@@ -299,7 +299,7 @@ export default function KoreaLocationSelector_GlobalQuickSearch({
                             {selected.map((d, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => removeDong(d.code)}
+                                    onClick={() => removeDong(d.name)}
                                     className="px-4 py-2 mr-1 rounded-full  
                                     bg-[#f3f7ee]
                                     shadow-[10px_10px_20px_rgba(163,177,138,0.25),_-10px_-10px_20px_rgba(255,255,255,0.9)]

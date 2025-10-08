@@ -33,7 +33,7 @@ export default function BuddyConnect({
     setSelectedClose,
     initialRoom,
 }: {
-    setSelectedClose?: (value: string) => void;
+    setSelectedClose?: ((value: string) => void) | undefined;
     initialRoom?: { roomId: string; partnerName: string };
 }) {
     const { getUser } = useUserState();
@@ -156,7 +156,7 @@ export default function BuddyConnect({
             <div className="w-full flex items-center py-2 px-3">
                 <div className="flex-1 flex justify-start">
                     <button
-                        onClick={() => setSelectedClose('toki')}
+                        onClick={() => setSelectedClose?.('toki')}
                         aria-label="닫기"
                         className="h-[14px] w-[14px] rounded-full bg-red-500 mr-2"
                     />
@@ -202,7 +202,7 @@ export default function BuddyConnect({
                     <div className="flex-1 p-2">
                         <BuddyMessageRoom
                             chatRoomId={activeRoomId}
-                            senderId={userId}
+                            senderId={userId || ''}
                             activePartnerName={activePartnerName}
                         />
                     </div>

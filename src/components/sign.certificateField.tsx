@@ -106,7 +106,7 @@ export default function CertificateField({
                 <div className="mt-1">
                     {file ? (
                         <div className="rounded-xl border border-[#e3ecdc] bg-white p-2">
-                            {isImg && (preview || (typeof window !== 'undefined' && URL.createObjectURL)) ? (
+                            {isImg && (preview || typeof window !== 'undefined') ? (
                                 <img
                                     src={preview}
                                     alt="certificate preview"

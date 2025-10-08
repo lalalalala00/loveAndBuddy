@@ -14,7 +14,7 @@ import SelectedPlace from '@/common/selected.place';
 import { CardOverviewRow } from './data/cards';
 import { supabase } from '@/lib/supabaseClient';
 import { DUMMY_CARDS } from './data/cards.others';
-import { buildDateLabel, Filters, inRange } from '@/utils/date';
+import { buildDateInfo, Filters, inRange } from '@/utils/date';
 import { DUMMY_LOVE_GROUPS } from './data/cards.love';
 import { LoveGroupCard } from '@/utils/sign';
 import { useUserState } from '@/context/useUserContext';
@@ -22,6 +22,7 @@ import LoveCollageFilter2 from '@/app/dearLove/_components/love.filter2';
 import { Option } from '@/common/selected.box';
 import { Chip } from '@/common/animal.card.select';
 import BuddyConnect from '@/components/buddy.connect';
+import { NameTagInfoMinimal } from '@/common/name.tag';
 
 // 주 시작(월요일)로 맞춘 at0
 const at0Local = (d: Date) => {
@@ -143,21 +144,15 @@ const Index = () => {
     }, []);
 
     const filtered = useMemo(() => {
-        const range = buildDateLabel(filters.dateKey, filters.dateFrom, filters.dateTo);
+        const { /* label: dateLabel, */ range } = buildDateInfo(filters.dateKey, filters.dateFrom, filters.dateTo);
 
-        const speciesOk = (it: CardOverviewRow) => {
-            if (filters.species === 'all') return true;
-            return it.animal_type === filters.species;
-        };
+        const speciesOk = (it: CardOverviewRow) =>
+            filters.species === 'all' ? true : it.animal_type === filters.species;
 
-        const genderOk = (it: CardOverviewRow) => {
-            if (!filters.genders.length) return true;
-            return filters.genders.includes((it.gender as any) || '');
-        };
+        const genderOk = (it: CardOverviewRow) =>
+            !filters.genders.length ? true : filters.genders.includes((it.gender as any) || '');
 
-        const dateOk = (it: CardOverviewRow) => (range ? inRange(it, range) : true);
-
-        const arr = list.filter(speciesOk).filter(genderOk).filter(dateOk);
+        const dateOk = (it: CardOverviewRow) => (range ? inRange(it, { start: +range.start, end: +range.end }) : true);
 
         const val = (it: CardOverviewRow) => {
             switch (filters.sortKey) {
@@ -174,8 +169,11 @@ const Index = () => {
             }
         };
 
-        arr.sort((a, b) => (filters.sortDir === 'asc' ? val(a) - val(b) : val(b) - val(a)));
-        return arr;
+        return [...list]
+            .filter(speciesOk)
+            .filter(genderOk)
+            .filter(dateOk)
+            .sort((a, b) => (filters.sortDir === 'asc' ? val(a) - val(b) : val(b) - val(a)));
     }, [list, filters]);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -184,10 +182,11 @@ const Index = () => {
         if (sp === 'all') return DUMMY_LOVE_GROUPS;
 
         const hasBy = {
-            dog: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type === 'dog'),
+            dog: (g: LoveGroupCard) => g?.animals?.some((a) => a.animal_type === 'dog'),
             cat: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type === 'cat'),
             others: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type !== 'dog' && a.animal_type !== 'cat'),
         } as const;
+        if (!hasBy) return;
 
         if (sp === 'dog') return DUMMY_LOVE_GROUPS.filter(hasBy.dog);
         if (sp === 'cat') return DUMMY_LOVE_GROUPS.filter(hasBy.cat);
@@ -201,6 +200,8 @@ const Index = () => {
     };
 
     const loveFilteredSoon = useMemo(() => {
+        if (!loveFiltered) return;
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const end = new Date(today);
@@ -214,7 +215,8 @@ const Index = () => {
     }, [loveFiltered]);
 
     const loveSorted = useMemo(() => {
-        const range = getRangeFromFilters(filters); // ← 여기서 날짜 범위 계산
+        if (!loveFiltered) return;
+        const range = getRangeFromFilters(filters);
         const parse = (s?: string) => {
             if (!s) return null;
             const [y, m, d] = s.split('-').map(Number);
@@ -354,10 +356,10 @@ const Index = () => {
                     <div className="h-[670px] overflow-y-scroll no-scrollbar">
                         {selectedType === 0 ? (
                             <div>
-                                {loveFilteredSoon.length ? (
+                                {loveFilteredSoon && loveFilteredSoon.length ? (
                                     loveFilteredSoon.map((item, i) => (
                                         <div key={i} className="mb-3 break-inside-avoid">
-                                            <AsapBoxLove list={item} />
+                                            <AsapBoxLove list={item as unknown as NameTagInfoMinimal} />
                                         </div>
                                     ))
                                 ) : (
@@ -379,7 +381,7 @@ const Index = () => {
                                         .map((item) => (
                                             <div key={item.user_id} className="break-inside-avoid mb-3 max-md:mr-2">
                                                 <CompactBuddyCard
-                                                    list={item}
+                                                    list={item as NameTagInfoMinimal}
                                                     selectedAnimals={selectedAnimals}
                                                     location={location}
                                                 />
@@ -399,11 +401,12 @@ const Index = () => {
                 </div>
                 {selectedType === 0 ? (
                     <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-2 max-md:w-full">
-                        {loveSorted.map((item, i) => (
-                            <div key={i} className="mb-3 break-inside-avoid">
-                                <LoveList list={item} onOpenChat={handleOpenChat} />
-                            </div>
-                        ))}
+                        {loveSorted &&
+                            loveSorted.map((item, i) => (
+                                <div key={i} className="mb-3 break-inside-avoid">
+                                    <LoveList list={item} onOpenChat={handleOpenChat} />
+                                </div>
+                            ))}
                     </div>
                 ) : (
                     <div className="w-3/4 columns-1 sm:columns-2 lg:columns-3 gap-x-4 max-md:w-full">
@@ -420,7 +423,7 @@ const Index = () => {
             </div>
             {onChat && (
                 <div className="fixed bottom-6 right-6 z-[80]">
-                    <BuddyConnect setSelectedClose={() => setOnChat(false)} initialRoom={chatInit ?? undefined} find />
+                    <BuddyConnect setSelectedClose={() => setOnChat(false)} initialRoom={chatInit ?? undefined} />
                 </div>
             )}
         </div>

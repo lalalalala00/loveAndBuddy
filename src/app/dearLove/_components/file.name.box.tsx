@@ -10,8 +10,10 @@ const FileNameBox = ({
     bgImg: string;
     textColor: string;
     dearLove: DearLove;
-    currentBuddy: BuddyLite;
+    currentBuddy: BuddyLite | null;
 }) => {
+    const ts = dearLove.date_at ? Date.parse(dearLove.date_at) : undefined;
+
     return (
         <div
             className="relative flex flex-col justify-between p-4 rounded-xl shadow-inner h-[260px] border-2 border-gray-300 "
@@ -23,14 +25,14 @@ const FileNameBox = ({
                     className="text-[20px] font-semibold tracking-wide uppercase leading-2"
                     style={{ color: textColor ? textColor : '#222' }}
                 >
-                    {dearLove?.weather}
+                    {weather.map((item) => (item.value === dearLove.weather ? item.label : ''))} {dearLove?.weather}
                 </span>
                 <div className="flex items-end">
                     <h4 className="text-2xl font-bold" style={{ color: textColor ? textColor : '#101828' }}>
-                        {getWeekdayEnCap(dearLove?.date_at)}
+                        {getWeekdayEnCap(dearLove?.date_at || '')}
                     </h4>
                     <span className="ml-2 text-sm" style={{ color: textColor ? textColor : '#111' }}>
-                        ⪩{formatDate(dearLove?.date_at)}⪨
+                        ⪩{formatDate(dearLove?.date_at ? Date.parse(dearLove.date_at) : undefined)}⪨
                     </span>
                 </div>
 
@@ -60,6 +62,7 @@ const weather = [
     { label: '☃︎❄☃', value: 'snow' },
     { label: '☁︎᭝☁︎', value: 'cloud' },
     { label: '*☂︎*̣̩⋆', value: 'rain' },
+    { label: '☁ミ༄', value: 'wind' },
     { label: '˗ˋˏϟˎˊ˗', value: 'thunder' },
 ];
 

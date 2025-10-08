@@ -21,7 +21,6 @@ export function Section({ id, title, children }: { id: string; title: string; ch
                     className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
                     aria-label="Copy link"
                     onClick={(e) => {
-                        e.prevent();
                         navigator.clipboard.writeText(location.origin + location.pathname + `#${id}`);
                     }}
                 >

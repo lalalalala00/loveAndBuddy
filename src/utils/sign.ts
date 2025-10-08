@@ -7,13 +7,16 @@ export type Certificate = {
   issuer: string;        // 발급기관
   acquired_at: string;   // 취득일 (YYYY-MM-DD)
   url?: string | null;   // 증빙 URL(선택)
-  cert:string[]
+  cert:string[];
+  id?:string;
+  file?: string | File | any;
 };
 
-export type AnimalType = 'dog' | 'cat' | 'others'
+export type AnimalType = 'dog' | 'cat' | 'others' | 'rabbit' | 'ferret' | 'bird' | 'raccoon' | 'hamster'
 export type Personality = 'introvert' | 'extrovert';
 
 export type Animal = {
+    animalId: string;
   owner_nickname?: string;
     name: string;
     birth_year: number; 
@@ -54,18 +57,18 @@ export const EMPTY_ANIMAL: Animal = {
   name: "",
   birth_year: 2012,
 
-  animal_type: "dog",   
+  animal_type: "dog",
   variety: "",
   color: "",
-    personality: "introvert" ,
-    level: '0',    
+  personality: "introvert",
+  level: '0',
   comment: "",
   img: "",
   first: true,
 
   animal_uuid: "",
   owner_uuid: "",
-
+  animalId: ""
 };
 
 

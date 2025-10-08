@@ -29,7 +29,7 @@ const SelectedPlace = ({ setLocation }: { setLocation: Dispatch<SetStateAction<O
                         <button
                             key={item.code}
                             className="px-4 py-2 mr-3 rounded-full btn-card text-[13px] bg-white border-2 cursor-pointer"
-                            onClick={() => removeDong(item.code)}
+                            onClick={() => removeDong(item.name)}
                         >
                             {item.name} <span className="text-[12px] font-semibold ml-2"> ✕</span>
                         </button>

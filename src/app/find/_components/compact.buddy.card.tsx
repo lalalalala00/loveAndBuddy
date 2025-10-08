@@ -1,11 +1,11 @@
-import NameTag from '@/common/name.tag';
+import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 import { useState } from 'react';
 import { CardOverviewRow } from './data/cards';
 import BookingModal from './booking.modal';
 import { Option } from '@/common/selected.box';
 import { SelectedAnimals } from '@/utils/data';
 
-type Props = { list: CardOverviewRow; selectedAnimals: SelectedAnimals[]; location: Option[] };
+type Props = { list: NameTagInfoMinimal; selectedAnimals: SelectedAnimals[]; location: Option[] };
 
 const CompactBuddyCard = ({ list, selectedAnimals, location }: Props) => {
     const [checkModal, setCheckModal] = useState<boolean>(false);

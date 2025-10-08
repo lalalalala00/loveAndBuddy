@@ -66,13 +66,15 @@ export function useDearLoveIndex(
         setCurrentIndex(0);
     }, [sortedDearLoves.length]);
 
-    useEffect(() => {
-        if (!uniqueBuddyIds.length) return;
-        const cleanup = prefetch(uniqueBuddyIds);
-        return () => {
-            if (typeof cleanup === 'function') cleanup();
-        };
-    }, [uniqueBuddyIds, prefetch]);
+    // useEffect(() => {
+    //     if (!uniqueBuddyIds.length) return;
+    //     const cleanup = prefetch(uniqueBuddyIds);
+    //     return () => {
+    //         if (typeof cleanup === 'function') cleanup();
+    //     };
+    // }, [uniqueBuddyIds, prefetch]);
+
+    
 
     useEffect(() => {
         let alive = true;

@@ -15,11 +15,12 @@ import ModalIos from '@/common/modal.ios';
 import { useDearLoveIndex } from '@/hooks/useDearLove';
 import EmptyMonthCollage from './empty.state2';
 import { formatStamp } from '@/utils/date';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useClearQuery } from '@/hooks/useClearQuery';
 import React from 'react';
 
 export default function NewLayout() {
+    const router = useRouter();
     const { animals, dearLoves = [], getUser } = useUserState();
     const clearQuery = useClearQuery();
     const searchParams = useSearchParams();
@@ -132,8 +133,20 @@ export default function NewLayout() {
 
     return (
         <div className="min-h-screen w-full text-gray-800 relative">
-            <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] max-md:text-[13px] font-semibold text-[#5b7551] tracking-tight">
-                -`♥´- dear.love_〘 {getUser ? animals.map((a) => a.name).join(', ') : '???'} 〙 -`♥´-
+            <div className="relative">
+                <div className="text-center px-6 py-4 bg-[#f3f7ee] rounded-t-2xl border-b border-[#e3ecdc] text-[15px] max-md:text-[13px] font-semibold text-[#5b7551] tracking-tight">
+                    -`♥´- dear.love_〘 {getUser ? animals.map((a) => a.name).join(', ') : '???'} 〙 -`♥´-
+                </div>
+                {getUser && (
+                    <div className="absolute top-1/2 right-5 -translate-y-1/2 max-md:top-0">
+                        <button
+                            className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                            onClick={() => router.push('/find/write/love')}
+                        >
+                            디얼러브 등록
+                        </button>
+                    </div>
+                )}
             </div>
 
             <DateSelected setSelectedDate={setSelectedDate} />

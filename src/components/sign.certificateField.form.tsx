@@ -3,12 +3,17 @@
 import { Certificate } from '@/utils/sign';
 import React, { useEffect } from 'react';
 
-export type CertificateFormItem = Certificate & {
-    file?: File | null; // 업로드 전 실제 파일
-    preview?: string; // blob URL (이미지/문서 미리보기)
-    file_mime?: string; // 파일 MIME
-    file_name?: string; // 파일명
-    file_size?: number; // 바이트
+export type CertificateFormItem = Partial<Omit<Certificate, 'name' | 'issuer' | 'acquired_at' | 'url'>> & {
+    name: string;
+    issuer: string;
+    acquired_at: string;
+    url: string;
+
+    file?: File | null;
+    preview?: string;
+    file_mime?: string;
+    file_name?: string;
+    file_size?: number;
 };
 
 type Props = {

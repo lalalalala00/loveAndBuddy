@@ -4,7 +4,7 @@ import AnimalsForm, { defaultAnimal } from './sign.animals.form';
 import { useEffect, useState } from 'react';
 
 import Tooltip from '@/common/tooltip';
-import CertificatesForm from './sign.certificateField.form';
+import CertificatesForm, { CertificateFormItem } from './sign.certificateField.form';
 import { Animal, Certificate } from '@/utils/sign';
 import { supabase } from '@/lib/supabaseClient';
 import { getDecadeLabel } from '@/utils/date';
@@ -25,7 +25,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
     const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
 
-    const [certs, setCerts] = useState<Certificate[]>([]);
+    const [certs, setCerts] = useState<CertificateFormItem[]>([]);
 
     const [name, setName] = useState('');
 
@@ -65,31 +65,31 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
     const _lov = getUser?.type === 'love' || getUser?.type === 'lovuddy';
     const _buddy = getUser?.type === 'buddy' || getUser?.type === 'lovuddy';
 
-    const handleDelete = (id: string) => {
-        if (draftAnimals.length === 0) return;
+    // const handleDelete = (id: string) => {
+    //     if (draftAnimals.length === 0) return;
 
-        setDraftAnimals((prev) => {
-            if (prev.length <= 1) return prev;
+    //     setDraftAnimals((prev) => {
+    //         if (prev.length <= 1) return prev;
 
-            const wasOwner = prev.find((a) => a.animalId === id)?.owner;
-            const next = prev.filter((a) => a.animalId !== id);
+    //         const wasOwner = prev.find((a) => a.animalId === id)?.owner;
+    //         const next = prev.filter((a) => a.animalId !== id);
 
-            if (next.length === 1) {
-                if (!next[0].owner) next[0] = { ...next[0], owner: true };
-                return next;
-            }
+    //         if (next.length === 1) {
+    //             if (!next[0].owner) next[0] = { ...next[0], owner: true };
+    //             return next;
+    //         }
 
-            if (wasOwner || !next.some((a) => a.owner)) {
-                next[0] = { ...next[0], owner: true };
+    //         if (wasOwner || !next.some((a) => a.owner)) {
+    //             next[0] = { ...next[0], owner: true };
 
-                for (let i = 1; i < next.length; i++) {
-                    if (next[i].owner) next[i] = { ...next[i], owner: false };
-                }
-            }
+    //             for (let i = 1; i < next.length; i++) {
+    //                 if (next[i].owner) next[i] = { ...next[i], owner: false };
+    //             }
+    //         }
 
-            return next;
-        });
-    };
+    //         return next;
+    //     });
+    // };
 
     async function uploadAvatarAndGetUrl(userId: string): Promise<string | null> {
         if (!profileFile) return getUser?.avatar_url || null;
@@ -328,7 +328,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                                     <p className="text-[12px] text-gray-600">
                                         연령대 :{' '}
                                         <span className="font-medium text-gray-800">
-                                            {getDecadeLabel(getUser?.birth_year)}
+                                            {getDecadeLabel(getUser?.user_birth_year)}
                                         </span>
                                     </p>
                                 </div>

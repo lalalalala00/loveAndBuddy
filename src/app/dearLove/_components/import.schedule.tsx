@@ -229,7 +229,7 @@ const ImportSchedule = () => {
 const picks = [
     {
         id: 'p1',
-        animals: [{ id: 'a1', name: '샤넬', img: '/cha/1_2.png' }],
+        animals: [{ animal_uuid: 'a1', name: '샤넬', img: '/cha/1_2.png' }],
         buddyName: '원썬한태양',
         neighborhood: '성수동',
         place: '서울숲',

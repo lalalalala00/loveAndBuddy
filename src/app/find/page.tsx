@@ -1,5 +1,10 @@
-import Index from "./_components";
+import { Suspense } from 'react';
+import Index from './_components';
 
 export default function Page(): React.ReactNode {
-  return <Index />;
+    return (
+        <Suspense>
+            <Index />
+        </Suspense>
+    );
 }

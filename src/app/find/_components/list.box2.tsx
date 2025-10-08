@@ -1,7 +1,7 @@
 'use client';
 
 import WeeklyCalendarCard from './weekly.calendar.card';
-import NameTag from '@/common/name.tag';
+import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 import BookingModal from './booking.modal';
 import { CardOverviewRow } from './data/cards';
 import { Certificate } from '@/utils/sign';
@@ -35,7 +35,7 @@ export default function ListBox2({ list, selectedAnimals, location }: Props) {
         <div className="rounded-2xl w-full h-auto shadow">
             <div className="mb-3 rounded-2xl w-full h-auto shadow">
                 <div className="flex flex-col items-center bg-[rgb(246,246,246)] border-b border-[rgb(227,227,227)] rounded-t-2xl">
-                    <NameTag imgCss="w-[60px] h-[60px]" find info={list} />
+                    <NameTag imgCss="w-[60px] h-[60px]" find info={list as NameTagInfoMinimal} />
                 </div>
 
                 <div className="p-2 flex flex-col justify-between gap-2 min-h-[245px] overflow-visible">
@@ -82,10 +82,11 @@ export default function ListBox2({ list, selectedAnimals, location }: Props) {
                 }}
                 infoData={infoData}
                 setInfoData={setInfoData}
-                list={list}
+                list={list as NameTagInfoMinimal}
                 selectedDT={selectedDT}
                 selectedAnimals={selectedAnimals}
                 location={location}
+                modal={false}
             />
         </div>
     );

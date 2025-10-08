@@ -8,6 +8,7 @@ export type User = {
     type: Role | null;
     user_birth_year: string;
     user_comment: string;
+    id?:string
 };
 
 export const EMPTY_USER: User = {

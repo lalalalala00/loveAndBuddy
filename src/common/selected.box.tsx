@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export type Option = { code: string; name: string };
+export type Option = { code?: string; name: string };
 
 type Props = {
     comment: string;

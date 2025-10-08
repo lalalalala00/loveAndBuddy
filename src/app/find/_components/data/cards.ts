@@ -21,7 +21,7 @@ export type CardOverviewRow = {
   animals_count: number;
   certificates_count: number;
   bookings_this_week: number;
-  certificates_preview: Certificate
+  certificates_preview: Certificate[]
 };
 
 export type CardDetailRow = {

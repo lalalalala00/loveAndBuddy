@@ -1,8 +1,23 @@
+type Picks = {
+    id: string;
+    animals: {
+        animal_uuid: string;
+        name: string;
+        img: string;
+    }[];
+    buddyName: string;
+    neighborhood: string;
+    place: string;
+    date: string;
+    timeStart: string;
+    timeEnd: string;
+};
+
 export function ScheduleImportModal({
     items,
     onImport,
 }: {
-    items?: SchedulePick[];
+    items?: Picks[];
     onImport: (v: {
         date?: string;
         timeStart?: string;

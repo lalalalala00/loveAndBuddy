@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import AnimalsForm from './sign.animals.form';
-import CertificatesForm from './sign.certificateField.form';
+import CertificatesForm, { CertificateFormItem } from './sign.certificateField.form';
 import Tooltip from '@/common/tooltip';
 import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal, Certificate } from '@/utils/sign';
 
@@ -21,7 +21,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
     const [success, setSuccess] = useState<boolean>(false);
 
     const [animalsForm, setAnimalsForm] = useState<Animal[]>([EMPTY_ANIMAL]);
-    const [certs, setCerts] = useState<Certificate[]>([]);
+    const [certs, setCerts] = useState<CertificateFormItem[]>([]);
 
     const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
@@ -36,7 +36,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         if (isLove || isLovuddy) {
             const firstAnimal = animalsForm[0];
             if (!firstAnimal) return false;
-            return !!firstAnimal.name && !!firstAnimal.birth_year && !!firstAnimal.type;
+            return !!firstAnimal.name && !!firstAnimal.birth_year && !!firstAnimal.animal_type;
         }
         return true;
     }, [v.email, v.password, v.name, v.type, animalsForm, isLove, isLovuddy]);
@@ -148,7 +148,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                     name: v.name,
                     type: v.type, // 'love' | 'buddy' | 'lovuddy'
                     avatar_url: avatarUrl ?? '',
-                    birth_year: v.user_birth_year ? Number(v.user_birth_year) : null,
+                    birth_year: v.birth_year ? Number(v.birth_year) : null,
                     user_comment: v.user_comment ?? '',
                     animals: animalsPayload,
                     certs: certsPayload,

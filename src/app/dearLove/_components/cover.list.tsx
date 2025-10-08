@@ -81,6 +81,8 @@ export default function CoverList({
                 {filtered.reverse().map((c, idx) => {
                     const isSelectedCover = c.id === currentDearId;
                     const isSameBuddy = c.buddy_user_id === currentBuddyId;
+                    const ts = c.date_at ? Date.parse(c.date_at) : undefined;
+
                     return (
                         <button
                             onClick={() => handleCoverClick(c.buddy_user_id, c)}
@@ -98,7 +100,7 @@ export default function CoverList({
                                 ].join(' ')}
                             />
                             <img
-                                src={c.representative_img}
+                                src={c.representative_img || undefined}
                                 alt="cover"
                                 className={`w-full h-[130px] rounded-xl object-cover border border-[#dfe9d7] shadow-[2px_4px_10px_#eaf3e2,-2px_-2px_8px_#ffffff] transition group-hover:-translate-y-0.5 ${c.buddy_user_id === currentBuddyId ? ' border-gray-200 border-4' : ''}`}
                                 loading="lazy"
@@ -109,7 +111,9 @@ export default function CoverList({
                                 <div className="text-[12px] font-semibold">
                                     Buddy_ᬏ᭄꙳⸌ {resolveBuddyName(c.buddy_user_id)}
                                 </div>
-                                <div className="text-[12px] font-semibold">{formatDate(c.date_at)}</div>
+                                <div className="text-[12px] font-semibold">
+                                    {formatDate(Number.isFinite(ts) ? ts : undefined)}
+                                </div>
                             </div>
                         </button>
                     );

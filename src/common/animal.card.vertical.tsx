@@ -43,7 +43,7 @@ export default function AnimalCardVertical({
 
                             <div className="absolute top-27 left-1/2 -translate-x-1/2">
                                 <span className="rounded-xl px-2 py-0.5 text-[10px] bg-white shadow">
-                                    {item.type === 'dog' ? '🐶' : '🐱'}
+                                    {item.animal_type === 'dog' ? '🐶' : '🐱'}
                                 </span>
                             </div>
 

@@ -6,20 +6,24 @@ const PhotoModal = ({
     selectedIndex,
 }: {
     handleModalState: () => void;
-    images: string[];
+    images: string[] | undefined;
     selectedIndex: number | null;
 }) => {
     if (!selectedIndex) return;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [currentIndex, setCurrentIndex] = useState<number>(selectedIndex);
 
     const prevImage = () => {
+        if (!images) return;
         setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
 
     const nextImage = () => {
+        if (!images) return;
         setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
 
+    if (!images) return;
     return (
         <div className="">
             <div className="relative overflow-hidden">

@@ -296,10 +296,10 @@ const Calendar = ({
                         <CalendarSideContent
                             item={selectedDay}
                             dayContents={dayContents}
-                            calSize={calSize}
+                            calSize={calSize || false}
                             resolveBuddyName={(id) => (id && buddyCache[id]?.name) || (id ? 'Buddy' : '')}
                             buddyAvatar={
-                                buddyCache[selectedDay?.reservation?.[0]?.buddy_user_id]?.avatar_url?.trim() ||
+                                buddyCache[selectedDay?.reservation?.[0]?.buddy_user_id || '']?.avatar_url?.trim() ||
                                 '/buddy/buddy_1.png'
                             }
                         />

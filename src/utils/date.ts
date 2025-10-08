@@ -52,39 +52,49 @@ export const getUpcomingWeekend = (now = new Date()) => {
     sun.setDate(sat.getDate() + 1);
     return { start: sat, end: sun };
 };
+type DateRange = { start: Date; end: Date };
 
-export const buildDateLabel = (key: Filters['dateKey'], from?: string, to?: string) => {
-    const now = new Date();
-    switch (key) {
-        case 'today':
-            return `오늘 (${fmt(at0(now))})`;
-        case 'tomorrow': {
-            const t = at0(now);
-            t.setDate(t.getDate() + 1);
-            return `내일 (${fmt(t)})`;
-        }
-        case 'weekend': {
-            const r = getUpcomingWeekend(now);
-            return `이번 주말 (${fmtRange(r.start, r.end)})`;
-        }
-        case 'thisweek': {
-            const r = getThisWeekRange(now);
-            return `이번 주 (${fmtRange(r.start, r.end)})`;
-        }
-        case 'custom': {
-            if (!from || !to) return '날짜';
-            const s = new Date(from),
-                e = new Date(to);
-            return `${fmtRange(s, e)}`;
-        }
-        case 'none': {
-            const t = at0(now);
-            return `전체 (${t.getMonth() + 1}월)`;
-        }
-        default:
-            return '날짜';
+export function buildDateInfo(
+  key: Filters['dateKey'],
+  from?: string,
+  to?: string
+): { label: string; range?: DateRange } {
+  const now = new Date();
+
+  switch (key) {
+    case 'today': {
+      const start = at0(now);
+      const end = new Date(start); end.setDate(end.getDate() + 1); end.setMilliseconds(-1);
+      return { label: `오늘 (${fmt(start)})`, range: { start, end } };
     }
-};
+    case 'tomorrow': {
+      const start = at0(now); start.setDate(start.getDate() + 1);
+      const end = new Date(start); end.setDate(end.getDate() + 1); end.setMilliseconds(-1);
+      return { label: `내일 (${fmt(start)})`, range: { start, end } };
+    }
+    case 'weekend': {
+      const r = getUpcomingWeekend(now);        // {start, end} 가정
+      return { label: `이번 주말 (${fmtRange(r.start, r.end)})`, range: r };
+    }
+    case 'thisweek': {
+      const r = getThisWeekRange(now);          // {start, end} 가정
+      return { label: `이번 주 (${fmtRange(r.start, r.end)})`, range: r };
+    }
+    case 'custom': {
+      if (!from || !to) return { label: '날짜' };
+      const start = at0(new Date(from));
+      const end = at0(new Date(to)); end.setDate(end.getDate() + 1); end.setMilliseconds(-1);
+      return { label: fmtRange(start, end), range: { start, end } };
+    }
+    case 'none': {
+      const t = at0(now);
+      return { label: `전체 (${t.getMonth() + 1}월)`, range: undefined };
+    }
+    default:
+      return { label: '날짜' };
+  }
+}
+
 
 export const formatDateLongEn = (dateStr?: string) => {
     if (!dateStr) return '';

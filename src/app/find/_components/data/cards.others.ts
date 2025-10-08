@@ -26,7 +26,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "고양이 반려경험 14년",
         "issuer": "펫시터 전문가 교육",
         "cert": ["수의간호 교원자격증", "애완동물관리 직무능력 인증서"],
-        "acquired": "2025-09-01"
+        "acquired_at": "2025-09-01"
       }
     ]
   },
@@ -55,7 +55,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려견 행동교정 수료",
         "issuer": "도그케어 아카데미",
         "cert": ["반려동물관리사 2급"],
-        "acquired": "2024-05-12"
+        "acquired_at": "2024-05-12"
       }
     ]
   },
@@ -84,7 +84,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "고양이 전문 케어 인증",
         "issuer": "캣케어 스쿨",
         "cert": ["고양이 위생관리 이수"],
-        "acquired": "2023-11-03"
+        "acquired_at": "2023-11-03"
       }
     ]
   },
@@ -113,7 +113,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려견 핸들링 실습 인증",
         "issuer": "케이페어 반려동물 교육원",
         "cert": ["반려견 응급처치 교육"],
-        "acquired": "2024-08-20"
+        "acquired_at": "2024-08-20"
       }
     ]
   },
@@ -142,7 +142,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "노령묘 케어 인증",
         "issuer": "펫케어 연구소",
         "cert": ["반려동물 간호보조", "응급처치 기본"],
-        "acquired": "2025-01-10"
+        "acquired_at": "2025-01-10"
       }
     ]
   },
@@ -171,7 +171,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려묘 행동 이해",
         "issuer": "캣마스터 클래스",
         "cert": ["펫시팅 기본"],
-        "acquired": "2024-02-18"
+        "acquired_at": "2024-02-18"
       }
     ]
   },
@@ -200,7 +200,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려동물 케어 기초",
         "issuer": "펫케어 스쿨",
         "cert": ["반려동물 보호자 교육"],
-        "acquired": "2023-09-10"
+        "acquired_at": "2023-09-10"
       }
     ]
   },
@@ -229,7 +229,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "응급처치 실무",
         "issuer": "펫응급협회",
         "cert": ["반려견 응급처치 기초"],
-        "acquired": "2024-06-05"
+        "acquired_at": "2024-06-05"
       }
     ]
   },
@@ -258,7 +258,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "고양이 스트레스 관리",
         "issuer": "펫마음 연구소",
         "cert": ["환경풍부화 과정"],
-        "acquired": "2023-12-22"
+        "acquired_at": "2023-12-22"
       }
     ]
   },
@@ -287,7 +287,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려묘 놀이 실습",
         "issuer": "캣플레이 센터",
         "cert": ["놀이치료 기초"],
-        "acquired": "2024-03-14"
+        "acquired_at": "2024-03-14"
       }
     ]
   },
@@ -316,7 +316,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "기본 핸들링",
         "issuer": "펫케어 스튜디오",
         "cert": ["그루밍 기초"],
-        "acquired": "2024-04-09"
+        "acquired_at": "2024-04-09"
       }
     ]
   },
@@ -345,7 +345,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "행동 시그널 이해",
         "issuer": "애니멀 커뮤니케이션랩",
         "cert": ["바디랭귀지 기초"],
-        "acquired": "2023-10-02"
+        "acquired_at": "2023-10-02"
       }
     ]
   },
@@ -374,7 +374,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려견 산책 리드",
         "issuer": "워크위드독",
         "cert": ["리드워크 기본"],
-        "acquired": "2024-01-25"
+        "acquired_at": "2024-01-25"
       }
     ]
   },
@@ -403,7 +403,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "반려초보 가이드",
         "issuer": "펫퍼스트",
         "cert": ["환경 셋업 교육", "루틴 설계 자격증"],
-        "acquired": "2024-07-07"
+        "acquired_at": "2024-07-07"
       }
     ]
   },
@@ -432,7 +432,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "'분리불안 이해' 저자",
         "issuer": "펫마음 연구소",
         "cert": ["기본 안정화 훈련 자격증"],
-        "acquired": "2023-08-19"
+        "acquired_at": "2023-08-19"
       }
     ]
   },
@@ -461,7 +461,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "환경 풍부화 설계",
         "issuer": "캣인테리어랩",
         "cert": ["은신처/동선 설계"],
-        "acquired": "2024-02-28"
+        "acquired_at": "2024-02-28"
       }
     ]
   },
@@ -490,7 +490,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "하이에너지 케어",
         "issuer": "도그피트니스 센터",
         "cert": ["놀이/운동 코칭"],
-        "acquired": "2024-09-03"
+        "acquired_at": "2024-09-03"
       }
     ]
   },
@@ -519,7 +519,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "투약 보조 실습",
         "issuer": "펫케어 연구소",
         "cert": ["정확 투약 가이드"],
-        "acquired": "2025-02-11"
+        "acquired_at": "2025-02-11"
       }
     ]
   },
@@ -548,7 +548,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "긍정강화 놀이",
         "issuer": "캣행동 스쿨",
         "cert": ["보상 스케줄 설계"],
-        "acquired": "2023-07-16"
+        "acquired_at": "2023-07-16"
       }
     ]
   },
@@ -577,7 +577,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "환경 적응 코칭",
         "issuer": "애니멀 어댑트랩",
         "cert": ["적응 로드맵 설계"],
-        "acquired": "2024-10-08"
+        "acquired_at": "2024-10-08"
       }
     ]
   },
@@ -606,7 +606,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "그루밍 케어",
         "issuer": "펫그루밍 협회",
         "cert": ["브러싱/발톱 기초"],
-        "acquired": "2024-05-30"
+        "acquired_at": "2024-05-30"
       }
     ]
   },
@@ -635,7 +635,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "초보 집사 가이드",
         "issuer": "펫스타터",
         "cert": ["첫 만남 준비"],
-        "acquired": "2023-06-11"
+        "acquired_at": "2023-06-11"
       }
     ]
   },
@@ -664,7 +664,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "환경 도구 적응",
         "issuer": "캣케어 스튜디오",
         "cert": ["스크래처 교육"],
-        "acquired": "2023-05-02"
+        "acquired_at": "2023-05-02"
       }
     ]
   },
@@ -693,7 +693,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "성향 맞춤 케어",
         "issuer": "펫커스터마이즈",
         "cert": ["행동 관찰 실습"],
-        "acquired": "2024-11-19"
+        "acquired_at": "2024-11-19"
       }
     ]
   },
@@ -722,7 +722,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "대형묘 핸들링",
         "issuer": "캣핸들링 랩",
         "cert": ["안전 핸들링"],
-        "acquired": "2024-12-03"
+        "acquired_at": "2024-12-03"
       }
     ]
   },
@@ -751,7 +751,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "두려움 완화",
         "issuer": "애니멀 마인드랩",
         "cert": ["탈감작 트레이닝"],
-        "acquired": "2024-09-27"
+        "acquired_at": "2024-09-27"
       }
     ]
   },
@@ -780,7 +780,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "영양 기초",
         "issuer": "펫뉴트리션",
         "cert": ["급여 가이드"],
-        "acquired": "2023-09-21"
+        "acquired_at": "2023-09-21"
       }
     ]
   },
@@ -809,7 +809,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "관찰형 케어",
         "issuer": "펫옵저브",
         "cert": ["행동 기록법"],
-        "acquired": "2024-04-15"
+        "acquired_at": "2024-04-15"
       }
     ]
   },
@@ -838,7 +838,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "첫만남 케어",
         "issuer": "입양 컴패니언",
         "cert": ["적응 스텝"],
-        "acquired": "2024-06-01"
+        "acquired_at": "2024-06-01"
       }
     ]
   },
@@ -867,7 +867,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "안전 급여 가이드",
         "issuer": "펫세이프",
         "cert": ["허용 식물 교육 자격증"],
-        "acquired": "2023-03-18"
+        "acquired_at": "2023-03-18"
       }
     ]
   },
@@ -896,7 +896,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "계절 케어",
         "issuer": "시즌펫",
         "cert": ["온열/한랭 대처 자격증"],
-        "acquired": "2024-07-02"
+        "acquired_at": "2024-07-02"
       }
     ]
   },
@@ -925,7 +925,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "보온 관리",
         "issuer": "윈터펫",
         "cert": ["보온 아이템 가이드"],
-        "acquired": "2023-12-01"
+        "acquired_at": "2023-12-01"
       }
     ]
   },
@@ -954,7 +954,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "하네스 적응",
         "issuer": "캣워크스쿨",
         "cert": ["외출 준비"],
-        "acquired": "2023-09-14"
+        "acquired_at": "2023-09-14"
       }
     ]
   },
@@ -983,7 +983,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "샤이캣 케어",
         "issuer": "소프트핸즈",
         "cert": ["저자극 접근"],
-        "acquired": "2024-08-08"
+        "acquired_at": "2024-08-08"
       }
     ]
   },
@@ -1012,7 +1012,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "수면 루틴",
         "issuer": "슬립펫",
         "cert": ["야뇨 대응"],
-        "acquired": "2024-01-19"
+        "acquired_at": "2024-01-19"
       }
     ]
   },
@@ -1041,7 +1041,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "다두 케어",
         "issuer": "멀티펫 연구소",
         "cert": ["갈등 완화"],
-        "acquired": "2025-03-05"
+        "acquired_at": "2025-03-05"
       }
     ]
   },
@@ -1071,7 +1071,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "보이스 케어",
         "issuer": "캄펫",
         "cert": ["차분 유도"],
-        "acquired": "2023-04-04"
+        "acquired_at": "2023-04-04"
       }
     ]
   },
@@ -1100,7 +1100,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "야간 루틴",
         "issuer": "나이트펫",
         "cert": ["수면/급식 루틴"],
-        "acquired": "2024-03-22"
+        "acquired_at": "2024-03-22"
       }
     ]
   },
@@ -1129,7 +1129,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "리워드 설계",
         "issuer": "포지티브펫",
         "cert": ["보상 스케줄"],
-        "acquired": "2024-05-09"
+        "acquired_at": "2024-05-09"
       }
     ]
   },
@@ -1158,7 +1158,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "놀이 안전",
         "issuer": "플레이펫",
         "cert": ["레이저 안전"],
-        "acquired": "2023-06-29"
+        "acquired_at": "2023-06-29"
       }
     ]
   },
@@ -1187,7 +1187,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "환경 점검",
         "issuer": "홈세이프펫",
         "cert": ["안전 체크리스트"],
-        "acquired": "2024-02-02"
+        "acquired_at": "2024-02-02"
       }
     ]
   },
@@ -1216,7 +1216,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "DIY 놀이",
         "issuer": "크래프트펫",
         "cert": ["놀이도구 제작"],
-        "acquired": "2023-02-17"
+        "acquired_at": "2023-02-17"
       }
     ]
   },
@@ -1245,7 +1245,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "위생 루틴",
         "issuer": "클린펫",
         "cert": ["모래 관리"],
-        "acquired": "2024-03-03"
+        "acquired_at": "2024-03-03"
       }
     ]
   },
@@ -1274,7 +1274,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "브러싱 케어",
         "issuer": "펫그루밍 협회",
         "cert": ["브러싱 기초"],
-        "acquired": "2023-01-09"
+        "acquired_at": "2023-01-09"
       }
     ]
   },
@@ -1303,7 +1303,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
         "name": "존중 케어",
         "issuer": "젠틀핸즈",
         "cert": ["강제접촉 회피"],
-        "acquired": "2024-04-28"
+        "acquired_at": "2024-04-28"
       }
     ]
   }

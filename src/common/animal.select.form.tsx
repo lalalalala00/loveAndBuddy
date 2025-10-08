@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Dispatch, SetStateAction, use, useEffect, useState } from 'react';
 import AnimalSelect, { RepresentativePreview } from './animal.card.select';
 import AnimalCardVertical from './animal.card.vertical';
 import ModalIos from './modal.ios';
@@ -12,7 +12,7 @@ const AnimalSelectedForm = ({
     setSelectedAnimals,
 }: {
     dear?: boolean;
-    setSelectedAnimals?: Animal | undefined;
+    setSelectedAnimals?: Dispatch<SetStateAction<Animal[]>> | any;
 }) => {
     const { animals } = useUserState();
     const [addAnimal, setAddAnimal] = useState<boolean>(false);
@@ -49,10 +49,15 @@ const AnimalSelectedForm = ({
         });
     };
 
-    // useEffect(() => {
-    //     if (!displayList) return;
-    //     setSelectedAnimals(displayList);
-    // }, [addAnimal]);
+    useEffect(() => {
+        if (displayList) return;
+
+        setSelectedAnimals(displayList);
+    }, [addAnimal, draftAnimals]);
+
+    useEffect(() => {
+        setDraftAnimals([]);
+    }, []);
 
     return (
         <div>

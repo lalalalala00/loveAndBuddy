@@ -1,6 +1,6 @@
 import { Chip } from '@/common/animal.card.select';
 
-import NameTag from '@/common/name.tag';
+import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 import { useUserState } from '@/context/useUserContext';
 import { supabase } from '@/lib/supabaseClient';
 import { getAgeFromYear } from '@/utils/date';
@@ -51,7 +51,7 @@ const LoveList = ({ list, onOpenChat }: Props) => {
     return (
         <div className="rounded-2xl w-full h-auto shadow group">
             <div className="flex flex-col items-center bg-[rgb(246,246,246)] border-b border-[rgb(227,227,227)] rounded-t-2xl">
-                <NameTag imgCss="w-[60px] h-[60px]" love info={list} />
+                <NameTag imgCss="w-[60px] h-[60px]" love info={list as unknown as NameTagInfoMinimal} />
             </div>
             <div className="p-2 flex flex-col gap-2 min-h-[120px] overflow-visible  ">
                 <div className="flex flex-col text-[13px] items-start w-full px-1 mt-2">

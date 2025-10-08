@@ -1,4 +1,4 @@
-import { Filters, buildDateLabel } from '@/utils/date';
+import { buildDateInfo, Filters } from '@/utils/date';
 import { useEffect, useMemo, useState } from 'react';
 
 type Addr = { name: string; code?: string };
@@ -40,7 +40,7 @@ export default function BuddyFilterBar({
         dearlove: '디얼러브',
     } as const;
 
-    const dateLabel = buildDateLabel(dateKey, dateFrom, dateTo);
+    const dateLabel = buildDateInfo(dateKey, dateFrom, dateTo);
 
     return (
         <div className="flex justify-end items-center mb-3">
@@ -57,7 +57,7 @@ export default function BuddyFilterBar({
                                 )}
                                 onClick={() => setDateOpen((v) => !v)}
                             >
-                                {dateLabel}
+                                {dateLabel.label}
                             </button>
                         )}
 

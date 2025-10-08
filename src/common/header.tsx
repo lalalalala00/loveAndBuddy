@@ -201,7 +201,7 @@ const Header = () => {
                     ) : (
                         <div className="flex h-12 rounded-2xl bg-white p-3 shadow-[4px_4px_10px_#ebf7dc,-4px_-4px_10px_#ffffff] items-center">
                             <span className="inline-flex items-center gap-1  p-1 rounded-lg">
-                                {ROLE_META[getUser?.type]?.emoji}{' '}
+                                {ROLE_META[getUser.type ?? 'love']?.emoji}{' '}
                                 <span className="text-[13px] mr-2 font-semibold">{getUser.name}</span>
                             </span>
 
@@ -254,7 +254,7 @@ const Header = () => {
                             ) : (
                                 <div className="flex items-center gap-1">
                                     <span className="inline-flex items-center gap-1  p-1 rounded-lg">
-                                        {ROLE_META[getUser?.type]?.emoji}{' '}
+                                        {ROLE_META[getUser.type ?? 'love']?.emoji}{' '}
                                         <span className="text-[12px] mr-1 font-semibold">{getUser.name}</span>
                                     </span>
 

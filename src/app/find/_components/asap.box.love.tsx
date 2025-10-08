@@ -1,7 +1,8 @@
-import NameTag from '@/common/name.tag';
-import { LoveGroupCard } from '@/utils/sign';
+import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 
-const AsapBoxLove = ({ list }: { list: LoveGroupCard }) => {
+const AsapBoxLove = ({ list }: { list: NameTagInfoMinimal }) => {
+    const firstAnimal = list.animals?.[0] ?? {};
+
     return (
         <div className="relative border border-[#e3ecdc] bg-white/80 shadow p-3 rounded-2xl my-4">
             <NameTag love asap info={list} />
@@ -24,8 +25,10 @@ const AsapBoxLove = ({ list }: { list: LoveGroupCard }) => {
                 </div>
 
                 <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
-                <span className="text-gray-800">🐾 {list?.animals.map((item) => item.name).join(', ')}의 한마디</span>
-                <span className="ml-3 font-semibold">{list?.animals[0]?.comment} ❣</span>
+                <span className="text-gray-800">
+                    🐾 {list?.animals && list?.animals.map((item) => item.name).join(', ')}의 한마디
+                </span>
+                <span className="ml-3 font-semibold">{firstAnimal?.comment} ❣</span>
             </div>
 
             <button className="mt-3 text-[12px] cursor-pointer custom-card custom-card-hover w-full px-4 py-1 rounded-2xl transition">

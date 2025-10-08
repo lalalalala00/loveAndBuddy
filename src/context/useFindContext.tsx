@@ -1,6 +1,6 @@
 'use client';
 
-import { Animal } from '@/common/animal.card.vertical';
+import { Animal } from '@/utils/sign';
 import React, { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
 type AddAnimalListContext = {

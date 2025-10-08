@@ -10,6 +10,7 @@ import { CardOverviewRow } from './data/cards';
 import { Option } from '@/common/selected.box';
 import { Role } from '@/utils/sign';
 import WeeklyCalendarCard from './weekly.calendar.card';
+import { NameTagInfoMinimal } from '@/common/name.tag';
 
 function combineDateTimeToISO(dateStr?: string | null, timeStr?: string | null) {
     if (!dateStr || !timeStr) return null;
@@ -41,7 +42,7 @@ export default function BookingModal({
     onClose: () => void;
     infoData: boolean;
     setInfoData: Dispatch<SetStateAction<boolean>>;
-    list: CardOverviewRow;
+    list: NameTagInfoMinimal;
     selectedDT: { date: string; time: string };
     selectedAnimals: SelectedAnimals[];
     location: Option[];
@@ -57,7 +58,7 @@ export default function BookingModal({
     const [buddyBooking, setBuddyBooking] = useState<Booking>({
         user: EMPTY_USER,
         date: 0,
-        location: '',
+        location: [],
         place: '',
         uuid: '',
         buddy: EMPTY_USER,
@@ -67,6 +68,13 @@ export default function BookingModal({
     useEffect(() => {
         const locationNames: string[] = (location ?? []).map((i) => i.name);
 
+        const buddyUserId = list.user_id ?? '';
+        const buddyName = (list.name ?? '').toString();
+        const buddyAvatar = (list.avatar_url ?? '').toString();
+        const buddyType = (list.type ?? 'love') as Role;
+        const buddyBirthYear = (list.user_birth_year ?? '0000') + '';
+        const buddyComment = (list.user_comment ?? '화이팅').toString();
+
         setBuddyBooking((prev) => ({
             ...prev,
             uuid: prev.uuid,
@@ -75,20 +83,19 @@ export default function BookingModal({
                 name: getUser?.name ?? '회원',
                 avatar_url: getUser?.avatar_url ?? '',
                 type: (getUser?.type ?? 'love') as Role,
-                user_birth_year: getUser?.user_birth_year ?? '0000',
+                user_birth_year: (getUser?.user_birth_year ?? '0000') + '',
                 user_comment: getUser?.user_comment ?? '',
             },
             date: combineDateTimeToUnixMs(selectedDT.date, selectedDT.time) ?? 0,
-
             location: locationNames,
             place: searchLocation ?? '',
             buddy: {
-                uuid: list.user_id,
-                name: list.name,
-                avatar_url: list.avatar_url ?? '',
-                type: list.type,
-                user_birth_year: list.user_birth_year ?? '0000',
-                user_comment: list.user_comment ?? '화이팅',
+                uuid: buddyUserId,
+                name: buddyName,
+                avatar_url: buddyAvatar,
+                type: buddyType,
+                user_birth_year: buddyBirthYear,
+                user_comment: buddyComment,
             },
             animals: selectedAnimals ?? EMPTY_SELECTED_ANIMALS_LIST,
         }));

@@ -3,17 +3,21 @@ export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'crypto';
+import { Animal } from '@/utils/sign';
 
 const URL  = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SRK  = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+
+
 const admin = createClient(URL, SRK,  { auth: { autoRefreshToken: false, persistSession: false } });
 const anon  = createClient(URL, ANON, { auth: { autoRefreshToken: false, persistSession: false } });
 
 
-const OWNER_COL = 'owner_uuid';
-const KEY_COL   = 'animal_uuid';
+
+const OWNER_COL = 'owner_uuid' as const;
+const KEY_COL   = 'animal_uuid' as const;
 
 
 const isUuid = (v: any) =>
@@ -31,7 +35,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    // ---- 인증 ----
+
     const token = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
     if (!token) return NextResponse.json({ ok: false, error: 'no token' }, { status: 401 });
 
@@ -41,11 +45,11 @@ export async function POST(req: Request) {
     }
     const uid = gu.user.id;
 
-    // ---- 바디 파싱 ----
+
     const body = await req.json().catch(() => ({}));
     const { profile, animals, certificates } = body ?? {};
 
-    // ---- 프로필 업데이트 ----
+
     if (profile) {
       const patch: Record<string, any> = {};
       if (typeof profile.name === 'string')      patch.name = profile.name.trim();
@@ -59,25 +63,25 @@ export async function POST(req: Request) {
       }
     }
 
-    // ----  동물 업데이트 (replace + upsert + 정리) ----
+
     if (animals?.replace && Array.isArray(animals.items)) {
-      // 기존 소유 동물 PK 목록
-      const { data: oldList, error: oldErr } = await admin
+       const { data: oldList, error: oldErr } = await admin
         .from('animals')
-        .select(`${KEY_COL}`)
-        .eq(OWNER_COL as any, uid);
+        .select<typeof KEY_COL>(KEY_COL)     
+        .eq(OWNER_COL, uid)                   
+        .returns<Array<Pick<Animal, typeof KEY_COL>>>(); 
+
       if (oldErr) return NextResponse.json({ ok: false, error: oldErr.message }, { status: 400 });
 
-      // 들어온 행 정규화 (빈 카드 제외)
       let rows = (animals.items as any[])
-        .filter((a) => (a?.name && String(a.name).trim()) || a?.img) // 이름/이미지 둘 중 하나라도 있으면 유지
+        .filter((a) => (a?.name && String(a.name).trim()) || a?.img) 
         .map((a: any, idx: number) => {
           // PK: 유효한 uuid면 유지, 아니면 신규 uuid 발급 (NOT NULL 방지)
           const pk = isUuid(a[KEY_COL]) ? a[KEY_COL] : randomUUID();
 
           return {
             [KEY_COL]: pk,
-            [OWNER_COL]: uid,                           // 소유자 강제
+            [OWNER_COL]: uid,                           
             name: (a.name ?? '').trim(),
             birth_year: a.birth_year ?? null,
             type: (a.type ?? 'dog').trim(),
@@ -112,17 +116,16 @@ export async function POST(req: Request) {
       // replace: 전달되지 않은 예전 행 삭제 (내 소유 건만)
       const oldIds = (oldList ?? []).map(r => r[KEY_COL] as string);
       const toDelete = oldIds.filter(id => !keepIds.has(id));
-      if (toDelete.length) {
+         if (toDelete.length) {
         const { error } = await admin
           .from('animals')
           .delete()
           .in(KEY_COL, toDelete)
-          .eq(OWNER_COL as any, uid);
+          .eq(OWNER_COL, uid);
         if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
       }
     }
 
-    // ---- 자격증 업데이트 ----
     if (certificates?.replace && Array.isArray(certificates.items)) {
       const { data: oldList, error: oldErr } = await admin
         .from('certificates')

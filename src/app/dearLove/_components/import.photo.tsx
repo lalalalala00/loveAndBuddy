@@ -15,17 +15,14 @@ function uid() {
 }
 
 const ImportPhoto = () => {
-    // 대표 이미지
     const [cover, setCover] = useState<Photo | null>(null);
 
-    // 갤러리(멀티)
     const [photos, setPhotos] = useState<Photo[]>([]);
     const draggingId = useRef<string | null>(null);
 
     const coverInputRef = useRef<HTMLInputElement>(null);
     const galleryInputRef = useRef<HTMLInputElement>(null);
 
-    // 공통: File을 Photo로 변환
     const filesToPhotos = (files: FileList | File[]) => {
         const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
         return list.map<Photo>((file) => ({
@@ -35,11 +32,9 @@ const ImportPhoto = () => {
         }));
     };
 
-    // 대표: 선택/변경
     const handlePickCover = useCallback(
         (files: FileList | null) => {
             if (!files || !files.length) return;
-            // 기존 미리보기 URL 정리
             if (cover) URL.revokeObjectURL(cover.url);
             const [photo] = filesToPhotos(files);
             setCover(photo);
@@ -53,14 +48,12 @@ const ImportPhoto = () => {
         coverInputRef.current?.value && (coverInputRef.current.value = '');
     }, [cover]);
 
-    // 갤러리: 추가(파일선택/드롭 모두)
     const addPhotos = useCallback((files: FileList | File[]) => {
         if (!files || !Array.from(files).length) return;
         const newOnes = filesToPhotos(files);
         setPhotos((prev) => [...prev, ...newOnes]);
     }, []);
 
-    // 갤러리: 삭제
     const removePhoto = useCallback((id: string) => {
         setPhotos((prev) => {
             const target = prev.find((p) => p.id === id);
@@ -69,10 +62,8 @@ const ImportPhoto = () => {
         });
     }, []);
 
-    // 갤러리: 드래그로 순서 변경(드래그 중 마우스가 들어올 때마다 스왑)
     const onDragStart = (id: string) => (e: React.DragEvent) => {
         draggingId.current = id;
-        // 드래그 프리뷰 최소화
         const img = document.createElement('img');
         img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>';
         e.dataTransfer.setDragImage(img, 0, 0);
@@ -99,7 +90,6 @@ const ImportPhoto = () => {
         draggingId.current = null;
     };
 
-    // 드롭존(갤러리 버튼)
     const onDropGallery = (e: React.DragEvent) => {
         e.preventDefault();
         if (e.dataTransfer.files && e.dataTransfer.files.length) {
@@ -108,11 +98,9 @@ const ImportPhoto = () => {
     };
 
     const onDragOverGallery = (e: React.DragEvent) => {
-        // 파일 드롭 허용
         e.preventDefault();
     };
 
-    // 언마운트/리셋 시 URL 정리
     useEffect(() => {
         return () => {
             if (cover) URL.revokeObjectURL(cover.url);

@@ -3,7 +3,7 @@
 import { useUserState } from '@/context/useUserContext';
 import { useMemo } from 'react';
 
-type Animal = { name: string; image?: string | null; avatar_url?: string | null };
+type Animal = { name: string; img?: string | null; avatar_url?: string | null };
 type Dear = { date_at?: string | null; photos?: (string | { url: string })[] };
 
 const hashStr = (s: string) => {
@@ -51,7 +51,7 @@ export default function EmptyMonthCollage({
     const allDearUrls = useMemo(() => extractAllUrls(dears), [dears]);
 
     const petUrls = useMemo(() => {
-        const arr = animals.map((a) => a.image ?? a.avatar_url).filter((v): v is string => !!v);
+        const arr = animals.map((a) => a.img ?? a.avatar_url).filter((v): v is string => !!v);
         return Array.from(new Set(arr));
     }, [animals]);
 

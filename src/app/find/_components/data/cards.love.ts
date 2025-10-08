@@ -14,7 +14,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '유성구 원신흥동',
     place: '애견카페 [잘놀아]',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'of-0001-4d1a-95ff-ffffffffffa1',
         name: '나비',
         birth_year: 2022,
@@ -28,6 +28,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         comment: '캣닢 최애, 사람 좋아함.',
         img: 'https://i.pinimg.com/236x/26/64/2f/26642ff09f89d38d947612937027434f.jpg',
         first: true,
+    
       },
       {
           animal_uuid: 'of-0002-4d1a-95ff-ffffffffffa2',
@@ -42,7 +43,8 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
           heart: 18,
           comment: '조용히 옆에 있는 스타일.',
           img: 'https://i.pinimg.com/236x/28/cf/18/28cf18879ede3a057f9f76968f262a6e.jpg',
-          first: false
+          first: false,
+                animalId: ""
       },
     ],
   },
@@ -59,7 +61,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '마포구 연남동',
     place: '프라이빗 케어룸',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'c3-0001-83cc-ccccccccccc1',
         name: '솜사탕',
         birth_year: 2016,
@@ -74,7 +76,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/5b/67/6d/5b676d98aace85e170ac6026ff32f7b3.jpg',
         first: true,
       },
-      {
+      {      animalId: "",
         animal_uuid: 'c3-0002-83cc-ccccccccccc2',
         name: '캔디',
         birth_year: 2021,
@@ -89,7 +91,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/4a/17/0d/4a170db2d891a1e0a9a5af84de9ba14a.jpg',
         first: false
       },
-      {
+      {      animalId: "",
         animal_uuid: 'c3-0003-83cc-ccccccccccc3',
         name: '카라멜',
         birth_year: 2023,
@@ -119,7 +121,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '분당구 정자동',
     place: '애견카페 [몽몽]',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'b2-0001-82bb-bbbbbbbbbbb1',
         name: '모찌',
         birth_year: 2019,
@@ -149,7 +151,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '수원시 영통구',
     place: '중형견 운동장',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'f6-0001-86ff-fffffffffff1',
         name: '보리',
         birth_year: 2020,
@@ -164,7 +166,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/d8/35/89/d83589763704037f4d69b72a2914799d.jpg',
         first: true,
       },
-      {
+      {      animalId: "",
         animal_uuid: 'f6-0002-86ff-fffffffffff2',
         name: '콩',
         birth_year: 2018,
@@ -194,7 +196,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '송파구 문정동',
     place: '대형견 수영장',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'd4-0001-84dd-ddddddddddd1',
         name: '초코',
         birth_year: 2018,
@@ -224,7 +226,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '대전 유성구',
     place: '캣라운지 [펫프렌즈]',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'e5-0001-85ee-eeeeeeeeeee1',
         name: '라떼',
         birth_year: 2015,
@@ -254,7 +256,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '용산구 한남동',
     place: '하우스 케어',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'g7-0001-87aa-777777777771',
         name: '단추',
         birth_year: 2022,
@@ -284,7 +286,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '용인 수지구',
     place: '애견 운동장',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'h8-0001-88bb-888888888881',
         name: '쿠로',
         birth_year: 2016,
@@ -299,7 +301,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/14/54/b4/1454b4107f83ee1f7336af42c69d59bd.jpg',
         first: true,
       },
-      {
+      {      animalId: "",
         animal_uuid: 'h8-0002-88bb-888888888882',
         name: '스모키',
         birth_year: 2020,
@@ -329,7 +331,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '송파구 방이동',
     place: '버드 라운지',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'lc-0001-92cc-cccccccccca1',
         name: '피코',
         birth_year: 2021,
@@ -359,7 +361,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '노원구 공릉동',
     place: '소동물 케어룸',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'md-0001-93dd-ddddddddddb1',
         name: '도치',
         birth_year: 2020,
@@ -375,6 +377,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         first: true,
       },
       {
+              animalId: "",
         animal_uuid: 'md-0002-93dd-ddddddddddb2',
         name: '콩콩',
         birth_year: 2018,
@@ -404,11 +407,11 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '광산구 수완동',
     place: '아쿠아 존',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'pg-0001-96aa-aaaaaaaabac1',
         name: '구피',
         birth_year: 2024,
-        animal_type: 'other',
+        animal_type: 'others',
         variety: '구피(어류)',
         color: '멀티컬러',
         personality: 'introvert',
@@ -434,7 +437,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '평택시 비전동',
     place: '이색동물 체험존',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'kb-0001-91bb-bbbbbbbbbba1',
         name: '라코',
         birth_year: 2017,
@@ -449,7 +452,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/c8/04/82/c80482d3a593463145dc0b50644ca53a.jpg',
         first: true,
       },
-      {
+      {      animalId: "",
         animal_uuid: 'kb-0002-91bb-bbbbbbbbbba2',
         name: '페로',
         birth_year: 2019,
@@ -479,7 +482,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '해운대구 좌동',
     place: '캣라운지 [푸딩]',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'ja-0001-90aa-aaaaaaaaaa91',
         name: '호두',
         birth_year: 2019,
@@ -494,7 +497,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/58/a6/bb/58a6bbf176116ed8245cc44ef6167915.jpg',
         first: true,
       },
-      {
+      {      animalId: "",
         animal_uuid: 'ja-0002-90aa-aaaaaaaaaa92',
         name: '밤비',
         birth_year: 2021,
@@ -509,7 +512,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
         img: 'https://i.pinimg.com/236x/0c/91/6f/0c916f7ee5684eed51ebecde05cedf66.jpg',
         first: false
       },
-      {
+      {      animalId: "",
         animal_uuid: 'ja-0003-90aa-aaaaaaaaaa93',
         name: '치즈',
         birth_year: 2023,
@@ -539,7 +542,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '관악구 봉천동',
     place: '소형견 운동장',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'pp-0001-97aa-aaaaaaaaaa01',
         name: '코코',
         birth_year: 2017,
@@ -569,7 +572,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '고양시 일산동구',
     place: '대형견 파크',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'pp-0002-97aa-aaaaaaaaaa02',
         name: '레오',
         birth_year: 2018,
@@ -599,7 +602,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '성북구 돈암동',
     place: '캣케어룸',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'pp-0003-97aa-aaaaaaaaaa03',
         name: '루비',
         birth_year: 2019,
@@ -629,7 +632,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
     location: '중구 신당동',
     place: '플레이 케어존',
     animals: [
-      {
+      {      animalId: "",
         animal_uuid: 'pp-0004-97aa-aaaaaaaaaa04',
         name: '메이',
         birth_year: 2021,
