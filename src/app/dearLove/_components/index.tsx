@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import NewLayout from './new.layout';
 
+export const dynamic = 'force-dynamic';
+
 const Index = () => {
     return (
         <Suspense>
