@@ -12,11 +12,8 @@ import { Chip } from '@/common/animal.card.select';
 import {
     buildAnimalsPayload,
     buildCertificatesPayload,
-    mergeAndDedupeCerts,
-    norm,
     uploadAnimalImage,
     uploadAvatarAndGetUrl,
-    uploadCertFile,
 } from '@/lib/profile.upload';
 
 export const getMannerEmoji = (score: number) => {
@@ -103,15 +100,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 }),
             );
 
-            // const certsWithUrl = await Promise.all(
-            //     (certs ?? []).map(async (c: any) => {
-            //         if (c.file && !c.url) {
-            //             const url = await uploadCertFile(userId, c.file);
-            //             return { ...c, url };
-            //         }
-            //         return c;
-            //     }),
-            // );
             const certsWithUrl = (certs ?? []).map((c: any) => {
                 const { file, preview, ...rest } = c;
                 return rest;
