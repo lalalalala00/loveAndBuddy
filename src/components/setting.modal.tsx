@@ -357,7 +357,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                                     <p className="text-[12px] text-gray-600">
                                         연령대 :{' '}
                                         <span className="font-medium text-gray-800">
-                                            {getDecadeLabel(getUser?.user_birth_year)}
+                                            {getDecadeLabel(getUser?.birth_year)}
                                         </span>
                                     </p>
                                 </div>

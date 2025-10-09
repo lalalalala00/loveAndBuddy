@@ -7,6 +7,7 @@ import AnimalsForm from './sign.animals.form';
 import CertificatesForm, { CertificateFormItem } from './sign.certificateField.form';
 import Tooltip from '@/common/tooltip';
 import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal, Certificate } from '@/utils/sign';
+import { useUserState } from '@/context/useUserContext';
 
 const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }> = [
     { label: '러브', value: 'love', icon: '💚', comment: '믿을 수 있는 펫시터를 찾고 있어요!' },
@@ -15,6 +16,7 @@ const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }
 ];
 
 export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+    const { getUser } = useUserState();
     const [v, setV] = useState<SignUpFormValues>(EMPTY_SIGNUP_FORM);
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState('');
@@ -162,6 +164,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                     avatar_url: avatarUrl ?? '',
                     birth_year: v.birth_year ? Number(v.birth_year) : null,
                     user_comment: v.user_comment ?? '',
+                    email: v.email,
                     animals: animalsPayload,
                     certs: certsPayload,
                 }),

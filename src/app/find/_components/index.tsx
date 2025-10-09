@@ -23,6 +23,7 @@ import { Option } from '@/common/selected.box';
 import { Chip } from '@/common/animal.card.select';
 import BuddyConnect from '@/components/buddy.connect';
 import { NameTagInfoMinimal } from '@/common/name.tag';
+import LoginModal from '@/components/sign.login';
 
 // 주 시작(월요일)로 맞춘 at0
 const at0Local = (d: Date) => {
@@ -86,7 +87,7 @@ function getRangeFromFilters(f: Filters): { start: Date; end: Date } | null {
 }
 
 const Index = () => {
-    const { animals, getUser } = useUserState();
+    const { animals, getUser, login, setLogin } = useUserState();
     const router = useRouter();
     const [selectedType, setSelectedType] = useState<number>(1);
     const [list, setList] = useState<CardOverviewRow[]>([]);
@@ -426,6 +427,7 @@ const Index = () => {
                     <BuddyConnect setSelectedClose={() => setOnChat(false)} initialRoom={chatInit ?? undefined} />
                 </div>
             )}
+            {login && <LoginModal isOpen={login} onClose={() => setLogin(false)} />}
         </div>
     );
 };

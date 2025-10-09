@@ -11,7 +11,7 @@ type Props = { list: LoveGroupCard; onOpenChat?: (roomId: string, partnerName: s
 
 const LoveList = ({ list, onOpenChat }: Props) => {
     const [openAnimalsInfo, setOpenAnimalsInfo] = useState<boolean>(false);
-    const { getUser, setLoveChatData } = useUserState();
+    const { getUser, setLoveChatData, setLogin } = useUserState();
     const [pending, setPending] = useState(false);
 
     const startChat = async (love: LoveGroupCard) => {
@@ -46,6 +46,11 @@ const LoveList = ({ list, onOpenChat }: Props) => {
         } finally {
             setPending(false);
         }
+    };
+
+    const onClickReserve = () => {
+        if (!getUser) setLogin(true);
+        else startChat(list);
     };
 
     return (
@@ -146,7 +151,7 @@ const LoveList = ({ list, onOpenChat }: Props) => {
                 </div>
 
                 <button
-                    onClick={() => startChat(list)}
+                    onClick={onClickReserve}
                     className={`btn-card custom-card w-full rounded-lg py-2  text-[14px] cursor-pointer`}
                 >
                     대화하기

@@ -6,7 +6,7 @@ export type User = {
     name: string;
     avatar_url: string;
     type: Role | null;
-    user_birth_year: string;
+    birth_year: string;
     user_comment: string;
     id?:string
 };
@@ -16,7 +16,7 @@ export const EMPTY_USER: User = {
     name: '',
     avatar_url: '',
     type: null,
-    user_birth_year: '',
+    birth_year: '',
     user_comment: '',
 };
 
