@@ -9,10 +9,13 @@ import { SelectedAnimals } from '@/utils/data';
 
 import { Option } from '@/common/selected.box';
 import { useState } from 'react';
+import { useUserState } from '@/context/useUserContext';
+import LoginModal from '@/components/sign.login';
 
 type Props = { list: CardOverviewRow; selectedAnimals: SelectedAnimals[]; location: Option[] };
 
 export default function ListBox2({ list, selectedAnimals, location }: Props) {
+    const { getUser, login, setLogin } = useUserState();
     const [open, setOpen] = useState(false);
     const [infoData, setInfoData] = useState(false);
     const [selectedDT, setSelectedDT] = useState<{ date: string; time: string }>({ date: '', time: '' });
@@ -27,8 +30,11 @@ export default function ListBox2({ list, selectedAnimals, location }: Props) {
     const canRequest = Boolean(selectedDT.date && selectedDT.time.length > 1);
 
     const onClickReserve = () => {
-        // if (!getUser) { /* 로그인 유도 */ return; }
-        setOpen(true);
+        if (!getUser) {
+            setLogin(true);
+        } else {
+            setOpen(true);
+        }
     };
 
     return (
@@ -73,6 +79,7 @@ export default function ListBox2({ list, selectedAnimals, location }: Props) {
                     </button>
                 </div>
             </div>
+            <LoginModal isOpen={login} onClose={() => setLogin(!login)} />
 
             <BookingModal
                 open={open}

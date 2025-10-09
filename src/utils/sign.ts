@@ -16,6 +16,7 @@ export type AnimalType = 'dog' | 'cat' | 'others' | 'rabbit' | 'ferret' | 'bird'
 export type Personality = 'introvert' | 'extrovert';
 
 export type Animal = {
+
     animalId: string;
   owner_nickname?: string;
     name: string;
@@ -68,7 +69,8 @@ export const EMPTY_ANIMAL: Animal = {
 
   animal_uuid: "",
   owner_uuid: "",
-  animalId: ""
+  animalId: "",
+
 };
 
 

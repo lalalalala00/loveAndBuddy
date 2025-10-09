@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import AnimalsForm from './sign.animals.form';
@@ -38,14 +38,24 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             if (!firstAnimal) return false;
             return !!firstAnimal.name && !!firstAnimal.birth_year && !!firstAnimal.animal_type;
         }
+
         return true;
     }, [v.email, v.password, v.name, v.type, animalsForm, isLove, isLovuddy]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setV((prev) => ({ ...prev, [name]: value }) as any);
+
+        if (name === 'name') {
+            setV((prev) => ({ ...prev, [name]: value.slice(0, 7) }) as any);
+        } else {
+            setV((prev) => ({ ...prev, [name]: value }) as any);
+        }
         setErr('');
     };
+
+    // useEffect(() => {
+    //     setV(EMPTY_SIGNUP_FORM);
+    // }, [isOpen]);
 
     const selectRole = (r: Role) => setV((prev) => ({ ...prev, type: r }));
 
@@ -124,7 +134,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             if (!accessToken) throw new Error('세션 토큰 없음');
 
             const animalsPayload = (animalsForm ?? []).map((a: any, idx: number) => ({
-                kname: a.name?.trim() ?? '',
+                name: a.name?.trim() ?? '',
                 birth_year: a.birth_year ? Number(a.birth_year) : null,
                 variety: a.variety ?? '',
                 color: a.color ?? '',
@@ -133,6 +143,8 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 comment: a.comment ?? '',
                 img: a.img ?? '',
                 first: typeof a.first === 'boolean' ? a.first : idx === 0,
+                owner_nickname: v.name,
+                owner_uuid: v.uuid,
             }));
 
             const certsPayload = (certs ?? []).map(({ file, preview, ...rest }: any) => rest);
@@ -168,13 +180,15 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         } catch (e: any) {
             setErr(e?.message ?? '회원가입 중 오류가 발생했습니다.');
         } finally {
+            setSuccess(true);
             setLoading(false);
+            onClose();
         }
     };
 
     return (
-        <ModalIos isOpen={isOpen} handleModalState={onClose} title="회원가입" width="560px" height="970px">
-            <div className="p-3 space-y-4 overflow-scroll h-[850px] no-scrollbar">
+        <ModalIos isOpen={isOpen} handleModalState={onClose} title="회원가입" width="540px" height="720px">
+            <div className="p-3 space-y-4 overflow-y-scroll h-[600px] no-scrollbar">
                 <div className="grid grid-cols-1 gap-3">
                     <label className="text-[13px] text-gray-600">이메일</label>
                     <input
@@ -199,14 +213,19 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                     <div className="flex items-end gap-6">
                         <div className="flex flex-col w-1/2">
                             <label className="text-[13px] text-gray-600 mb-1">닉네임</label>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="최대 7자"
-                                value={v.name}
-                                onChange={onChange}
-                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
-                            />
+                            <div className="flex items-end">
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="최대 7자"
+                                    value={v.name}
+                                    onChange={onChange}
+                                    className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
+                                />
+                                <span className="text-[11px] text-gray-500 tabular-nums ml-2">
+                                    {v.name?.length ?? 0}/7
+                                </span>
+                            </div>
                         </div>
 
                         <div className="flex flex-col w-1/2">
@@ -239,6 +258,30 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                                     </label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="flex">
+                        <div className="flex flex-col w-3/4">
+                            <label className="text-[13px] text-gray-600 mb-1">코멘트</label>
+                            <input
+                                type="text"
+                                name="user_comment"
+                                placeholder="ex) 친절한 버디를 찾고 있어요!, 사랑으로 보살필께요!"
+                                value={v.user_comment}
+                                onChange={onChange}
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
+                            />
+                        </div>
+                        <div className="flex flex-col w-1/4 ml-2">
+                            <label className="text-[13px] text-gray-600 mb-1">출생년도</label>
+                            <input
+                                type="number"
+                                name="birth_year"
+                                placeholder="1992"
+                                value={v.birth_year}
+                                onChange={onChange}
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
+                            />
                         </div>
                     </div>
                 </div>

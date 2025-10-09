@@ -277,7 +277,7 @@ const Index = () => {
                         {selectedType === 0
                             ? (getUser?.type === 'love' || getUser.type === 'lovuddy') && (
                                   <button
-                                      className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                                      className="border border-[#e3ecdc] text-[13px] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
                                       onClick={() => router.push('/find/write/love')}
                                   >
                                       러브 카드 등록
@@ -285,7 +285,7 @@ const Index = () => {
                               )
                             : (getUser?.type === 'buddy' || getUser.type === 'lovuddy') && (
                                   <button
-                                      className="border border-[#e3ecdc] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
+                                      className="border border-[#e3ecdc] text-[13px] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
                                       onClick={() => router.push('/find/write/buddy')}
                                   >
                                       버디 카드 등록

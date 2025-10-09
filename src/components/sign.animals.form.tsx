@@ -1,16 +1,21 @@
 'use client';
 
+import Tooltip from '@/common/tooltip';
+import { useUserState } from '@/context/useUserContext';
 import { Animal, EMPTY_ANIMAL } from '@/utils/sign';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
-export const defaultAnimal = (first = false): Animal => ({
+type AnimalForm = Animal & { client_id?: string; local_preview?: string };
+
+export const defaultAnimal = (first = false): AnimalForm => ({
     ...EMPTY_ANIMAL,
     first,
 });
 
 type Props = {
-    value: Animal[];
-    onChange: (next: Animal[]) => void;
+    value: AnimalForm[];
+    onChange: (next: AnimalForm[]) => void;
+    onLocalFileChange?: (idx: number, file: File | null) => void;
     title?: string;
     minCount?: number;
     maxCount?: number;
@@ -21,19 +26,20 @@ type Props = {
 export default function AnimalsForm({
     value,
     onChange,
+    onLocalFileChange,
     title = '반려동물 정보를 입력해주세요. 대표는 한 마리만 지정돼요.',
     minCount = 1,
     maxCount,
     className = '',
     allowAddRemove,
 }: Props) {
-    const [files, setFiles] = useState<Record<number, File | null>>({});
     const createdUrlsRef = useRef<Set<string>>(new Set());
 
-    const updateAt = (idx: number, patch: Partial<Animal>) => {
+    const updateAt = (idx: number, patch: Partial<AnimalForm>) => {
         const next = [...value];
         next[idx] = { ...next[idx], ...patch };
         onChange(next);
+        console.log(next);
     };
 
     const setOwnerAt = (idx: number) => {
@@ -44,7 +50,8 @@ export default function AnimalsForm({
     const addAnimal = () => {
         if (maxCount !== undefined && value.length >= maxCount) return;
         const hasFirst = value.some((v) => v.first);
-        const newItem = defaultAnimal(false);
+        const newItem: AnimalForm = { ...defaultAnimal(false), client_id: crypto.randomUUID() };
+
         const next = [...value, newItem];
         if (!hasFirst && next.length > 0) {
             next[0] = { ...next[0], first: true };
@@ -71,42 +78,29 @@ export default function AnimalsForm({
             }
         }
         onChange(next);
-
-        setFiles((prev) => {
-            const copy = { ...prev };
-            delete copy[idx];
-
-            return copy;
-        });
     };
 
     const onPickImgAt = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !file.type.startsWith('image/')) return;
 
-        const prevImg = value[idx]?.img;
-        if (prevImg?.startsWith('blob:') && createdUrlsRef.current.has(prevImg)) {
-            URL.revokeObjectURL(prevImg);
-            createdUrlsRef.current.delete(prevImg);
-        }
-
         const url = URL.createObjectURL(file);
         createdUrlsRef.current.add(url);
-
-        setFiles((prev) => ({ ...prev, [idx]: file }));
         updateAt(idx, { img: url });
+
+        onLocalFileChange?.(idx, file);
     };
 
     const clearImgAt = (idx: number) => {
-        const prevImg = value[idx]?.img;
-
-        if (prevImg?.startsWith('blob:') && createdUrlsRef.current.has(prevImg)) {
-            URL.revokeObjectURL(prevImg);
-            createdUrlsRef.current.delete(prevImg);
+        const prevPreview = value[idx]?.local_preview;
+        if (prevPreview?.startsWith('blob:') && createdUrlsRef.current.has(prevPreview)) {
+            URL.revokeObjectURL(prevPreview);
+            createdUrlsRef.current.delete(prevPreview);
         }
 
-        setFiles((prev) => ({ ...prev, [idx]: null }));
-        updateAt(idx, { img: '' });
+        updateAt(idx, { img: undefined });
+
+        onLocalFileChange?.(idx, null);
     };
 
     useEffect(() => {
@@ -255,14 +249,22 @@ export default function AnimalsForm({
                             </div>
 
                             <div className="col-span-2">
-                                {a.img ? (
+                                {a.img || a.local_preview ? (
                                     <div className="relative rounded-xl border border-[#e3ecdc] bg-white p-2">
-                                        <img
-                                            src={a.img}
-                                            alt="animal"
+                                        <Tooltip
+                                            tooltip="더블클릭 => 삭제"
+                                            comment={
+                                                <img
+                                                    src={a.img || a.local_preview}
+                                                    alt="animal"
+                                                    className="w-full h-40 object-cover rounded-lg ring-1 ring-[#e3ecdc] shadow-inner hover:opacity-50 hover:border hover:border-red-400 cursor-pointer"
+                                                />
+                                            }
+                                            clickCss="w-full"
+                                            double
                                             onClick={() => clearImgAt(idx)}
-                                            className="w-full h-40 object-cover rounded-lg ring-1 ring-[#e3ecdc] shadow-inner hover:opacity-50 hover:border hover:border-red-400 cursor-pointer"
                                         />
+
                                         <div className="mt-2 flex gap-2">
                                             <label className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] cursor-pointer hover:bg-[#f8fbf4]">
                                                 이미지 변경

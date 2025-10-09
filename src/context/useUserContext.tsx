@@ -10,6 +10,7 @@ import {
     type SetStateAction,
     type Dispatch,
     useMemo,
+    useEffect,
 } from 'react';
 
 export type UserStateType = 'love' | 'buddy' | 'lovuddy' | 'guest';
@@ -35,6 +36,12 @@ interface UserContext {
     loveChatData: LoveGroupCard | null;
     setLoveChatData: Dispatch<SetStateAction<LoveGroupCard | null>>;
 
+    toast: boolean;
+    setToast: Dispatch<SetStateAction<boolean>>;
+
+    login: boolean;
+    setLogin: Dispatch<SetStateAction<boolean>>;
+
     /** 파생: 유저 + 자격증 */
     userWithCerts: UserWithCerts | null;
     /** 파생: 유저 + 자격증 + 애니멀 */
@@ -54,16 +61,18 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
     const [animals, setAnimals] = useState<Animal[]>([]);
     const [dearLoves, setDearLoves] = useState<DearLove[]>([]);
     const [loveChatData, setLoveChatData] = useState<LoveGroupCard | null>(null);
+    const [toast, setToast] = useState<boolean>(false);
+    const [login, setLogin] = useState<boolean>(false);
 
     const userWithCerts = useMemo<UserWithCerts | null>(() => {
         if (!getUser) return null;
         return { ...getUser, certificates };
-    }, [getUser, certificates]);
+    }, [getUser, certificates, toast]);
 
     const userFull = useMemo<UserFull | null>(() => {
         if (!getUser) return null;
         return { ...getUser, certificates, animals, dearLoves };
-    }, [getUser, certificates, animals, dearLoves]);
+    }, [getUser, certificates, animals, dearLoves, toast]);
 
     const resetUser = () => {
         setGetUser(null);
@@ -73,6 +82,12 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
 
         setUserState('guest');
     };
+
+    useEffect(() => {
+        if (!toast) return;
+        const t = setTimeout(() => setToast(false), 1000);
+        return () => clearTimeout(t);
+    }, [toast]);
 
     return (
         <UserStateCtx.Provider
@@ -89,6 +104,10 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
                 setDearLoves,
                 loveChatData,
                 setLoveChatData,
+                toast,
+                setToast,
+                login,
+                setLogin,
 
                 userWithCerts,
                 userFull,

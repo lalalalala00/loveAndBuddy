@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       if (typeof profile.avatar_url === 'string' && profile.avatar_url.length > 0) {
         patch.avatar_url = profile.avatar_url;
       }
+      if(typeof profile.user_comment === 'string') patch.user_comment = profile.user_comment.trim()
       if (Object.keys(patch).length) {
         const { error } = await admin.from('users').update(patch).eq('id', uid);
         if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
@@ -92,6 +93,8 @@ export async function POST(req: Request) {
             comment: (a.comment ?? '').trim(),
             img: a.img ?? '',
             first: !!(a.first ?? (idx === 0)),          // 우선 표기
+            owner_nickname: profile.name,
+
       
           };
         });

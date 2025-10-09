@@ -227,12 +227,10 @@ const Header = () => {
             <SignUpModal isOpen={signUpModal} onClose={() => setSignUpModal(!signUpModal)} />
             <LoginModal isOpen={signModal} onClose={() => setSignModal(!signModal)} onOpenSignUp={handleSignUp} />
             <SettingModal isOpen={settingModal} handleModalState={() => setSettingModal(!settingModal)} />
-            {/* === Mobile Header (≤ md) === */}
+
             <div className="md:hidden relative">
-                {/* 상단: 내 정보 / 로그인 */}
                 <div className="sticky top-0 z-40 px-3 py-5 bg-[#f9fbf6] border-b border-white/40">
                     <div className="flex items-center justify-between">
-                        {/* 좌: 로고/홈 */}
                         <button
                             onClick={() => router.push('/')}
                             className="flex items-center gap-2"
@@ -242,7 +240,6 @@ const Header = () => {
                             <span className="text-[#9dbb80] font-bold text-[14px]">soom</span>
                         </button>
 
-                        {/* 우: 내 정보 / 로그인 */}
                         <div className={`${getUser ? 'flex items-center' : ''}`}>
                             {!getUser ? (
                                 <button

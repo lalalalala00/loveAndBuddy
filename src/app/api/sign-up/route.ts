@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const {
       name, nickname, type, avatar_url,
-      user_birth_year, user_comment,
+      birth_year, user_comment,
       animals = [], certs = [],
     } = body ?? {};
 
@@ -32,14 +32,21 @@ export async function POST(req: Request) {
       ...(typeof name === 'string' ? { name: name.trim() } : {}),
       ...(typeof nickname === 'string' ? { user_nickname: nickname.trim() } : {}),
       ...(typeof avatar_url === 'string' ? { avatar_url } : {}),
-      ...(Number.isFinite(user_birth_year) ? { user_birth_year } : {}),
+      ...(Number.isFinite(birth_year) ? { birth_year } : {}),
       ...(typeof user_comment === 'string' ? { user_comment } : {}),
       ...(type ? { type } : {}),
     };
-    if (Object.keys(patch).length) {
-      const { error } = await admin.from('users').update(patch).eq('id', uid);
-      if (error) return NextResponse.json({ ok:false, error:error.message }, { status:400 });
-    }
+    // if (Object.keys(patch).length) {
+    //   const { error } = await admin.from('users').update(patch).eq('id', uid);
+    //   if (error) return NextResponse.json({ ok:false, error:error.message }, { status:400 });
+    // }
+    const baseUserRow = { id: uid, ...patch };
+const { error: userUpsertErr } = await admin
+  .from('users')
+  .upsert(baseUserRow, { onConflict: 'id' }); 
+if (userUpsertErr) {
+  return NextResponse.json({ ok:false, error:userUpsertErr.message }, { status:400 });
+}
 
     if (Array.isArray(animals) && animals.length) {
       const upserts = animals.map((a:any, idx:number) => ({
@@ -54,6 +61,7 @@ export async function POST(req: Request) {
         comment: a.comment ?? null,
         img: a.img ?? null,
         first: typeof a.first === 'boolean' ? a.first : idx === 0,
+        owner_nickname: name,
       }));
       const { error } = await admin.from('animals').insert(upserts);
       if (error) return NextResponse.json({ ok:false, error:error.message }, { status:400 });

@@ -136,10 +136,15 @@ export function Chip({ children }: { children: React.ReactNode }) {
 
 export function RepresentativePreview({ items, selected }: { items: Animal[]; selected: number }) {
     const rep = items.find((a) => a.first);
+
     if (!rep) return null;
     return (
         <div className="flex items-center gap-2 p-2 rounded-xl bg-white/70 border border-[#e3ecdc] w-full">
-            <img src={rep.img} alt={rep.name} className="w-8 h-8 rounded-lg object-cover" />
+            <img
+                src={rep.img ? rep.img : '/project/buddy3.png'}
+                alt={rep.name}
+                className="w-8 h-8 rounded-lg object-cover"
+            />
             <div className="flex flex-col">
                 <span className="text-[13px] text-gray-700">
                     대표 반려동물: <b>{rep.name}</b> {selected >= 2 && `외 ${selected - 1}`}

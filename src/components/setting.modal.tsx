@@ -17,8 +17,7 @@ export const getMannerEmoji = (score: number) => {
 };
 
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
-    const { getUser, certificates, animals } = useUserState();
-    const [animalsForm, setAnimalsForm] = useState<Animal[]>([defaultAnimal(true)]);
+    const { getUser, certificates, animals, toast, setToast, setGetUser, setAnimals } = useUserState();
 
     const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animals);
 
@@ -28,68 +27,50 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
     const [certs, setCerts] = useState<CertificateFormItem[]>([]);
 
     const [name, setName] = useState('');
+    const [comment, setComment] = useState<string>('');
 
     const [saving, setSaving] = useState(false);
     const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
     const [editOne, setEditOne] = useState<Animal[]>([]);
+
+    const [animalFiles, setAnimalFiles] = useState<Record<string, File>>({});
 
     const handleClickChip = (a: Animal) => {
         setSelectedAnimal(a);
         setEditOne([a]);
     };
 
-    const onSaveOne = () => {
-        if (!editOne.length) return;
-        const updated = editOne[0];
+    // const onSaveOne = () => {
+    //     if (!editOne.length) return;
+    //     const updated = editOne[0];
+    //     setSaving(true);
 
-        setAnimalsForm((prev) => {
-            let next = prev.map((x) => (x.animal_uuid === updated.animal_uuid ? { ...x, ...updated } : x));
-            if (updated.first) {
-                next = next.map((x) => ({ ...x, first: x.animal_uuid === updated.animal_uuid }));
-            }
-            return next;
-        });
+    //     setDraftAnimals((prev) => {
+    //         let next = prev.map((x) => (x.animal_uuid === updated.animal_uuid ? { ...x, ...updated } : x));
+    //         if (updated.first) {
+    //             next = next.map((x) => ({ ...x, first: x.animal_uuid === updated.animal_uuid }));
+    //         }
+    //         return next;
+    //     });
 
-        setSelectedAnimal(null);
-        setEditOne([]);
-    };
+    //     setSelectedAnimal(null);
+    //     setEditOne([]);
+    //     setSaving(false);
+    // };
 
     const handleEditCancel = () => {
         setSelectedAnimal(null);
         setEditOne([]);
     };
     useEffect(() => {
-        if (isOpen && getUser) setName(getUser.name ?? '');
+        if (isOpen && getUser) {
+            setName(getUser.name ?? '');
+            setComment(getUser.user_comment ?? '');
+        }
     }, [isOpen, getUser]);
 
     const _lov = getUser?.type === 'love' || getUser?.type === 'lovuddy';
     const _buddy = getUser?.type === 'buddy' || getUser?.type === 'lovuddy';
-
-    // const handleDelete = (id: string) => {
-    //     if (draftAnimals.length === 0) return;
-
-    //     setDraftAnimals((prev) => {
-    //         if (prev.length <= 1) return prev;
-
-    //         const wasOwner = prev.find((a) => a.animalId === id)?.owner;
-    //         const next = prev.filter((a) => a.animalId !== id);
-
-    //         if (next.length === 1) {
-    //             if (!next[0].owner) next[0] = { ...next[0], owner: true };
-    //             return next;
-    //         }
-
-    //         if (wasOwner || !next.some((a) => a.owner)) {
-    //             next[0] = { ...next[0], owner: true };
-
-    //             for (let i = 1; i < next.length; i++) {
-    //                 if (next[i].owner) next[i] = { ...next[i], owner: false };
-    //             }
-    //         }
-
-    //         return next;
-    //     });
-    // };
 
     async function uploadAvatarAndGetUrl(userId: string): Promise<string | null> {
         if (!profileFile) return getUser?.avatar_url || null;
@@ -99,6 +80,21 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
         const { error } = await supabase.storage
             .from('avatars')
             .upload(path, profileFile, { upsert: true, contentType: profileFile.type });
+        if (error) throw error;
+
+        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+        return data.publicUrl || null;
+    }
+
+    async function uploadAnimalImage(userId: string, key: string, file: File) {
+        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+
+        const path = `${userId}/animals/${key}-${Date.now()}.${ext}`;
+
+        const { error } = await supabase.storage
+            .from('avatars')
+            .upload(path, file, { upsert: true, contentType: file.type });
+
         if (error) throw error;
 
         const { data } = supabase.storage.from('avatars').getPublicUrl(path);
@@ -126,7 +122,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
         const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
         const path = `${userId}/certs/${Date.now()}-${safeName(file.name)}`;
         const { error } = await supabase.storage
-            .from('certificates') // ★ 버킷명: 예) 'certificates' (만들어두세요, public 읽기 권장)
+            .from('certificates')
             .upload(path, file, { upsert: true, contentType: file.type });
         if (error) throw error;
         const { data } = supabase.storage.from('certificates').getPublicUrl(path);
@@ -146,17 +142,27 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             if (!token || !userId) throw new Error('세션이 없습니다.');
 
             let avatar_url: string | null = null;
+
             try {
                 avatar_url = await uploadAvatarAndGetUrl(userId);
             } catch (e) {
                 console.warn('avatar upload skipped:', e);
             }
 
-            const isUuid = (v: any) =>
-                typeof v === 'string' &&
-                /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
+            const withUrls = await Promise.all(
+                draftAnimals.map(async (a, idx) => {
+                    const key = a.animal_uuid || `idx-${idx}`;
+                    const file = animalFiles[key];
+                    if (file) {
+                        const publicUrl = await uploadAnimalImage(userId, key, file);
+                        return { ...a, img: publicUrl || a.img };
+                    }
+                    return a;
+                }),
+            );
 
-            const mergedAnimals = [...(draftAnimals ?? []), ...(animalsForm ?? [])];
+            const mergedAnimals = withUrls;
+
             let seenFirst = false;
 
             const animalsPayload = mergedAnimals
@@ -168,7 +174,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                         if (seenFirst) first = false;
                         else seenFirst = true;
                     }
-
+                    console.log(a, 'aa');
                     const base: any = {
                         name: a.name?.trim() ?? '',
                         birth_year: a.birth_year ? Number(a.birth_year) : null,
@@ -183,12 +189,16 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                     };
 
                     const uuid = (a as any).animal_uuid;
-                    if (isUuid(uuid)) base.animal_uuid = uuid;
+                    if (uuid && /^[0-9a-f-]{36}$/i.test(uuid)) base.animal_uuid = uuid;
 
                     return base;
                 });
 
-            if (!seenFirst && animalsPayload[0]) animalsPayload[0].first = true;
+            // if (!seenFirst && animalsPayload[0]) animalsPayload[0].first = true;
+
+            if (!animalsPayload.some((a) => a.first) && animalsPayload[0]) {
+                animalsPayload[0].first = true;
+            }
 
             const certsWithUrl = await Promise.all(
                 (certs ?? []).map(async (c) => {
@@ -216,6 +226,10 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 return item;
             });
 
+            const animalsPart = animalsPayload.length > 0 ? { animals: { replace: true, items: animalsPayload } } : {};
+
+            const certsPart = certsPayload.length > 0 ? { certificates: { replace: true, items: certsPayload } } : {};
+            console.log(animalsPart, 'part');
             const res = await fetch('/api/profile/update', {
                 method: 'POST',
                 headers: {
@@ -226,22 +240,23 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                     profile: {
                         name,
                         avatar_url: avatar_url ?? undefined,
+                        user_comment: comment,
                     },
-                    animals: {
-                        replace: true,
-                        items: animalsPayload,
-                    },
-                    certificates: {
-                        replace: true,
-                        items: certsPayload,
-                    },
+                    ...animalsPart,
+                    ...certsPart,
                 }),
             });
 
             const j = await res.json().catch(() => ({}));
             if (!res.ok || !j.ok) throw new Error(j.error || '저장 실패');
+            setToast(true);
 
-            handleModalState();
+            setToast(true);
+            setGetUser((prev) =>
+                prev ? { ...prev, name, user_comment: comment, avatar_url: avatar_url ?? prev.avatar_url } : prev,
+            );
+            setAnimals(withUrls);
+            setDraftAnimals(withUrls);
         } catch (e: any) {
             console.error(e);
             alert(e?.message ?? '저장 중 오류가 발생했습니다.');
@@ -249,6 +264,20 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             setSaving(false);
         }
     };
+
+    useEffect(() => {
+        if (!saving) {
+            setEditOne([]);
+        }
+    }, [saving]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        setDraftAnimals(animals && animals.length ? animals : [defaultAnimal(true)]);
+    }, [isOpen, animals, saving]);
+
+    const getAnimalKey = (a: Animal, idx: number) => (a as any).animal_uuid || (a as any).client_id || `idx-${idx}`;
 
     return (
         <ModalIos
@@ -260,7 +289,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             leftAction={handleSaveAll}
             leftComment={saving ? '저장 중…' : '정보 수정하기'}
         >
-            <div className="p-2 overflow-y-scroll no-scrollbar h-[685px]">
+            <div className="relative p-2 overflow-y-scroll no-scrollbar h-[685px]">
                 <div className="w-full rounded-2xl border border-[#e3ecdc] bg-gradient-to-br from-[#f3f7ee] to-white shadow-sm">
                     <div className="flex items-center justify-between px-3 py-2 border-b border-[#e3ecdc] rounded-t-2xl bg-white/60">
                         <h3 className="text-[13px] font-semibold text-[#3c5732]">정보 수정</h3>
@@ -333,7 +362,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                                     </p>
                                 </div>
 
-                                {/* 닉네임 입력 */}
                                 <div className="rounded-xl border border-[#e3ecdc] bg-white px-3 py-3">
                                     <label htmlFor="nickname" className="block text-[11px] text-gray-500 mb-1">
                                         닉네임 <span className="text-gray-400">(최대 7자)</span>
@@ -357,6 +385,20 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                                 </div>
                             </div>
                         </div>
+                        <div className="rounded-xl border border-[#e3ecdc] bg-white px-3 py-3">
+                            <label htmlFor="nickname" className="block text-[11px] text-gray-500 mb-1">
+                                한마디!
+                            </label>
+                            <div className="flex items-end gap-2">
+                                <input
+                                    id="user_comment"
+                                    type="text"
+                                    className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px] w-full outline-none focus:ring-2 focus:ring-emerald-100"
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                />
+                            </div>
+                        </div>
 
                         {/* 반려동물 */}
                         {getUser && _lov && (
@@ -374,9 +416,21 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                         {getUser && _buddy && (
                             <div className="rounded-xl border border-[#e3ecdc] bg-white px-3 py-2">
                                 <p className="text-[11px] text-gray-500 mb-1">자격증 정보</p>
-                                <div className="flex flex-wrap gap-1.5 text-[12px]">등록된 자격증 정보가 없어요.</div>
+                                <div>
+                                    {certificates ? (
+                                        certificates.map((item, i) => (
+                                            <div key={i} className="flex flex-col">
+                                                <span className="text-[14px]">✰ {item.name}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="flex flex-wrap gap-1.5 text-[12px]">
+                                            등록된 자격증 정보가 없어요.
+                                        </div>
+                                    )}
+                                </div>
+
                                 <span className="text-[11px] text-red-800">
-                                    {' '}
                                     * 버디 활동 시 자격증 정보가 없으면 등록이 제한돼요.
                                 </span>
                             </div>
@@ -384,11 +438,21 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                     </div>
                 </div>
                 {selectedAnimal && getUser && _lov && (
+                    //수정
                     <div className="relative mt-15">
                         <AnimalsForm
                             key={selectedAnimal.animal_uuid}
                             value={editOne}
                             onChange={setEditOne}
+                            onLocalFileChange={(idx, file) => {
+                                const key = getAnimalKey(editOne[idx], idx);
+                                setAnimalFiles((prev) => {
+                                    const next = { ...prev };
+                                    if (file) next[key] = file;
+                                    else delete next[key];
+                                    return next;
+                                });
+                            }}
                             maxCount={5}
                             className="mt-4"
                             allowAddRemove={false}
@@ -397,7 +461,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
                         <button
                             onClick={handleEditCancel}
-                            className="absolute -top-11 right-0 w-[150px] h-[38px] px-3 py-2 text-[14px] rounded-lg border-2 border-dashed border-red-400 bg-red-100 hover:bg-red-200 hover:border-solid"
+                            className="absolute -top-11 right-0 w-[150px] h-[38px] px-3 py-2 text-[14px] rounded-lg border-2 border-dashed border-red-200  hover:bg-red-200 hover:border-solid"
                         >
                             취소
                         </button>
@@ -405,11 +469,21 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 )}
 
                 {!selectedAnimal && getUser && _lov && (
+                    //새로 추가
                     <div className="p-2 rounded-xl shadow">
                         {/* <AnimalCardVertical initial={animals} onDelete={handleDelete} /> */}
                         <AnimalsForm
-                            value={animalsForm}
-                            onChange={setAnimalsForm}
+                            value={draftAnimals}
+                            onChange={setDraftAnimals}
+                            onLocalFileChange={(idx, file) => {
+                                const key = getAnimalKey(draftAnimals[idx], idx); // draftAnimals 또는 editOne
+                                setAnimalFiles((prev) => {
+                                    const next = { ...prev };
+                                    if (file) next[key] = file;
+                                    else delete next[key];
+                                    return next;
+                                });
+                            }}
                             maxCount={5}
                             className="mt-4"
                             allowAddRemove
@@ -419,14 +493,32 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
                 {getUser && _buddy && (
                     <div className="p-2 rounded-xl shadow">
-                        <div>
-                            {certificates.map((item, i) => (
-                                <div key={i}>
-                                    <span>{item.name}</span>
-                                </div>
-                            ))}
-                        </div>
                         <CertificatesForm value={certs} onChange={setCerts} allowUpload minCount={0} className="mt-3" />
+                    </div>
+                )}
+
+                {toast && (
+                    <div
+                        className={`fixed inset-0 z-[100] grid place-items-center transition-opacity duration-200 ${toast ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                        <div className="absolute inset-0 bg-black/20" />
+                        <div
+                            className="relative w-[300px] h-[200px] rounded-lg bg-white
+      border border-gray-300 shadow flex flex-col items-center justify-center"
+                        >
+                            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-3 custom-card">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                    <path
+                                        d="M20 7L9 18L4 13"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            </div>
+                            <span className="text-[14px]">수정이 완료되었습니다!</span>
+                        </div>
                     </div>
                 )}
             </div>

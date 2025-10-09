@@ -180,18 +180,25 @@ export default function EmptyMonthCollage({
                 >
                     <div className="relative">
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 p-2.5">
-                            {imgs.map((src, i) => (
-                                <div key={`${src}-${i}`} className="relative aspect-square rounded-2xl overflow-hidden">
-                                    <img
-                                        src={src}
-                                        alt=""
-                                        loading="lazy"
-                                        decoding="async"
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
-                                </div>
-                            ))}
+                            {imgs.length > 1 ? (
+                                imgs.map((src, i) => (
+                                    <div
+                                        key={`${src}-${i}`}
+                                        className="relative aspect-square rounded-2xl overflow-hidden"
+                                    >
+                                        <img
+                                            src={src}
+                                            alt=""
+                                            loading="lazy"
+                                            decoding="async"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+                                    </div>
+                                ))
+                            ) : (
+                                <img src="/project/buddy3.png" className="rounded-lx" />
+                            )}
 
                             <div className="p-2 rounded-xl flex flex-col justify-between border border-[#e3ecdc] bg-white shadow-sm text-[13px] text-gray-700">
                                 <span className="p-2">
