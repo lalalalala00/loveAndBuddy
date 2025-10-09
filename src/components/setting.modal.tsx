@@ -25,8 +25,6 @@ export const getMannerEmoji = (score: number) => {
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
     const { getUser, certificates, animals, toast, setToast, setGetUser, setAnimals, setCertificates } = useUserState();
 
-    const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animals);
-
     const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
 
@@ -37,18 +35,15 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
     const [saving, setSaving] = useState(false);
     const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
-    const [editOne, setEditOne] = useState<Animal[]>([]);
 
     const [animalFiles, setAnimalFiles] = useState<Record<string, File>>({});
 
     const handleClickChip = (a: Animal) => {
         setSelectedAnimal(a);
-        setEditOne([a]);
     };
 
     const handleEditCancel = () => {
         setSelectedAnimal(null);
-        setEditOne([]);
     };
     useEffect(() => {
         if (isOpen && getUser) {
@@ -147,15 +142,9 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
     useEffect(() => {
         if (!saving) {
-            setEditOne([]);
             setCerts([]);
         }
     }, [saving]);
-
-    useEffect(() => {
-        if (!isOpen) return;
-        setDraftAnimals(animals && animals.length ? animals : [defaultAnimal(true)]);
-    }, [isOpen, animals, saving]);
 
     const getAnimalKey = (a: Animal, idx: number) => (a as any).animal_uuid || (a as any).client_id || `idx-${idx}`;
 
@@ -351,7 +340,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 {!selectedAnimal && getUser && _lov && (
                     //새로 추가
                     <div className="p-2 rounded-xl shadow">
-                        {/* <AnimalCardVertical initial={animals} onDelete={handleDelete} /> */}
                         <AnimalsForm
                             value={animals}
                             onChange={setAnimals}

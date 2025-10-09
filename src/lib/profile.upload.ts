@@ -1,6 +1,6 @@
 
 import { supabase } from '@/lib/supabaseClient';
-import type { Animal, Certificate } from '@/utils/sign';
+import type { Animal } from '@/utils/sign';
 
 export async function uploadAvatarAndGetUrl(userId: string, file?: File|null, fallback?: string|null) {
   if (!file) return fallback ?? null;

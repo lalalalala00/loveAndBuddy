@@ -1,14 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import AnimalsForm from './sign.animals.form';
 import CertificatesForm, { CertificateFormItem } from './sign.certificateField.form';
 import Tooltip from '@/common/tooltip';
-import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal, Certificate } from '@/utils/sign';
-import { useUserState } from '@/context/useUserContext';
-import { uploadAvatarAndGetUrl } from '@/lib/profile.upload';
+import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal } from '@/utils/sign';
 
 const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }> = [
     { label: '러브', value: 'love', icon: '💚', comment: '믿을 수 있는 펫시터를 찾고 있어요!' },
@@ -128,7 +126,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                     const ext = f.name.split('.').pop()?.toLowerCase() || 'jpg';
                     const path = `${userId}/animals/${key}-${Date.now()}.${ext}`;
                     const { error } = await supabase.storage
-                        .from('avatars') // avatars 버킷 하위에 저장(권한 동일하게 쓰기)
+                        .from('avatars')
                         .upload(path, f, { upsert: true, contentType: f.type });
                     if (error) throw error;
                     const { data } = supabase.storage.from('avatars').getPublicUrl(path);
@@ -170,7 +168,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 },
                 body: JSON.stringify({
                     name: v.name,
-                    type: v.type, // 'love' | 'buddy' | 'lovuddy'
+                    type: v.type,
                     avatar_url: avatarUrl ?? '',
                     birth_year: v.birth_year ? Number(v.birth_year) : null,
                     user_comment: v.user_comment ?? '',
