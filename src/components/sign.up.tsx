@@ -8,6 +8,7 @@ import CertificatesForm, { CertificateFormItem } from './sign.certificateField.f
 import Tooltip from '@/common/tooltip';
 import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal, Certificate } from '@/utils/sign';
 import { useUserState } from '@/context/useUserContext';
+import { uploadAvatarAndGetUrl } from '@/lib/profile.upload';
 
 const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }> = [
     { label: '러브', value: 'love', icon: '💚', comment: '믿을 수 있는 펫시터를 찾고 있어요!' },
@@ -16,7 +17,6 @@ const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }
 ];
 
 export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-    const { getUser } = useUserState();
     const [v, setV] = useState<SignUpFormValues>(EMPTY_SIGNUP_FORM);
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState('');
@@ -27,6 +27,8 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
     const [profilePreview, setProfilePreview] = useState<string>('');
     const [profileFile, setProfileFile] = useState<File | null>(null);
+
+    const [animalFiles, setAnimalFiles] = useState<Record<string, File>>({});
 
     const isBuddy = v.type === 'buddy';
     const isLove = v.type === 'love';
@@ -55,10 +57,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         setErr('');
     };
 
-    // useEffect(() => {
-    //     setV(EMPTY_SIGNUP_FORM);
-    // }, [isOpen]);
-
     const selectRole = (r: Role) => setV((prev) => ({ ...prev, type: r }));
 
     const onSelectProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,22 +73,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         setProfilePreview('');
         setV((prev) => ({ ...prev, avatar_url: '' }));
     };
-
-    async function uploadAvatarAndGetUrl(userId: string): Promise<string | null> {
-        if (!profileFile) return v.avatar_url || null; // 파일이 없으면 기존 URL 사용
-
-        const ext = profileFile.name.split('.').pop()?.toLowerCase() || 'jpg';
-        const path = `${userId}/avatar.${ext}`;
-
-        const { error: upErr } = await supabase.storage
-            .from('avatars')
-            .upload(path, profileFile, { upsert: true, contentType: profileFile.type });
-
-        if (upErr) throw upErr;
-
-        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-        return data.publicUrl || null;
-    }
 
     const handleSignUp = async () => {
         if (!v.email || !v.password || !v.name || !v.type) {
@@ -123,19 +105,38 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
             const { data: userData } = await supabase.auth.getUser();
             if (!userData?.user) throw new Error('세션 없음(로그인 실패)');
+            const userId = userData.user.id;
 
             let avatarUrl: string | null = v.avatar_url || null;
-            try {
-                avatarUrl = await uploadAvatarAndGetUrl(userData.user.id);
-            } catch (e) {
-                console.warn('Avatar upload skipped:', e);
+            if (profileFile) {
+                const ext = profileFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+                const avatarPath = `${userId}/avatar.${ext}`;
+                const { error: upErr } = await supabase.storage
+                    .from('avatars')
+                    .upload(avatarPath, profileFile, { upsert: true, contentType: profileFile.type });
+                if (upErr) throw upErr;
+                const { data } = supabase.storage.from('avatars').getPublicUrl(avatarPath);
+                avatarUrl = data.publicUrl || null;
             }
 
-            const { data: sess } = await supabase.auth.getSession();
-            const accessToken = sess.session?.access_token;
-            if (!accessToken) throw new Error('세션 토큰 없음');
+            const animalsWithUrls = await Promise.all(
+                (animalsForm ?? []).map(async (a, idx) => {
+                    const key = a?.animal_uuid || `idx-${idx}`;
+                    const f = animalFiles[key];
+                    if (!f) return a;
 
-            const animalsPayload = (animalsForm ?? []).map((a: any, idx: number) => ({
+                    const ext = f.name.split('.').pop()?.toLowerCase() || 'jpg';
+                    const path = `${userId}/animals/${key}-${Date.now()}.${ext}`;
+                    const { error } = await supabase.storage
+                        .from('avatars') // avatars 버킷 하위에 저장(권한 동일하게 쓰기)
+                        .upload(path, f, { upsert: true, contentType: f.type });
+                    if (error) throw error;
+                    const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+                    return { ...a, img: data.publicUrl || a.img };
+                }),
+            );
+
+            const animalsPayload = (animalsWithUrls ?? []).map((a: any, idx: number) => ({
                 name: a.name?.trim() ?? '',
                 birth_year: a.birth_year ? Number(a.birth_year) : null,
                 variety: a.variety ?? '',
@@ -149,7 +150,17 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 owner_uuid: v.uuid,
             }));
 
-            const certsPayload = (certs ?? []).map(({ file, preview, ...rest }: any) => rest);
+            const certsPayload = (certs ?? []).map(({ file, preview, ...rest }: any) => ({
+                ...rest,
+                name: (rest.name ?? '').trim(),
+                issuer: (rest.issuer ?? '').trim(),
+                acquired_at: rest.acquired_at || null,
+                url: rest.url ?? null,
+            }));
+
+            const { data: sess } = await supabase.auth.getSession();
+            const accessToken = sess.session?.access_token;
+            if (!accessToken) throw new Error('세션 토큰 없음');
 
             const res = await fetch('/api/sign-up', {
                 method: 'POST',
@@ -158,7 +169,6 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                     'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    // name: v.name,
                     name: v.name,
                     type: v.type, // 'love' | 'buddy' | 'lovuddy'
                     avatar_url: avatarUrl ?? '',
@@ -178,14 +188,15 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             setV(EMPTY_SIGNUP_FORM);
             setAnimalsForm([EMPTY_ANIMAL]);
             setCerts([]);
-            setProfileFile?.(null);
-            setProfilePreview?.('');
+            setProfileFile(null);
+            setProfilePreview('');
+            setAnimalFiles({});
+
+            setTimeout(onClose, 900);
         } catch (e: any) {
             setErr(e?.message ?? '회원가입 중 오류가 발생했습니다.');
         } finally {
-            setSuccess(true);
             setLoading(false);
-            onClose();
         }
     };
 
@@ -332,7 +343,20 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         </p>
 
                         {(isLove || isLovuddy) && (
-                            <AnimalsForm value={animalsForm} onChange={setAnimalsForm} maxCount={5} className="mt-4" />
+                            <AnimalsForm
+                                value={animalsForm}
+                                onChange={setAnimalsForm}
+                                onLocalFileChange={(idx, file) => {
+                                    const key =
+                                        animalsForm[idx]?.animal_uuid || animalsForm[idx]?.animal_uuid || `idx-${idx}`;
+                                    setAnimalFiles((prev) => {
+                                        const next = { ...prev };
+                                        if (file) next[key] = file;
+                                        else delete next[key];
+                                        return next;
+                                    });
+                                }}
+                            />
                         )}
 
                         {(isBuddy || isLovuddy) && (

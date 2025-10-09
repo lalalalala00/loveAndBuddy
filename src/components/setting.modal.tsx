@@ -9,6 +9,15 @@ import { Animal, Certificate } from '@/utils/sign';
 import { supabase } from '@/lib/supabaseClient';
 import { getDecadeLabel } from '@/utils/date';
 import { Chip } from '@/common/animal.card.select';
+import {
+    buildAnimalsPayload,
+    buildCertificatesPayload,
+    mergeAndDedupeCerts,
+    norm,
+    uploadAnimalImage,
+    uploadAvatarAndGetUrl,
+    uploadCertFile,
+} from '@/lib/profile.upload';
 
 export const getMannerEmoji = (score: number) => {
     if (score >= 9) return '🌸';
@@ -17,7 +26,7 @@ export const getMannerEmoji = (score: number) => {
 };
 
 const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleModalState: () => void }) => {
-    const { getUser, certificates, animals, toast, setToast, setGetUser, setAnimals } = useUserState();
+    const { getUser, certificates, animals, toast, setToast, setGetUser, setAnimals, setCertificates } = useUserState();
 
     const [draftAnimals, setDraftAnimals] = useState<Animal[]>(animals);
 
@@ -40,24 +49,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
         setEditOne([a]);
     };
 
-    // const onSaveOne = () => {
-    //     if (!editOne.length) return;
-    //     const updated = editOne[0];
-    //     setSaving(true);
-
-    //     setDraftAnimals((prev) => {
-    //         let next = prev.map((x) => (x.animal_uuid === updated.animal_uuid ? { ...x, ...updated } : x));
-    //         if (updated.first) {
-    //             next = next.map((x) => ({ ...x, first: x.animal_uuid === updated.animal_uuid }));
-    //         }
-    //         return next;
-    //     });
-
-    //     setSelectedAnimal(null);
-    //     setEditOne([]);
-    //     setSaving(false);
-    // };
-
     const handleEditCancel = () => {
         setSelectedAnimal(null);
         setEditOne([]);
@@ -71,35 +62,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
     const _lov = getUser?.type === 'love' || getUser?.type === 'lovuddy';
     const _buddy = getUser?.type === 'buddy' || getUser?.type === 'lovuddy';
-
-    async function uploadAvatarAndGetUrl(userId: string): Promise<string | null> {
-        if (!profileFile) return getUser?.avatar_url || null;
-        const ext = profileFile.name.split('.').pop()?.toLowerCase() || 'jpg';
-        const path = `${userId}/avatar.${ext}`;
-
-        const { error } = await supabase.storage
-            .from('avatars')
-            .upload(path, profileFile, { upsert: true, contentType: profileFile.type });
-        if (error) throw error;
-
-        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-        return data.publicUrl || null;
-    }
-
-    async function uploadAnimalImage(userId: string, key: string, file: File) {
-        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-
-        const path = `${userId}/animals/${key}-${Date.now()}.${ext}`;
-
-        const { error } = await supabase.storage
-            .from('avatars')
-            .upload(path, file, { upsert: true, contentType: file.type });
-
-        if (error) throw error;
-
-        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-        return data.publicUrl || null;
-    }
 
     const onSelectProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -116,23 +78,9 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
         // setV((prev) => ({ ...prev, profileImg: '' }));
     };
 
-    const safeName = (s: string) => s.replace(/[^\w.\-]+/g, '_').slice(0, 80);
-
-    async function uploadCertFile(userId: string, file: File) {
-        const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
-        const path = `${userId}/certs/${Date.now()}-${safeName(file.name)}`;
-        const { error } = await supabase.storage
-            .from('certificates')
-            .upload(path, file, { upsert: true, contentType: file.type });
-        if (error) throw error;
-        const { data } = supabase.storage.from('certificates').getPublicUrl(path);
-        return data.publicUrl;
-    }
-
-    const handleSaveAll = async () => {
+    const handleSave = async () => {
+        setSaving(true);
         try {
-            setSaving(true);
-
             const [{ data: sess }, { data: u }] = await Promise.all([
                 supabase.auth.getSession(),
                 supabase.auth.getUser(),
@@ -141,17 +89,11 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             const userId = u.user?.id;
             if (!token || !userId) throw new Error('세션이 없습니다.');
 
-            let avatar_url: string | null = null;
+            const avatarUrl = await uploadAvatarAndGetUrl(userId, profileFile, getUser?.avatar_url ?? null);
 
-            try {
-                avatar_url = await uploadAvatarAndGetUrl(userId);
-            } catch (e) {
-                console.warn('avatar upload skipped:', e);
-            }
-
-            const withUrls = await Promise.all(
-                draftAnimals.map(async (a, idx) => {
-                    const key = a.animal_uuid || `idx-${idx}`;
+            const animalsWithUrls = await Promise.all(
+                animals.map(async (a, idx) => {
+                    const key = getAnimalKey(a, idx);
                     const file = animalFiles[key];
                     if (file) {
                         const publicUrl = await uploadAnimalImage(userId, key, file);
@@ -161,104 +103,54 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 }),
             );
 
-            const mergedAnimals = withUrls;
-
-            let seenFirst = false;
-
-            const animalsPayload = mergedAnimals
-                .filter((a) => a.name?.trim() || a.img)
-                .map((a, idx) => {
-                    let first =
-                        typeof (a as any).owner === 'boolean' ? (a as any).owner : ((a as any).first ?? idx === 0);
-                    if (first) {
-                        if (seenFirst) first = false;
-                        else seenFirst = true;
-                    }
-                    console.log(a, 'aa');
-                    const base: any = {
-                        name: a.name?.trim() ?? '',
-                        birth_year: a.birth_year ? Number(a.birth_year) : null,
-                        type: (a as any).type ?? 'dog',
-                        variety: a.variety ?? '',
-                        color: a.color ?? '',
-                        personality: (a as any).personality ?? 'introvert',
-                        level: Number((a as any).level ?? 0),
-                        comment: a.comment ?? '',
-                        img: a.img ?? '',
-                        first,
-                    };
-
-                    const uuid = (a as any).animal_uuid;
-                    if (uuid && /^[0-9a-f-]{36}$/i.test(uuid)) base.animal_uuid = uuid;
-
-                    return base;
-                });
-
-            // if (!seenFirst && animalsPayload[0]) animalsPayload[0].first = true;
-
-            if (!animalsPayload.some((a) => a.first) && animalsPayload[0]) {
-                animalsPayload[0].first = true;
-            }
-
-            const certsWithUrl = await Promise.all(
-                (certs ?? []).map(async (c) => {
-                    if (c.file && !c.url) {
-                        try {
-                            const publicUrl = await uploadCertFile(userId, c.file);
-                            return { ...c, url: publicUrl };
-                        } catch (e) {
-                            console.warn('cert file upload failed:', e);
-                            return c;
-                        }
-                    }
-                    return c;
-                }),
-            );
-
-            const certsPayload = certsWithUrl.map((c) => {
-                const item: any = {
-                    name: c.name?.trim() ?? '',
-                    issuer: c.issuer?.trim() ?? '',
-                    acquired_at: c.acquired_at || null, // 'YYYY-MM-DD'
-                    url: c.url ?? null,
-                };
-                if ((c as any).id) item.id = (c as any).id;
-                return item;
+            // const certsWithUrl = await Promise.all(
+            //     (certs ?? []).map(async (c: any) => {
+            //         if (c.file && !c.url) {
+            //             const url = await uploadCertFile(userId, c.file);
+            //             return { ...c, url };
+            //         }
+            //         return c;
+            //     }),
+            // );
+            const certsWithUrl = (certs ?? []).map((c: any) => {
+                const { file, preview, ...rest } = c;
+                return rest;
             });
 
-            const animalsPart = animalsPayload.length > 0 ? { animals: { replace: true, items: animalsPayload } } : {};
+            const animalsPayload = buildAnimalsPayload(animalsWithUrls);
+            const certsPayload = buildCertificatesPayload(certsWithUrl);
+            const animalsPart = animalsPayload.length ? { animals: { replace: true, items: animalsPayload } } : {};
+            const certsPart = certsPayload.length ? { certificates: { replace: true, items: certsPayload } } : {};
 
-            const certsPart = certsPayload.length > 0 ? { certificates: { replace: true, items: certsPayload } } : {};
-            console.log(animalsPart, 'part');
             const res = await fetch('/api/profile/update', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({
-                    profile: {
-                        name,
-                        avatar_url: avatar_url ?? undefined,
-                        user_comment: comment,
-                    },
+                    profile: { name, avatar_url: avatarUrl ?? undefined, user_comment: comment },
                     ...animalsPart,
                     ...certsPart,
                 }),
             });
-
             const j = await res.json().catch(() => ({}));
             if (!res.ok || !j.ok) throw new Error(j.error || '저장 실패');
-            setToast(true);
+
+            setGetUser((prev) =>
+                prev ? { ...prev, name, user_comment: comment, avatar_url: avatarUrl ?? prev.avatar_url } : prev,
+            );
+            setAnimals(animalsWithUrls);
+
+            const nextCerts: Certificate[] = (certsWithUrl ?? []).map((c: any) => ({
+                id: c.id ?? undefined,
+                name: (c.name ?? '').trim(),
+                issuer: (c.issuer ?? '').trim(),
+                acquired_at: c.acquired_at || null,
+                url: c.url ?? null,
+                cert: [],
+            }));
+            setCertificates((prev) => [...prev, ...nextCerts]);
 
             setToast(true);
-            setGetUser((prev) =>
-                prev ? { ...prev, name, user_comment: comment, avatar_url: avatar_url ?? prev.avatar_url } : prev,
-            );
-            setAnimals(withUrls);
-            setDraftAnimals(withUrls);
         } catch (e: any) {
-            console.error(e);
             alert(e?.message ?? '저장 중 오류가 발생했습니다.');
         } finally {
             setSaving(false);
@@ -268,12 +160,12 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
     useEffect(() => {
         if (!saving) {
             setEditOne([]);
+            setCerts([]);
         }
     }, [saving]);
 
     useEffect(() => {
         if (!isOpen) return;
-
         setDraftAnimals(animals && animals.length ? animals : [defaultAnimal(true)]);
     }, [isOpen, animals, saving]);
 
@@ -286,7 +178,7 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             title="정보 수정하기"
             width="590px"
             height="800px"
-            leftAction={handleSaveAll}
+            leftAction={handleSave}
             leftComment={saving ? '저장 중…' : '정보 수정하기'}
         >
             <div className="relative p-2 overflow-y-scroll no-scrollbar h-[685px]">
@@ -442,10 +334,10 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                     <div className="relative mt-15">
                         <AnimalsForm
                             key={selectedAnimal.animal_uuid}
-                            value={editOne}
-                            onChange={setEditOne}
+                            value={animals}
+                            onChange={setAnimals}
                             onLocalFileChange={(idx, file) => {
-                                const key = getAnimalKey(editOne[idx], idx);
+                                const key = getAnimalKey(animals[idx], idx);
                                 setAnimalFiles((prev) => {
                                     const next = { ...prev };
                                     if (file) next[key] = file;
@@ -473,10 +365,10 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                     <div className="p-2 rounded-xl shadow">
                         {/* <AnimalCardVertical initial={animals} onDelete={handleDelete} /> */}
                         <AnimalsForm
-                            value={draftAnimals}
-                            onChange={setDraftAnimals}
+                            value={animals}
+                            onChange={setAnimals}
                             onLocalFileChange={(idx, file) => {
-                                const key = getAnimalKey(draftAnimals[idx], idx); // draftAnimals 또는 editOne
+                                const key = getAnimalKey(animals[idx], idx);
                                 setAnimalFiles((prev) => {
                                     const next = { ...prev };
                                     if (file) next[key] = file;
