@@ -252,7 +252,7 @@ export default function AnimalsForm({
                                 {a.img || a.local_preview ? (
                                     <div className="relative rounded-xl border border-[#e3ecdc] bg-white p-2">
                                         <Tooltip
-                                            tooltip="더블클릭 => 삭제"
+                                            tooltip="더블 클릭 => 삭제"
                                             comment={
                                                 <img
                                                     src={a.img || a.local_preview}
