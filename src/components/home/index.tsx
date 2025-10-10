@@ -40,7 +40,6 @@ function ensureLayout(next?: Partial<RGLItem>[] | null): RGLItem[] {
 }
 
 export default function Index() {
-    // ✅ 동기 초기화: 첫 렌더부터 저장값 사용
     const [layout, setLayout] = useState<RGLItem[]>(() => {
         if (typeof window !== 'undefined') {
             try {
@@ -75,7 +74,6 @@ export default function Index() {
         return 2;
     });
 
-    // calExtension 변경시에만 cal.w 적용(동일값이면 스킵)
     useEffect(() => {
         setLayout((prev) => {
             const safe = ensureLayout(prev);
@@ -85,13 +83,11 @@ export default function Index() {
         });
     }, [calExtension]);
 
-    // 보이는 레이아웃 계산
     const visibleLayout = useMemo(
         () => (layout ?? []).filter((it) => it && !selectedClose.includes(it.i)),
         [layout, selectedClose],
     );
 
-    // 레이아웃 저장: 병합 → set → save 를 동기적으로
     const handleLayoutChange = (newVisible: RGLItem[]) => {
         const full = ensureLayout(layout);
         const visMap = new Map(newVisible.filter(Boolean).map((it) => [it.i, it]));
@@ -102,7 +98,6 @@ export default function Index() {
         } catch {}
     };
 
-    // 숨김 토글 저장
     const toggleClose = (value: string) => {
         if (!value) return;
         setSelectedClose((prev) => {

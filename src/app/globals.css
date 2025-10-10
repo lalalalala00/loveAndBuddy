@@ -3,9 +3,7 @@
 :root {
     --background: #ffffff;
     --foreground: #171717;
-    /* max-width: 1536px; */
-    /* max-width: 1280px;
-    margin: 0 auto; */
+
 }
 
 @theme inline {
@@ -23,12 +21,12 @@
 }
 
 body {
-    /* background: var(--background); */
+
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
 
     background: #f9fbfd;
-    /* background: #F4F7F9; */
+
 }
 
 button {
@@ -54,22 +52,7 @@ button {
     border-bottom: 8px solid transparent;
     border-right: 8px solid #e7e7e7;
 }
-/* 
-@layer utilities {
-    @keyframes blink {
-        0%,
-        100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0;
-        }
-    }
 
-    .animate-blink {
-        animation: blink 1s step-end infinite;
-    }
-} */
 
 @utility animate-blink {
   animation: blink 1s step-end infinite;
@@ -82,10 +65,7 @@ button {
     box-shadow:
         6px 6px 12px rgba(180, 194, 129, 0.25),
         -6px -6px 12px rgba(255, 255, 255, 1);
-    /* background: #f4f7f9;
-  box-shadow:
-    14px 14px 28px rgba(216, 225, 235, 0.5),
-    -14px -14px 28px rgba(255, 255, 255, 1); */
+
 }
 
 
@@ -135,35 +115,3 @@ button {
     @apply shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] bg-[#fff];
 }
 
-/* .color- {
-    color: #e6d7b8;
-    color: #f3ebd2;
-    color: #b4c281;
-    color: #b1a386;
-    color: #e2e6d4;
-    color: #afcb94;
-    color: #9dbb80;
-    color: #c8d9b5;
-    color: #b2d2a4;
-    color: #f7f9f6;
-    color: #f3f6f0;
-    color: #eff2ed;
-    color: #e3ecdc;
-    color: #f9fbf6;
-} */
-
-/* 1	#E6D7B8	따뜻한 크림 베이지
-2	#F3EBD2	부드러운 파스텔 아이보리
-3	#B4C281	연녹색, 버디 캐릭터 느낌
-4	#B1A386	톤다운된 베이지 브라운
-5	#E2E6D4	연한 민트 화이트
-soft-leaf	#AFCB94	부드럽고 감성적인 연잎색 (자연 친화적)
-mossy-green	#9DBB80	따뜻하고 차분한 이끼색 (버디 이미지에서 추출)
-mint-sage	#C8D9B5	아주 연한 민트+세이지, 감성 강조용
-matcha	#B2D2A4	생기 있는 느낌이 조금 더 있는 말차톤 */
-
-.react-grid-item {
-    transition: none !important;
-    width: auto !important;
-    height: auto !important;
-}

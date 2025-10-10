@@ -117,3 +117,9 @@
   bottom: 0;
   transform: rotate(45deg);
 }
+
+.react-grid-item {
+    transition: none !important;
+    width: auto !important;
+    height: auto !important;
+}
