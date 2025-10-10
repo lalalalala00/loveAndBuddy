@@ -3,8 +3,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { UserStateProvider } from '@/context/useUserContext';
 
-import '@/styles/vendor/react-grid-layout.css';
-import '@/styles/vendor/react-resizable.css';
 import { AuthProvider } from './providers/AuthProvider';
 
 export const metadata: Metadata = {
