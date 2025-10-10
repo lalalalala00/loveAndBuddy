@@ -86,7 +86,7 @@ export function BuddyStory() {
             <div className="absolute inset-0 backdrop-blur-[3px] rounded-2xl overflow-hidden" />
 
             <div className="relative z-10 px-8 py-20 max-w-3xl mx-auto ">
-                <h3 className="text-3xl font-semibold mb-18 text-center drop-shadow-md text-soft-green">
+                <h3 className="text-3xl font-semibold mb-18 text-center drop-shadow-md text-[#b4c281]">
                     버디는 어떻게 태어났을까요?
                 </h3>
 

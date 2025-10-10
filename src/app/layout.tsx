@@ -20,7 +20,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <div className={`antialiased`}>
+                <div className={`max-w-[1280px]  m-auto`}>
                     <AuthProvider>
                         <UserStateProvider>{children}</UserStateProvider>
                     </AuthProvider>

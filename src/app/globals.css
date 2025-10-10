@@ -4,8 +4,8 @@
     --background: #ffffff;
     --foreground: #171717;
     /* max-width: 1536px; */
-    max-width: 1280px;
-    margin: 0 auto;
+    /* max-width: 1280px;
+    margin: 0 auto; */
 }
 
 @theme inline {
@@ -23,7 +23,7 @@
 }
 
 body {
-    background: var(--background);
+    /* background: var(--background); */
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
 
@@ -54,7 +54,7 @@ button {
     border-bottom: 8px solid transparent;
     border-right: 8px solid #e7e7e7;
 }
-
+/* 
 @layer utilities {
     @keyframes blink {
         0%,
@@ -69,7 +69,13 @@ button {
     .animate-blink {
         animation: blink 1s step-end infinite;
     }
+} */
+
+@utility animate-blink {
+  animation: blink 1s step-end infinite;
 }
+@keyframes blink { 0%,100% {opacity:1} 50% {opacity:0} }
+
 
 .neumorph-box {
     background: #f4f9f5;
@@ -82,15 +88,7 @@ button {
     -14px -14px 28px rgba(255, 255, 255, 1); */
 }
 
-.text-soft-green {
-    color: #b4c281;
-}
-.text-soft-beige {
-    color: #e6d7b8;
-}
-.text-ivory {
-    color: #f3ebd2;
-}
+
 
 .neumorph-card {
     background: #f4f9f5;
@@ -112,9 +110,7 @@ button {
     font-weight: 700;
 }
 
-.text-soft-green {
-    color: #9cad4e;
-}
+
 
 .custom-card {
     @apply bg-[#e3ecdc] border border-white/20 shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff];
@@ -139,7 +135,7 @@ button {
     @apply shadow-[inset_4px_8px_10px_#f3f7ee,-4px_-4px_10px_#ffffff] bg-[#fff];
 }
 
-.color- {
+/* .color- {
     color: #e6d7b8;
     color: #f3ebd2;
     color: #b4c281;
@@ -154,7 +150,7 @@ button {
     color: #eff2ed;
     color: #e3ecdc;
     color: #f9fbf6;
-}
+} */
 
 /* 1	#E6D7B8	따뜻한 크림 베이지
 2	#F3EBD2	부드러운 파스텔 아이보리
