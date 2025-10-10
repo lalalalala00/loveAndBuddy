@@ -135,7 +135,7 @@ export default function Index() {
             </div>
 
             <GridLayout
-                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh] max-md:h-full! max-md:bg-none max-md:flex max-md:justify-center"
+                className="layout bg-[#fefefe] pt-4 rounded-b-2xl h-[100vh] max-md:h-full! max-md:bg-none max-md:flex max-md:justify-center transition-none!"
                 layout={visibleLayout}
                 cols={3}
                 maxRows={6}
@@ -157,7 +157,7 @@ export default function Index() {
                                 key={key}
                                 className="bg-white backdrop-blur-3xl border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff] rounded-2xl"
                             >
-                                <div className="drag-handle react-grid-item cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 custom-card rounded-2xl mb-1" />
+                                <div className="drag-handle transition-none! cursor-move p-2 opacity-0 hover:opacity-100 transition-opacity duration-200 custom-card rounded-2xl mb-1" />
                                 {componentMap[key]}
                             </div>
                         ),

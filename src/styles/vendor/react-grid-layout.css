@@ -30,7 +30,7 @@
 }
 
 .react-grid-item.react-grid-placeholder {
-  background: red;
+  background: white;
   opacity: 0.2;
   transition-duration: 100ms;
   z-index: 2;
@@ -118,8 +118,3 @@
   transform: rotate(45deg);
 }
 
-.react-grid-item {
-    transition: none !important;
-    width: auto !important;
-    height: auto !important;
-}
