@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import GridLayout from 'react-grid-layout';
 
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+// import 'react-grid-layout/css/styles.css';
+// import 'react-resizable/css/styles.css';
+
+import '../../../node_modules/react-grid-layout/css/styles.css';
+import '../../../node_modules/react-resizable/css/styles.css';
 
 // import '@/styles/vendor/react-grid-layout.css';
 // import '@/styles/vendor/react-resizable.css';
