@@ -158,7 +158,7 @@ export default function BuddyFilterBar({
                         </div>
 
                         {selectedType === 1 && (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 mr-2">
                                 <button
                                     className={cx(
                                         'px-3 py-2 rounded-full border text-[14px]',

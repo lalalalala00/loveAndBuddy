@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import BuddyMessageInput from './buddy.message.input';
 import { useUserState } from '@/context/useUserContext';
+import { ChatSummary } from './buddy.connect';
 
 type Message = {
     id: string;
@@ -28,10 +29,12 @@ export default function BuddyMessageRoom({
     chatRoomId,
     senderId,
     activePartnerName,
+    items,
 }: {
     chatRoomId: string;
     senderId: string;
     activePartnerName: string;
+    items: ChatSummary[];
 }) {
     const { loveChatData } = useUserState();
     const [messages, setMessages] = useState<Message[]>([]);
@@ -142,9 +145,32 @@ export default function BuddyMessageRoom({
 
                 {!loading && messages.length === 0 && !accepted && (
                     <div className="text-[13px] text-gray-700 p-2 flex items-center flex-col text-center">
-                        <span>
-                            <b>{loveChatData?.owner_nickname ?? activePartnerName}</b> 러브와 대화가 시작됩니다.
-                        </span>
+                        {/* {items.map((item, i) =>
+                            item.partnerName === activePartnerName ? (
+                                <span key={item.roomId}>
+                                    <b>{activePartnerName} </b> 버디와 대화가 시작됩니다.
+                                </span>
+                            ) : (
+                                <span key={loveChatData?.owner_uuid}>
+                                    <b>{loveChatData?.owner_nickname ?? activePartnerName}</b> 러브와 대화가 시작됩니다.
+                                </span>
+                            ),
+                        )} */}
+
+                        {loveChatData?.owner_nickname === activePartnerName ? (
+                            <span>
+                                <b>{loveChatData?.owner_nickname ?? activePartnerName}</b> 러브와 대화가 시작됩니다.
+                            </span>
+                        ) : (
+                            items.map(
+                                (item) =>
+                                    item.partnerName === activePartnerName && (
+                                        <span key={item.roomId}>
+                                            <b>{activePartnerName} </b> 버디와 대화가 시작됩니다.
+                                        </span>
+                                    ),
+                            )
+                        )}
 
                         <div className=" text-gray-800">
                             {loveChatData?.animals.map((item) => (

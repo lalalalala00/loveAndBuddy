@@ -9,7 +9,7 @@ import { useUserState } from '@/context/useUserContext';
 const FIXED_ROOM_ID = '22f9514e-3dad-4749-a3d9-372ead014fec';
 const FIXED_SENDER_ID = '6dc3998b-b201-4c89-bb1e-6400d92c79a5';
 
-type ChatSummary = {
+export type ChatSummary = {
     roomId: string;
     partnerName: string;
     partnerAvatar: string;
@@ -47,7 +47,7 @@ export default function BuddyConnect({
     const [activePartnerName, setActivePartnerName] = useState<string>('');
 
     const userId = getUser?.id;
-
+    console.log(items);
     useEffect(() => {
         const onOpen = (e: any) => {
             const { roomId, partnerName } = e.detail || {};
@@ -184,14 +184,17 @@ export default function BuddyConnect({
                             ‹
                         </button>
                         <div className="flex items-center gap-2">
-                            {items.map((it) => (
-                                <img
-                                    key={it.roomId}
-                                    src={it.partnerAvatar}
-                                    alt=""
-                                    className="w-6 h-6 rounded-full object-cover ring-1 ring-[#e3ecdc]"
-                                />
-                            ))}
+                            {items.map(
+                                (it) =>
+                                    it.partnerName === activePartnerName && (
+                                        <img
+                                            key={it.roomId}
+                                            src={it.partnerAvatar}
+                                            alt=""
+                                            className="w-6 h-6 rounded-full object-cover ring-1 ring-[#e3ecdc]"
+                                        />
+                                    ),
+                            )}
                             <span className="text-[13px] font-medium">{activePartnerName}</span>
                         </div>
                         <button className="px-2 py-1 rounded-lg text-[13px] hover:bg-[#f8fbf4]">•••</button>
@@ -202,6 +205,7 @@ export default function BuddyConnect({
                             chatRoomId={activeRoomId}
                             senderId={userId || ''}
                             activePartnerName={activePartnerName}
+                            items={items}
                         />
                     </div>
                 </div>

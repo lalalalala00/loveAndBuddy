@@ -5,8 +5,8 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O1
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
-    owner_nickname: '캣러버',
+    owner_uuid: '1f9d4baf-4d07-40b4-96a1-cd004a672950',
+    owner_nickname: '초코별',
     dear_love: 42,
     date: '2025-10-19',
     start_time: '16:00',
@@ -187,7 +187,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O5
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '펌킨도넛',
     dear_love: 26,
     date: '2025-10-19',
@@ -217,7 +217,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O6
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '라떼맘',
     dear_love: 37,
     date: '2025-10-21',
@@ -247,7 +247,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O7
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '단추집사',
     dear_love: 23,
     date: '2025-10-19',
@@ -277,7 +277,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O8
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '쿠로아빠',
     dear_love: 49,
     date: '2025-10-16',
@@ -322,7 +322,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O10
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '새싹',
     dear_love: 20,
     date: '2025-10-17',
@@ -352,7 +352,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O11
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '도치맘',
     dear_love: 16,
     date: '2025-10-22',
@@ -398,7 +398,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O12
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '특별한친구',
     dear_love: 9,
     date: '2025-10-19',
@@ -428,7 +428,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O13
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '라쿤보호자',
     dear_love: 54,
     date: '2025-10-21',
@@ -473,7 +473,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O14
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '호두집사',
     dear_love: 29,
     date: '2025-10-18',
@@ -533,7 +533,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O15
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '코코보호자',
     dear_love: 22,
     date: '2025-10-26',
@@ -563,7 +563,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O16
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '레오가족',
     dear_love: 46,
     date: '2025-10-28',
@@ -593,7 +593,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O17
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '루비가족',
     dear_love: 30,
     date: '2025-10-29',
@@ -623,7 +623,7 @@ export const DUMMY_LOVE_GROUPS: LoveGroupCard[] = [
   // O18
   {
     card_kind: 'love',
-    owner_uuid: 'a6d2c669-fd71-46cd-bdb2-096fc9f6eaa6',
+    owner_uuid: '3567b7c4-058d-419c-806e-6ef66634b8ad',
     owner_nickname: '메이집사',
     dear_love: 25,
     date: '2025-10-23',

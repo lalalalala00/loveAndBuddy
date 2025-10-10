@@ -874,7 +874,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
   {
     "user_id": "aaaaaac4-aaaa-4aaa-aaaa-aaaaaaaaaac4",
     "name": "여름",
-    "avatar_url": "https://kovostoragedev.blob.core.windows.net/kovo-dev/team%2Fstaff%2F15%2Fsupport%2F234%2F14.%E1%84%90%E1%85%A9%E1%86%BC%E1%84%8B%E1%85%A7%E1%86%A8_%E1%84%80%E1%85%B5%E1%86%B7%E1%84%90%E1%85%A2%E1%84%92%E1%85%B4.png",
+    "avatar_url": "/project/buddy_sit_1.png",
      'animal_type': 'others',
     "type": "buddy",
     "user_birth_year": "1989",
@@ -990,7 +990,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
   {
     "user_id": "aaaaaac8-aaaa-4aaa-aaaa-aaaaaaaaaac8",
     "name": "달",
-    "avatar_url": "https://kovostoragedev.blob.core.windows.net/kovo-dev/team%2Fstaff%2F11%2Fsupport%2F422%2F7.%E1%84%90%E1%85%B3%E1%84%85%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%82%E1%85%A5_%E1%84%8C%E1%85%A9%E1%84%8B%E1%85%A8%E1%84%8C%E1%85%B5%E1%86%AB.png",
+    "avatar_url": "/project/buddy_sit_1.png",
     'animal_type': 'dog',
     "type": "buddy",
     "user_birth_year": "1994",
@@ -1019,7 +1019,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
   {
     "user_id": "aaaaaac9-aaaa-4aaa-aaaa-aaaaaaaaaac9",
     "name": "별",
-    "avatar_url": "https://kovostoragedev.blob.core.windows.net/kovo-dev/team%2Fstaff%2F11%2Fsupport%2F352%2F10.%E1%84%86%E1%85%A2%E1%84%82%E1%85%B5%E1%84%8C%E1%85%A5_%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A1%E1%84%8B%E1%85%B3%E1%86%AB.png",
+    "avatar_url": "/project/buddy_sit_1.png",
     'animal_type': 'others',
     "type": "buddy",
     "user_birth_year": "1998",
@@ -1048,7 +1048,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
   {
     "user_id": "aaaaaad1-aaaa-4aaa-aaaa-aaaaaaaaaad1",
     "name": "구름",
-    "avatar_url": "https://kovostoragedev.blob.core.windows.net/kovo-dev/team%2Fstaff%2F17%2Fsupport%2F204%2F13.%E1%84%86%E1%85%A2%E1%84%82%E1%85%B5%E1%84%8C%E1%85%A5_%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%92%E1%85%AD%E1%84%8C%E1%85%B5%E1%86%AB.png",
+    "avatar_url": "/project/buddy_sit_1.png",
      'animal_type': 'dog',
     
     "type": "buddy",
@@ -1136,7 +1136,7 @@ export const DUMMY_CARDS: CardOverviewRow[] =  [
   {
     "user_id": "aaaaaad4-aaaa-4aaa-aaaa-aaaaaaaaaad4",
     "name": "휴지",
-    "avatar_url": "https://kovostoragedev.blob.core.windows.net/kovo-dev/team%2Fstaff%2F14%2Fsupport%2F428%2F9.%E1%84%90%E1%85%A9%E1%86%BC%E1%84%8B%E1%85%A7%E1%86%A8_%E1%84%8B%E1%85%B5%E1%84%89%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.png",
+    "avatar_url": "/project/buddy_sit_1.png",
     'animal_type': 'cat',
     "type": "buddy",
     "user_birth_year": "1993",

@@ -2,6 +2,7 @@
 
 import LoginModal from '@/components/sign.login';
 import { useUserState } from '@/context/useUserContext';
+import Link from 'next/link';
 import { useMemo } from 'react';
 
 type Animal = { name: string; img?: string | null; avatar_url?: string | null };
@@ -206,7 +207,9 @@ export default function EmptyMonthCollage({
                                     {animals.map((a) => a.name).join(', ')}와 함께한 하루를 기록해 보세요. 사진을
                                     업로드하면 이 달의 디얼러브가 채워져요 ✦
                                 </span>
-                                <button className="custom-card w-full p-2 rounded-lg">디얼러브 기록하기</button>
+                                <Link href="/dearLove/write" className="custom-card w-full p-2 rounded-lg text-center">
+                                    디얼러브 기록하기
+                                </Link>
                             </div>
                         </div>
                     </div>

@@ -180,7 +180,7 @@ export default function AnimalsForm({
                                 placeholder="반려동물 이름"
                                 value={a.name}
                                 onChange={(e) => updateAt(idx, { name: e.target.value })}
-                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px] focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                             />
                             <select
                                 value={a.type}
@@ -197,7 +197,7 @@ export default function AnimalsForm({
                                 placeholder="출생년도 (예: 2012)"
                                 value={a.birth_year || 0}
                                 onChange={(e) => updateAt(idx, { birth_year: Number(e.target.value || 0) })}
-                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px] focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                             />
                         </div>
 
@@ -206,13 +206,13 @@ export default function AnimalsForm({
                                 placeholder="품종 (예: 스피츠)"
                                 value={a.variety}
                                 onChange={(e) => updateAt(idx, { variety: e.target.value })}
-                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                             />
                             <input
                                 placeholder="색상 (예: 하얀색)"
                                 value={a.color}
                                 onChange={(e) => updateAt(idx, { color: e.target.value })}
-                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
+                                className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                             />
                             <select
                                 value={a.personality}
@@ -239,7 +239,7 @@ export default function AnimalsForm({
                                             const n = Math.max(0, Math.min(10, Number(e.target.value || 0)));
                                             updateAt(idx, { level: n as any });
                                         }}
-                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] w-[50px] mr-2"
+                                        className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px] w-[50px] mr-2 focus:outline-none focus:ring-2 focus:ring-[#c8d9b5]"
                                     />
                                     <span className="text-[14px]">/10</span>
                                 </div>
