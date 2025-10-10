@@ -1,4 +1,4 @@
-// utils/pricingPromo.ts
+
 export type CancelWindow = 'over48h' | '24to48h' | 'within24h' | 'noShow';
 
 export interface JoinWalkInput {

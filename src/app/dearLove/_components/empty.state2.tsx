@@ -84,7 +84,7 @@ export default function EmptyMonthCollage({
             return '이 달의 이야기는 아직 남겨지지 않았어요. 지금 이 순간을 기록해보는 건 어떨까요?';
         }
     };
-
+    console.log(imgs);
     return (
         <section className="relative mx-auto max-w-[1200px] px-4 mt-8">
             <div className=" flex items-center justify-center mb-6">
@@ -181,7 +181,7 @@ export default function EmptyMonthCollage({
                 >
                     <div className="relative">
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 p-2.5">
-                            {imgs.length > 1 ? (
+                            {imgs.length >= 1 ? (
                                 imgs.map((src, i) => (
                                     <div
                                         key={`${src}-${i}`}
