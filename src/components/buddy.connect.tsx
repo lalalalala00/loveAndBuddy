@@ -113,8 +113,6 @@ export default function BuddyConnect({
         };
     }, [userId]);
 
-    const unreadTotal = useMemo(() => items.reduce((a, c) => a + (c.unread || 0), 0), [items]);
-
     const handleResize = () => {
         if (inRoom) return;
         setExpanded((v) => !v);
