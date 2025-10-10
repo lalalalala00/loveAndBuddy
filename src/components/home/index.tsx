@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import GridLayout from 'react-grid-layout';
 
-import '@/styles/vendor/react-grid-layout.css';
-import '@/styles/vendor/react-resizable.css';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+
+// import '@/styles/vendor/react-grid-layout.css';
+// import '@/styles/vendor/react-resizable.css';
 
 import BuddyConnect from '../buddy.connect';
 import Calendar from './calendar';
