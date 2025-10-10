@@ -141,7 +141,7 @@ export default function NewLayout() {
                     <div className="absolute top-1/2 right-5 -translate-y-1/2 max-md:top-0">
                         <button
                             className="border border-[#e3ecdc] text-[13px] px-6 py-1 rounded-xl bg-amber-50 hover:bg-[#f3f7ee]"
-                            onClick={() => router.push('/find/write/love')}
+                            onClick={() => router.push('/dearLove/write')}
                         >
                             디얼러브 등록
                         </button>

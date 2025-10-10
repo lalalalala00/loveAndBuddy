@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
@@ -8,6 +8,9 @@ import { supabase } from '@/lib/supabaseClient';
 import { useUserState } from '@/context/useUserContext';
 
 const GUEST_ROUTE = process.env.NEXT_PUBLIC_GUEST_ROUTE || '/';
+
+const GUEST_EMAIL = process.env.NEXT_PUBLIC_GUEST_EMAIL as string;
+const GUEST_PASSWORD = process.env.NEXT_PUBLIC_GUEST_PASSWORD as string;
 
 export default function LoginModal({
     isOpen,
@@ -52,6 +55,30 @@ export default function LoginModal({
         }
     };
 
+    const continueAsGuest = async () => {
+        if (loading) return;
+        setLoading(true);
+        setErr('');
+        try {
+            setUserState('guest');
+
+            const { error } = await supabase.auth.signInWithPassword({
+                email: GUEST_EMAIL,
+                password: GUEST_PASSWORD,
+            });
+            if (error) throw error;
+
+            await finish();
+            //   if (GUEST_ROUTE) {
+            //     try { router.push(GUEST_ROUTE); } catch {}
+            //   }
+        } catch (e: any) {
+            setErr(e?.message ?? '게스트 로그인 중 오류가 발생했어요.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const sendReset = async () => {
         if (!email) return setErr('비밀번호 재설정을 위해 이메일을 입력해 주세요.');
         setErr('');
@@ -66,11 +93,18 @@ export default function LoginModal({
         }
     };
 
-    const continueAsGuest = () => {
-        setUserState('guest');
-        onClose();
-        router.push(GUEST_ROUTE);
-    };
+    // const continueAsGuest = () => {
+    //     setUserState('guest');
+    //     onClose();
+    //     router.push(GUEST_ROUTE);
+    // };
+
+    useEffect(() => {
+        setEmail('');
+        setPw('');
+        setErr('');
+        setJustLogged(false);
+    }, [isOpen]);
 
     return (
         <ModalIos isOpen={isOpen} handleModalState={onClose} title="로그인" width="480px" height="65%">

@@ -76,7 +76,7 @@ export default function BuddyConnect({
             setLoading(true);
             setErr('');
             const { data, error } = await supabase.rpc('get_chat_list_for_user', { uid: userId });
-            console.log(error);
+
             if (!mounted) return;
 
             // if (error) {
@@ -85,7 +85,7 @@ export default function BuddyConnect({
             // }
 
             const mapped = Array.isArray(data) ? data.map(mapRpcRow) : [];
-            console.log(mapped, '000');
+
             const fallback: ChatSummary = {
                 roomId: FIXED_ROOM_ID,
                 partnerName: 'cheerrry_',

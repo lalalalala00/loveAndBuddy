@@ -533,7 +533,6 @@ export default function DocContent() {
                 </Section>
             </Card>
 
-            {/* Demo */}
             <Card>
                 <Section id="demo__live" title="시연 (live/gif)">
                     <p className="mb-3">핵심 플로우: 회원가입 → 동물 등록 → 버디 리스트 확인</p>
@@ -1098,6 +1097,157 @@ dear_love (
   likes int4, bookmarks int4, comments_count int4,
   created_at timestamptz, updated_at timestamptz
 )`}
+
+                {`
+
+-- SQL
+CREATE TABLE public.animals (
+  animal_uuid uuid NOT NULL DEFAULT gen_random_uuid(),
+  owner_uuid uuid NOT NULL DEFAULT auth.uid(),
+  owner_nickname text NOT NULL,
+  name text NOT NULL,
+  birth_year integer NOT NULL,
+  type USER-DEFINED NOT NULL,
+  variety text NOT NULL,
+  color text NOT NULL,
+  personality USER-DEFINED NOT NULL,
+  level text NOT NULL,
+  comment text NOT NULL,
+  img text NOT NULL,
+  first boolean NOT NULL DEFAULT false,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT animals_pkey PRIMARY KEY (animal_uuid),
+  CONSTRAINT animals_owner_uuid_fkey FOREIGN KEY (owner_uuid) REFERENCES public.users(id),
+  CONSTRAINT animals_owner_uuid_fkey1 FOREIGN KEY (owner_uuid) REFERENCES public.users(id)
+);
+CREATE TABLE public.bookings (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  love_id uuid NOT NULL,
+  buddy_id uuid NOT NULL,
+  start_at timestamp with time zone NOT NULL,
+  place text,
+  location text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT bookings_pkey PRIMARY KEY (id),
+  CONSTRAINT bookings_love_id_fkey FOREIGN KEY (love_id) REFERENCES public.users(id),
+  CONSTRAINT bookings_buddy_id_fkey FOREIGN KEY (buddy_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.bookmarks (
+  user_id uuid NOT NULL,
+  target_user_id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT bookmarks_pkey PRIMARY KEY (user_id, target_user_id),
+  CONSTRAINT bookmarks_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT bookmarks_target_user_id_fkey FOREIGN KEY (target_user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.cards (
+  user_id uuid NOT NULL,
+  card_kind USER-DEFINED NOT NULL,
+  manner integer NOT NULL DEFAULT 0 CHECK (manner >= 0),
+  heart integer NOT NULL DEFAULT 0 CHECK (heart >= 0),
+  dear_love integer NOT NULL DEFAULT 0 CHECK (dear_love >= 0),
+  reliability integer CHECK (reliability IS NULL OR reliability >= 0),
+  level integer CHECK (level IS NULL OR level >= 0),
+  gender USER-DEFINED,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT cards_pkey PRIMARY KEY (user_id),
+  CONSTRAINT cards_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
+CREATE TABLE public.certificates (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  name text NOT NULL,
+  issuer text NOT NULL,
+  acquired_at date NOT NULL,
+  url text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  cert ARRAY,
+  CONSTRAINT certificates_pkey PRIMARY KEY (id),
+  CONSTRAINT certificates_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.chat_messages (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  room_id uuid NOT NULL,
+  sender_id uuid NOT NULL,
+  content text NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT chat_messages_pkey PRIMARY KEY (id),
+  CONSTRAINT chat_messages_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.chat_rooms(id)
+);
+CREATE TABLE public.chat_participants (
+  room_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  partner_id uuid,
+  unread_count integer NOT NULL DEFAULT 0,
+  last_read_at timestamp with time zone,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT chat_participants_pkey PRIMARY KEY (room_id, user_id),
+  CONSTRAINT chat_participants_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.chat_rooms(id)
+);
+CREATE TABLE public.chat_rooms (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  last_message text,
+  last_at timestamp with time zone,
+  CONSTRAINT chat_rooms_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.dear_love (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  author_id uuid NOT NULL,
+  author_type USER-DEFINED NOT NULL,
+  buddy_user_id uuid,
+  date_at timestamp without time zone NOT NULL,
+  title text NOT NULL,
+  weather USER-DEFINED NOT NULL,
+  representative_img text,
+  photos ARRAY NOT NULL DEFAULT '{}'::text[],
+  comment text NOT NULL,
+  location text,
+  place text,
+  tags ARRAY NOT NULL DEFAULT '{}'::text[],
+  visibility USER-DEFINED NOT NULL DEFAULT 'public'::dearlove_visibility_enum,
+  likes integer NOT NULL DEFAULT 0,
+  bookmarks integer NOT NULL DEFAULT 0,
+  comments_count integer NOT NULL DEFAULT 0,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  with_animals text,
+  start_time text,
+  end_time text,
+  CONSTRAINT dear_love_pkey PRIMARY KEY (id),
+  CONSTRAINT dear_love_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.users(id),
+  CONSTRAINT dear_love_buddy_user_id_fkey FOREIGN KEY (buddy_user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.dear_love_animals (
+  dear_love_id uuid NOT NULL,
+  animal_id uuid NOT NULL,
+  CONSTRAINT dear_love_animals_pkey PRIMARY KEY (dear_love_id, animal_id),
+  CONSTRAINT dear_love_animals_dear_love_id_fkey FOREIGN KEY (dear_love_id) REFERENCES public.dear_love(id),
+  CONSTRAINT dear_love_animals_animal_id_fkey FOREIGN KEY (animal_id) REFERENCES public.animals(animal_uuid)
+);
+CREATE TABLE public.user_bookmarks (
+  user_id uuid NOT NULL,
+  target_user_id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT user_bookmarks_pkey PRIMARY KEY (target_user_id, user_id),
+  CONSTRAINT user_bookmarks_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+  CONSTRAINT user_bookmarks_target_user_id_fkey FOREIGN KEY (target_user_id) REFERENCES auth.users(id)
+);
+CREATE TABLE public.users (
+  id uuid NOT NULL,
+  email text,
+  name text NOT NULL,
+  type USER-DEFINED NOT NULL DEFAULT 'love'::role_enum,
+  avatar_url text,
+  birth_year integer,
+  user_comment text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  nickname text,
+  CONSTRAINT users_pkey PRIMARY KEY (id),
+  CONSTRAINT users_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
+);
+`}
             </div>
 
             <a href="/wireframe/supa.png" target="_blank" rel="noopener noreferrer">

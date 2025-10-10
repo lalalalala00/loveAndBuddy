@@ -40,12 +40,12 @@ export type Animal = {
 export const EMPTY_ANIMAL: Animal = {
   owner_nickname: '',
   name: '',
-  birth_year: 2012,
+  birth_year: 0000,
   type: 'dog',
   variety: '',
   color: '',
   personality: 'introvert',
-  level: '0',
+  level: '1',
   comment: '',
   img: '',
   first: true,
@@ -100,19 +100,42 @@ export function DomainTypes() {
 // ----------------------------------------------------
 export type User = {
   uuid: string;
-  nickname: string;
+  name: string;
   avatar_url: string;
   type: Role | null;
-  user_birth_year: string;
+  birth_year: string;
   user_comment: string;
-  name: string | null;
+  id?:string
 };
+
+export const EMPTY_USER: User = {
+    uuid: '',
+    name: '',
+    avatar_url: '',
+    type: null,
+    birth_year: '',
+    user_comment: '',
+};
+
+export const EMPTY_SELECTED_ANIMALS_LIST: SelectedAnimals[] = [];
+
+export type SelectedAnimals = {
+    name: string;
+    id: string;
+    isFirst: boolean;
+    avatar_url: string;
+};
+
 
 export type Booking = {
   user: User;       // 예약 상대
   date: number;     // unix timestamp
   place: string;    // 장소 라벨
   location: string; // 동네
+
+  uuid: string; //uuid
+  buddy: User;
+  animals: SelectedAnimals[];
 };
 
 // ----------------------------------------------------
@@ -152,11 +175,16 @@ export type DearLoveVisibility = 'public' | 'followers' | 'private';
 
 export type DearLove = {
   id?: string;                 // DB 생성 시 사용
+  author_id: string;           // 작성자 id
   authorType: CardKind;        // 작성자 카드 유형
+  buddy_user_id: string | null;
+
+  date_at: string | null; // '2025-09-21 14:38:53+00'
+  start_time: string | null;
+  end_time: string | null;
 
   buddy?: User;                // 어떤 버디와 함께했는지 (선택)
 
-  date: number;                // unix timestamp
   title: string;
   weather: Weather;
 
@@ -165,7 +193,7 @@ export type DearLove = {
 
   photos: string[];
   comment: string;
-  animals: Animal[];
+  with_animals: Animal[];
 
   // 메타
   location?: string;           // 동네/장소 라벨

@@ -31,19 +31,20 @@ export default function AnimalCardVertical({
                             <Tooltip
                                 comment={
                                     <img
-                                        src={item.img}
+                                        src={item.img.length > 1 ? item.img : '/project/buddy_sit_1.png'}
                                         alt={item.name}
                                         className={`w-full h-30 object-cover rounded-xl ring-1 ring-[#e3ecdc] shadow-md ${list.length >= 2 ? 'hover:opacity-50 cursor-pointer hover:border hover:border-red-300' : ''}`}
                                     />
                                 }
-                                tooltip="삭제"
+                                double
+                                tooltip="더블클릭 => 삭제"
                                 onClick={() => onDelete?.(item.animal_uuid)}
                                 clickCss="w-full"
                             />
 
                             <div className="absolute top-27 left-1/2 -translate-x-1/2">
                                 <span className="rounded-xl px-2 py-0.5 text-[10px] bg-white shadow">
-                                    {item.animal_type === 'dog' ? '🐶' : '🐱'}
+                                    {item.type === 'dog' ? '🐶' : '🐱'}
                                 </span>
                             </div>
 
@@ -57,7 +58,7 @@ export default function AnimalCardVertical({
                                     <div className="mt-1 flex flex-wrap gap-1.5 text-[11px]">
                                         {/* <Chip>{item.type === 'dog' ? '🐶 dog' : '🐱 cat'}</Chip> */}
                                         <Chip>{getAgeFromYear(item.birth_year)}살</Chip>
-                                        <Chip>{item.color}</Chip>
+                                        {item.color && <Chip>{item.color}</Chip>}
                                         <Chip>{item.personality === 'extrovert' ? '🌼 외향적' : '🌙 내향적'}</Chip>
                                     </div>
                                 </div>

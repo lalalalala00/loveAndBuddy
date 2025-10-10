@@ -34,7 +34,7 @@ const WriteIndex = ({ setSelectedClose }: { setSelectedClose: (value: string) =>
             imgs.forEach((img) => URL.revokeObjectURL(img as unknown as string));
         };
     }, [imgs]);
-    console.log(content);
+
     return (
         <div className="w-[400px]">
             <button

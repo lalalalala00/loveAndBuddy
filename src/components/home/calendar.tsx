@@ -58,7 +58,7 @@ const Calendar = ({
     const { state } = useDearLoveIndex(dearLoves, getUserById);
     const { sortedDearLoves, buddyCache } = state;
 
-    const [calSize, setCalSize] = useState<boolean | null>(null);
+    const [calSize, setCalSize] = useState<boolean>(true);
     const [selectedDay, setSelectedDay] = useState<SelectedDay>();
     const [day, setDay] = useState<string>('');
     const [currentDate, setCurrentDate] = useState(dayjs());
@@ -122,22 +122,6 @@ const Calendar = ({
         setCalExtension(width);
     }, [calSize, dayContents]);
 
-    const isMobile = _media.x <= 768;
-
-    useEffect(() => {
-        if (isMobile) {
-            setCalExtension((prev) => (prev !== 1 ? 1 : prev));
-            return;
-        }
-
-        const next = calSize ? (dayContents ? 3 : 2) : dayContents ? 2 : 1;
-
-        setCalExtension((prev) => (prev !== next ? next : prev));
-    }, [_media.x, isMobile, calSize, dayContents, setCalExtension]);
-    useEffect(() => {
-        setCalSize(!isMobile);
-    }, [isMobile]);
-    console.log(isMobile);
     return (
         <div
             className={`mx-auto flex max-md:flex-col ${!calSize ? 'px-2 max-md:px-0' : 'px-4'} ${!calSize && !dayContents && 'w-[400px] max-md:w-full!'} ${!calSize && dayContents && 'w-[830px]'} max-md:w-full! max-md:max-w-full! max-md:min-w-[350px]! max-md:h-full!`}

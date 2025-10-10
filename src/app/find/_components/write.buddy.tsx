@@ -4,15 +4,18 @@ import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 import SelectedPlace from '@/common/selected.place';
 import { useUserState } from '@/context/useUserContext';
 import { Filters } from '@/utils/date';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Option } from '@/common/selected.box';
+import { CenterToast } from '@/app/dearLove/_components/write.love';
+import { useRouter } from 'next/navigation';
 
 function cx(...c: (string | false | null | undefined)[]) {
     return c.filter(Boolean).join(' ');
 }
 
 const WriteBuddy = () => {
+    const router = useRouter();
     const { getUser } = useUserState();
     const [saveBase, setSaveBase] = useState<boolean>(false);
     const [buddyComment, setBuddyComment] = useState<string>('');
@@ -21,8 +24,16 @@ const WriteBuddy = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [location, setLocation] = useState<Option[]>([]);
 
+    const [toastOpen, setToastOpen] = useState(false);
+
+    useEffect(() => {
+        if (!toastOpen) return;
+        const t = setTimeout(() => router.push('/find'), 1000);
+        return () => clearTimeout(t);
+    }, [toastOpen, router]);
+
     return (
-        <div className="flex h-full justify-between items-center flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
+        <div className="relative flex h-full justify-between items-center flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff]">
             <div className="flex items-center w-full rounded-t-2xl">
                 <NameTag find asap small user info={getUser as unknown as NameTagInfoMinimal} />
             </div>
@@ -85,11 +96,15 @@ const WriteBuddy = () => {
                         <div className={`w-3 h-3 border rounded-sm mr-1 mb-0.5 ${saveBase ? 'bg-gray-400' : ''}`}></div>
                         <span className="text-[14px]">기본 정보로 저장하기</span>
                     </button>
-                    <button className="custom-card w-full h-12 rounded-2xl custom-card-hover cursor-pointer">
+                    <button
+                        onClick={() => setToastOpen(true)}
+                        className="custom-card w-full h-12 rounded-2xl custom-card-hover cursor-pointer"
+                    >
                         버디 등록하기
                     </button>
                 </div>
             </div>
+            <CenterToast open={toastOpen} comment="" />
         </div>
     );
 };

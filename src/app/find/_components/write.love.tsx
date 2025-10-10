@@ -5,15 +5,18 @@ import NameTag, { NameTagInfoMinimal } from '@/common/name.tag';
 import SelectedPlace from '@/common/selected.place';
 import { Animal } from '@/utils/sign';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddressModal, { AddrState } from './address.modal';
 import { PrivacyNote } from '@/utils/comment';
 import Tooltip from '@/common/tooltip';
 import AnimalSelectedForm from '@/common/animal.select.form';
 import { useUserState } from '@/context/useUserContext';
 import { Option } from '@/common/selected.box';
+import { useRouter } from 'next/navigation';
+import { CenterToast } from '@/app/dearLove/_components/write.love';
 
 const WriteLove = () => {
+    const router = useRouter();
     const { getUser } = useUserState();
     const [saveBase, setSaveBase] = useState<boolean>(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,6 +32,13 @@ const WriteLove = () => {
     const [selectedAnimals, setSelectedAnimals] = useState<Animal[] | undefined>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [location, setLocation] = useState<Option[]>([]);
+    const [toastOpen, setToastOpen] = useState(false);
+
+    useEffect(() => {
+        if (!toastOpen) return;
+        const t = setTimeout(() => router.push('/find?type=love'), 1000);
+        return () => clearTimeout(t);
+    }, [toastOpen, router]);
 
     const hasAddr = Boolean(addr.address && addr.detail);
 
@@ -107,11 +117,16 @@ const WriteLove = () => {
                         <div className={`w-3 h-3 border rounded-sm mr-1 mb-0.5 ${saveBase ? 'bg-gray-400' : ''}`}></div>
                         <span className="text-[14px]">기본 정보로 저장하기</span>
                     </button>
-                    <button className="custom-card w-full h-12 rounded-2xl custom-card-hover cursor-pointer">
+                    <button
+                        onClick={() => setToastOpen(true)}
+                        className="custom-card w-full h-12 rounded-2xl custom-card-hover cursor-pointer"
+                    >
                         등록하기
                     </button>
                 </div>
             </div>
+
+            <CenterToast open={toastOpen} comment="" />
 
             <ModalIos
                 isOpen={addrModal}

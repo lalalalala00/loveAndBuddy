@@ -5,6 +5,7 @@ import { UserStateProvider } from '@/context/useUserContext';
 
 import '@/styles/vendor/react-grid-layout.css';
 import '@/styles/vendor/react-resizable.css';
+import { AuthProvider } from './providers/AuthProvider';
 
 export const metadata: Metadata = {
     title: 'soom',
@@ -20,7 +21,9 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <div className={`antialiased`}>
-                    <UserStateProvider>{children}</UserStateProvider>
+                    <AuthProvider>
+                        <UserStateProvider>{children}</UserStateProvider>
+                    </AuthProvider>
                 </div>
             </body>
         </html>

@@ -67,12 +67,12 @@ export const UserStateProvider = ({ children }: { children: ReactNode }) => {
     const userWithCerts = useMemo<UserWithCerts | null>(() => {
         if (!getUser) return null;
         return { ...getUser, certificates };
-    }, [getUser, certificates, toast]);
+    }, [getUser, certificates]);
 
     const userFull = useMemo<UserFull | null>(() => {
         if (!getUser) return null;
         return { ...getUser, certificates, animals, dearLoves };
-    }, [getUser, certificates, animals, dearLoves, toast]);
+    }, [getUser, certificates, animals, dearLoves]);
 
     const resetUser = () => {
         setGetUser(null);

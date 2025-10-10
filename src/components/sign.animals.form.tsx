@@ -39,7 +39,6 @@ export default function AnimalsForm({
         const next = [...value];
         next[idx] = { ...next[idx], ...patch };
         onChange(next);
-        console.log(next);
     };
 
     const setOwnerAt = (idx: number) => {
@@ -184,10 +183,8 @@ export default function AnimalsForm({
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white shadow-inner text-[14px]"
                             />
                             <select
-                                value={a.animal_type}
-                                onChange={(e) =>
-                                    updateAt(idx, { animal_type: e.target.value as Animal['animal_type'] })
-                                }
+                                value={a.type}
+                                onChange={(e) => updateAt(idx, { type: e.target.value as Animal['type'] })}
                                 className="px-3 py-2 rounded-xl border border-[#e3ecdc] bg-white text-[14px]"
                             >
                                 <option value="dog">강아지</option>

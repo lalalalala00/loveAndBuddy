@@ -1,3 +1,4 @@
+import { getAgeFromYear } from '@/utils/date';
 import { Animal } from '@/utils/sign';
 import { useState } from 'react';
 
@@ -61,7 +62,7 @@ export default function AnimalSelect({
                         >
                             <div className="flex gap-3">
                                 <img
-                                    src={item.img}
+                                    src={item.img.length > 1 ? item.img : '/project/buddy_sit_1.png'}
                                     alt={item.name}
                                     className="w-28 h-30 object-cover rounded-xl ring-1 ring-[#e3ecdc] shadow-md"
                                 />
@@ -76,8 +77,8 @@ export default function AnimalSelect({
                                                 </span>
                                             </div>
                                             <div className="mt-1 flex flex-wrap gap-1.5 text-[11px]">
-                                                <Chip>{item.birth_year}살</Chip>
-                                                <Chip>{item.color}</Chip>
+                                                <Chip>{getAgeFromYear(item.birth_year)}살</Chip>
+                                                {item.color && <Chip>{item.color}</Chip>}
                                                 <Chip>
                                                     {item.personality === 'extrovert' ? '🌼 외향적' : '🌙 내향적'}
                                                 </Chip>

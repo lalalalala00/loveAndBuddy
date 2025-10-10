@@ -1,5 +1,6 @@
 'use client';
 
+import LoginModal from '@/components/sign.login';
 import { useUserState } from '@/context/useUserContext';
 import { useMemo } from 'react';
 
@@ -45,7 +46,7 @@ export default function EmptyMonthCollage({
     dears: Dear[];
     selectedYYYYMM: string; // 'YYYY-MM'
 }) {
-    const { getUser } = useUserState();
+    const { getUser, setLogin, login } = useUserState();
     const imgs = animals.map((a) => a.img).filter(Boolean) as string[];
 
     const allDearUrls = useMemo(() => extractAllUrls(dears), [dears]);
@@ -83,7 +84,7 @@ export default function EmptyMonthCollage({
             return '이 달의 이야기는 아직 남겨지지 않았어요. 지금 이 순간을 기록해보는 건 어떨까요?';
         }
     };
-    console.log(selectedYYYYMM);
+
     return (
         <section className="relative mx-auto max-w-[1200px] px-4 mt-8">
             <div className=" flex items-center justify-center mb-6">
@@ -92,8 +93,8 @@ export default function EmptyMonthCollage({
                 </p>
             </div>
             {!getUser && (
-                <button className="flex justify-center items-center w-full py-2 mb-5">
-                    <span className="px-6 py-2 border rounded-lg ">로그인하기</span>
+                <button onClick={() => setLogin(true)} className="flex justify-center items-center w-full py-2 mb-5">
+                    <span className="px-10 py-2 border rounded-lg  custom-card text-[14px]">로그인하기</span>
                 </button>
             )}
             <div className="relative rounded-3xl border border-[#e3ecdc] bg-[#f3f7ee] shadow-[6px_8px_24px_#eef6e6,inset_-6px_-8px_24px_#ffffff] overflow-hidden">
@@ -211,6 +212,7 @@ export default function EmptyMonthCollage({
                     </div>
                 </div>
             )}
+            <LoginModal isOpen={login} onClose={() => setLogin(false)} />
         </section>
     );
 }

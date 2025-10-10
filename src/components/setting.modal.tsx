@@ -38,6 +38,8 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
 
     const [animalFiles, setAnimalFiles] = useState<Record<string, File>>({});
 
+    const [guestNoti, setGuestNoti] = useState<boolean>(false);
+
     const handleClickChip = (a: Animal) => {
         setSelectedAnimal(a);
     };
@@ -71,6 +73,11 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
     };
 
     const handleSave = async () => {
+        if (getUser?.id === '116fdb30-7b2a-4314-b214-68f6e2bc7e46') {
+            setGuestNoti(true);
+            return;
+        }
+
         setSaving(true);
         try {
             const [{ data: sess }, { data: u }] = await Promise.all([
@@ -147,6 +154,12 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
     }, [saving]);
 
     const getAnimalKey = (a: Animal, idx: number) => (a as any).animal_uuid || (a as any).client_id || `idx-${idx}`;
+
+    useEffect(() => {
+        if (!guestNoti) return;
+        const t = setTimeout(() => setGuestNoti(false), 1500);
+        return () => clearTimeout(t);
+    }, [guestNoti]);
 
     return (
         <ModalIos
@@ -386,6 +399,23 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                                 </svg>
                             </div>
                             <span className="text-[14px]">수정이 완료되었습니다!</span>
+                        </div>
+                    </div>
+                )}
+                {guestNoti && (
+                    <div
+                        className={`fixed inset-0 z-[100] grid place-items-center transition-opacity duration-200 ${guestNoti ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                        <div className="absolute inset-0 bg-black/20" />
+                        <div
+                            className="relative w-[300px] h-[200px] rounded-lg bg-white p-4
+      border border-gray-300 shadow flex flex-col items-center justify-between"
+                        >
+                            <span className="text-[14px] text-center mt-12">
+                                게스트 모드에서는 수정이 제한됩니다.
+                                <br /> 회원가입 후 이용해보세요!
+                            </span>
+                            <button className="w-full custom-card rounded-lg text-[14px] py-1">확인</button>
                         </div>
                     </div>
                 )}

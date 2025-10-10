@@ -1,12 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ModalIos from '@/common/modal.ios';
 import { supabase } from '@/lib/supabaseClient';
 import AnimalsForm from './sign.animals.form';
 import CertificatesForm, { CertificateFormItem } from './sign.certificateField.form';
 import Tooltip from '@/common/tooltip';
 import { EMPTY_ANIMAL, EMPTY_SIGNUP_FORM, Role, SignUpFormValues, Animal } from '@/utils/sign';
+import { useRouter } from 'next/navigation';
+import { useUserState } from '@/context/useUserContext';
 
 const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }> = [
     { label: '러브', value: 'love', icon: '💚', comment: '믿을 수 있는 펫시터를 찾고 있어요!' },
@@ -15,6 +17,8 @@ const ROLES: Array<{ label: string; value: Role; comment: string; icon: string }
 ];
 
 export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+    const router = useRouter();
+
     const [v, setV] = useState<SignUpFormValues>(EMPTY_SIGNUP_FORM);
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState('');
@@ -38,7 +42,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
         if (isLove || isLovuddy) {
             const firstAnimal = animalsForm[0];
             if (!firstAnimal) return false;
-            return !!firstAnimal.name && !!firstAnimal.birth_year && !!firstAnimal.animal_type;
+            return !!firstAnimal.name && !!firstAnimal.birth_year && !!firstAnimal.type;
         }
 
         return true;
@@ -183,6 +187,11 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
             setSuccess(true);
 
+            setTimeout(() => {
+                onClose();
+                router.push('/');
+            }, 1000);
+
             setV(EMPTY_SIGNUP_FORM);
             setAnimalsForm([EMPTY_ANIMAL]);
             setCerts([]);
@@ -190,13 +199,19 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
             setProfilePreview('');
             setAnimalFiles({});
 
-            setTimeout(onClose, 900);
+            // setTimeout(onClose, 1200);
         } catch (e: any) {
             setErr(e?.message ?? '회원가입 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        setSuccess(false);
+        setV(EMPTY_SIGNUP_FORM);
+        setAnimalsForm([EMPTY_ANIMAL]);
+    }, [isOpen]);
 
     return (
         <ModalIos isOpen={isOpen} handleModalState={onClose} title="회원가입" width="540px" height="720px">
@@ -376,7 +391,7 @@ export default function SignUpModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 )}
 
                 {err && <p className="text-[12px] text-red-500">{err}</p>}
-                {success && <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>}
+                {/* {success && <p className="text-[12px] text-emerald-700">회원가입이 완료됐어요! ✨</p>} */}
 
                 <button
                     type="button"

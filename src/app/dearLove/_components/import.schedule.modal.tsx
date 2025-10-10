@@ -1,3 +1,5 @@
+import { useUserState } from '@/context/useUserContext';
+
 type Picks = {
     id: string;
     animals: {
@@ -24,8 +26,10 @@ export function ScheduleImportModal({
         timeEnd?: string;
         place?: string;
         neighborhood?: string;
+        animal?: { animal_uuid: string; name: string; img: string }[];
     }) => void;
 }) {
+    const { getUser } = useUserState();
     return (
         <div className="p-2 bg-[#f5f7ee81] h-[490px] overflow-y-scroll">
             {items?.map((it) => {
@@ -44,14 +48,15 @@ export function ScheduleImportModal({
                                 timeEnd: it.timeEnd,
                                 place: it.place,
                                 neighborhood: it.neighborhood,
+                                animal: it.animals,
                             })
                         }
-                        className="p-3 border border-[#e3ecdc] bg-white/80 rounded-2xl shadow-sm hover:shadow-md transition w-full text-left"
+                        className="p-3 mb-2 border border-[#e3ecdc] bg-white/80 hover:bg-[#c8d9b5] rounded-2xl shadow-sm hover:shadow-md transition w-full text-left"
                     >
                         <div className="flex items-center justify-between gap-3 mb-3">
                             <div className="min-w-0 flex items-center gap-2 flex-wrap">
                                 <div className="flex -space-x-2">
-                                    {animals.slice(0, 3).map((a) => (
+                                    {animals.slice(0, 6).map((a) => (
                                         <img
                                             key={a.animal_uuid ?? a.name}
                                             src={a.img}
@@ -82,7 +87,11 @@ export function ScheduleImportModal({
                                 </div>
                             </div>
                             <span className="px-2 py-0.5 rounded-lg border border-[#e3ecdc] bg-white text-[12px] text-[#475a43]">
-                                {it.buddyName ? `${it.buddyName}` : 'buddy'}
+                                {it.buddyName
+                                    ? getUser && getUser.type === 'buddy'
+                                        ? getUser?.name
+                                        : `${it.buddyName}`
+                                    : 'buddy'}
                             </span>
                         </div>
 

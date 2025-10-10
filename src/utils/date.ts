@@ -108,7 +108,7 @@ export function getAgeFromYear(birthYear: number | string, baseDate: Date = new 
     return Math.max(0, baseDate.getFullYear() - y);
 }
 
-export function getDecadeLabel(birthYear?: string | number | null, fallback = '20대') {
+export function getDecadeLabel(birthYear?: string | number | null, fallback = '-') {
     const y = Number(birthYear);
     if (!y || !Number.isFinite(y) || String(y).length !== 4) return fallback;
     const now = new Date();

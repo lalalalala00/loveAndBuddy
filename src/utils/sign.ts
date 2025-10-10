@@ -21,7 +21,7 @@ export type Animal = {
   owner_nickname?: string;
     name: string;
     birth_year: number; 
-    animal_type: AnimalType;
+    type: AnimalType;
     variety: string;
     color: string;
     personality: Personality;
@@ -58,7 +58,7 @@ export const EMPTY_ANIMAL: Animal = {
   name: "",
   birth_year: 2012,
 
-  animal_type: "dog",
+  type: "dog",
   variety: "",
   color: "",
   personality: "introvert",

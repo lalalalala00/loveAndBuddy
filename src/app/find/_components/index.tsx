@@ -9,7 +9,7 @@ import CompactBuddyCard from './compact.buddy.card';
 import BuddyFilterBar from './buddy.filter.bar';
 import LoveList from './list.love';
 import Tooltip from '@/common/tooltip';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import SelectedPlace from '@/common/selected.place';
 import { CardOverviewRow } from './data/cards';
 import { supabase } from '@/lib/supabaseClient';
@@ -87,8 +87,11 @@ function getRangeFromFilters(f: Filters): { start: Date; end: Date } | null {
 }
 
 const Index = () => {
-    const { animals, getUser, login, setLogin } = useUserState();
+    const pathname = usePathname();
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const { animals, getUser, login, setLogin } = useUserState();
     const [selectedType, setSelectedType] = useState<number>(1);
     const [list, setList] = useState<CardOverviewRow[]>([]);
     const [loadingList, setLoadingList] = useState(false);
@@ -183,9 +186,9 @@ const Index = () => {
         if (sp === 'all') return DUMMY_LOVE_GROUPS;
 
         const hasBy = {
-            dog: (g: LoveGroupCard) => g?.animals?.some((a) => a.animal_type === 'dog'),
-            cat: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type === 'cat'),
-            others: (g: LoveGroupCard) => g.animals.some((a) => a.animal_type !== 'dog' && a.animal_type !== 'cat'),
+            dog: (g: LoveGroupCard) => g?.animals?.some((a) => a.type === 'dog'),
+            cat: (g: LoveGroupCard) => g.animals.some((a) => a.type === 'cat'),
+            others: (g: LoveGroupCard) => g.animals.some((a) => a.type !== 'dog' && a.type !== 'cat'),
         } as const;
         if (!hasBy) return;
 
@@ -257,6 +260,31 @@ const Index = () => {
         return [..._arr].sort((a, b) => Number(b.isFirst) - Number(a.isFirst));
     }, [animals, selectedAnimalIds]);
 
+    const handleTypeClick = (item: { label: string; value: number }) => {
+        setSelectedType(item.value);
+
+        const q = item.label.toLowerCase();
+
+        const sp = new URLSearchParams(searchParams?.toString());
+        sp.set('type', q);
+        router.replace(`${pathname}?${sp.toString()}`, { scroll: false });
+    };
+
+    useEffect(() => {
+        if (searchParams.toString().includes('type=love')) {
+            setSelectedType(0);
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        if (!getUser) return;
+        if (getUser.type === 'love') {
+            setSelectedType(1);
+        } else if (getUser.type === 'buddy') {
+            setSelectedType(0);
+        }
+    }, [getUser]);
+
     return (
         <div className="flex flex-col mt-5 mb-8 pb-10 rounded-2xl bg-[#fefefe] border-2 border-[#fafdf4] shadow-[4px_4px_10px_#f7f9f6,-4px_-4px_10px_#ffffff] max-md:mt-0">
             <div className="relative flex justify-center items-center text-center px-6 py-4 border-b border-gray-200 text-[15px] mb-12 font-semibold text-gray-700 max-md:text-[12px]">
@@ -265,7 +293,7 @@ const Index = () => {
                     {type.map((item, i) => (
                         <button
                             key={i}
-                            onClick={() => setSelectedType(item.value)}
+                            onClick={() => handleTypeClick(item)}
                             className={`${item.value === selectedType ? 'custom-card' : 'custom-card-bg-white'} px-7 py-1 rounded-xl mr-3 last:mr-0`}
                         >
                             {item.label}
@@ -435,6 +463,5 @@ const Index = () => {
 const type = [
     { label: 'buddy', value: 1 },
     { label: 'love', value: 0 },
-    // { label: "lovuddy", value: 2 },
 ];
 export default Index;

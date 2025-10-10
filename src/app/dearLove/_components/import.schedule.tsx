@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ScheduleImportModal } from './import.schedule.modal';
 
 import { TimePickerField } from './time.picker';
+import { useUserState } from '@/context/useUserContext';
 
 export function getTodayYYYYMMDDSeoul() {
     const nowSeoul = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
@@ -65,6 +66,7 @@ function formatWeekdayUnderscorePrettyDate(ts?: string | number | Date) {
 }
 
 const ImportSchedule = () => {
+    const { getUser } = useUserState();
     const [scheduleModal, setScheduleModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState<string>(getTodayYYYYMMDDSeoul());
     const [time, setTime] = useState('');
@@ -72,6 +74,8 @@ const ImportSchedule = () => {
     const [neighborhood, setNeighborhood] = useState<string>('');
     const [timeStart, setTimeStart] = useState<string>('');
     const [timeEnd, setTimeEnd] = useState<string>('');
+
+    const [animals, setAnimals] = useState<{ animal_uuid: string; name: string; img: string }[]>();
 
     const [pickerOpen, setPickerOpen] = useState(false);
     const popRef = useRef<HTMLDivElement | null>(null);
@@ -101,16 +105,30 @@ const ImportSchedule = () => {
         timeEnd?: string;
         place?: string;
         neighborhood?: string;
+        animal?: { animal_uuid: string; name: string; img: string }[];
     }) => {
         if (v.date) setSelectedDate(v.date);
         if (v.timeStart) setTimeStart(v.timeStart);
         if (v.timeEnd) setTimeEnd(v.timeEnd);
         if (typeof v.place === 'string') setPlace(v.place);
         if (typeof v.neighborhood === 'string') setNeighborhood(v.neighborhood);
+        if (v.animal) setAnimals(v.animal);
         setScheduleModal(false);
     };
     return (
         <div className="flex w-full flex-col bg-[#f5f7ee81] border-[#e3ecdc] border rounded-xl mb-3 shadow p-2">
+            {getUser && getUser.type === 'buddy' && picks && (
+                <div className=" border-[#e3ecdc] grid grid-cols-4 mb-2">
+                    {animals?.map((item) => (
+                        <div key={item.animal_uuid} className="rounded-xl border p-1 border-gray-200 bg-white">
+                            <img src={item.img} className="w-full h-[160px] rounded-t-xl object-cover" />
+                            <span className="text-[13px] mt-1 flex justify-center items-center w-full">
+                                {item.name}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
             <div className="flex w-full h-16 mb-3 relative">
                 <button
                     type="button"
@@ -236,6 +254,32 @@ const picks = [
         date: '2025-10-06',
         timeStart: '14:00',
         timeEnd: '16:00',
+    },
+    {
+        id: 'p2',
+        animals: [
+            {
+                animal_uuid: 'a1',
+                name: '샤넬',
+                img: '/cha/IMG_8844.jpeg',
+            },
+            {
+                animal_uuid: 'a2',
+                name: '네루',
+                img: '/cha/IMG_7129.jpeg',
+            },
+            {
+                animal_uuid: 'a3',
+                name: '루루',
+                img: '/cha/IMG_8838.jpeg',
+            },
+        ],
+        buddyName: '원썬한태양',
+        neighborhood: '성수동',
+        place: '서울숲',
+        date: '2025-10-10',
+        timeStart: '11:00',
+        timeEnd: '13:00',
     },
 ];
 

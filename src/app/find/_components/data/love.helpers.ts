@@ -4,17 +4,17 @@ import type { Animal as SignAnimal } from '@/utils/sign';
 export type Species = 'all' | 'dog' | 'cat' | 'others';
 
 export function mapToSpecies(
-  animal_type: SignAnimal['animal_type']
+  type: SignAnimal['type']
 ): Exclude<Species, 'all'> {
-  return animal_type === 'dog' ? 'dog' : animal_type === 'cat' ? 'cat' : 'others';
+  return type === 'dog' ? 'dog' : type === 'cat' ? 'cat' : 'others';
 }
 
-export function filterBySpecies<T extends { animal_type: SignAnimal['animal_type'] }>(
+export function filterBySpecies<T extends { type: SignAnimal['type'] }>(
   rows: T[],
   species: Species
 ): T[] {
   if (species === 'all') return rows;
-  return rows.filter((r) => mapToSpecies(r.animal_type) === species);
+  return rows.filter((r) => mapToSpecies(r.type) === species);
 }
 
 export type OwnerGroup<T> = {
@@ -25,7 +25,7 @@ export type OwnerGroup<T> = {
 
 export type AnimalLite = Pick<
   SignAnimal,
-  'owner_uuid' | 'owner_nickname' | 'animal_type' | 'animal_uuid' | 'name' | 'img'
+  'owner_uuid' | 'owner_nickname' | 'type' | 'animal_uuid' | 'name' | 'img'
 > & {
   date?: string | null;       
   start_time?: string | null; 

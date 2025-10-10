@@ -25,7 +25,7 @@ const LoveList = ({ list, onOpenChat }: Props) => {
             console.warn('유저/상대 ID 누락');
             return;
         }
-        console.log('ok');
+
         try {
             setPending(true);
             const { data, error } = await supabase.rpc('ensure_chat_room', { uid: myId, pid: partnerId });
@@ -35,7 +35,7 @@ const LoveList = ({ list, onOpenChat }: Props) => {
             if (!roomId) throw new Error('room_id not returned');
             onOpenChat?.(roomId, partnerName);
             setLoveChatData(love);
-            console.log('ok2');
+
             window.dispatchEvent(
                 new CustomEvent('open-buddy-room', {
                     detail: { roomId, partnerName },
@@ -116,7 +116,7 @@ const LoveList = ({ list, onOpenChat }: Props) => {
                                         {list.animals.length >= 2 && (
                                             <div className="mt-[1px] flex flex-wrap gap-1 text-[11px]">
                                                 <Chip>{getAgeFromYear(item.birth_year)}살</Chip>
-                                                <Chip>{item.animal_type}</Chip>
+                                                <Chip>{item.type}</Chip>
                                                 <Chip>
                                                     {item.personality === 'extrovert' ? '🌼 외향적' : '🌙 내향적'}
                                                 </Chip>{' '}
