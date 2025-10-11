@@ -78,7 +78,7 @@ export default function CoverList({
     return (
         <div className="relative w-full">
             <div ref={railRef} className="flex gap-1 overflow-x-auto no-scrollbar snap-x snap-mandatory">
-                {filtered.reverse().map((c, idx) => {
+                {filtered.map((c, idx) => {
                     const isSelectedCover = c.id === currentDearId;
                     const isSameBuddy = c.buddy_user_id === currentBuddyId;
                     const ts = c.date_at ? Date.parse(c.date_at) : undefined;
