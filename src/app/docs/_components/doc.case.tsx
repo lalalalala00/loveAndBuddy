@@ -12,12 +12,12 @@ export default function CaseStudy() {
                 <p className="text-sm text-neutral-600">
                     <b>soom</b>은 반려인과 신뢰 가능한 버디를 연결하고, 함께한 순간을 기록·공유하는 펫케어 플랫폼입니다.
                 </p>
-                <button
+                {/* <button
                     onClick={() => setOpen(true)}
                     className="px-3 py-1.5 rounded-lg custom-card hover:custom-card-hover"
                 >
                     PRD 전체 보기
-                </button>
+                </button> */}
             </div>
 
             <div className="grid sm:grid-cols-3 gap-3">

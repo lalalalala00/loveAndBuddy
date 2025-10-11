@@ -63,10 +63,10 @@ export default function DocsPortfolio() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-[#f9fbfd] dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
+        <div className="relative min-h-screen bg-[#f9fbfd] dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
             <Header setSidebarOpen={setSidebarOpen} resume={resume} setResume={setResume} />
 
-            <div className="mx-auto max-w-7xl  py-6 lg:py-10 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] gap-6">
+            <div className=" mx-auto max-w-7xl  py-6 lg:py-10 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] gap-6">
                 <aside className="hidden lg:block sticky top-20 self-start">
                     <Sidebar active={active} />
                 </aside>
@@ -76,6 +76,12 @@ export default function DocsPortfolio() {
                     <DocContent />
                 </main>
             </div>
+            <button
+                className="fixed right-4 bottom-4 p-4 w-12 h-12 bg-white flex justify-center items-center cursor-pointer hover:border-gray-400 rounded-xl border border-gray-300"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+                ⬆
+            </button>
 
             <AnimatePresence>
                 {sidebarOpen && (
@@ -193,7 +199,7 @@ export const SECTIONS = [
         id: 'demo',
         title: 'Demo',
         items: [
-            { id: 'live', title: '시연 (live/gif)' },
+            { id: 'live', title: '시연 (live)' },
             { id: 'case-study', title: '기획서 요약 (Case Study)' },
             { id: 'links', title: '배포 & 자료 링크' },
         ],

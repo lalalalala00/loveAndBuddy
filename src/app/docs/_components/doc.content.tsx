@@ -14,9 +14,9 @@ export default function DocContent() {
             <Card>
                 <Section id="introduction__overview" title="프로젝트 개요">
                     <p>
-                        <b>Love & Buddy</b>는 보호자(Love)와 검증된 펫시터(Buddy)를 연결하는 서비스입니다. 본 문서에서는
-                        기획 배경과 컨셉, 문제 정의, 해결 전략을 요약하고 이후 UX 플로우, 기술 설계, 시연을 차례로
-                        제공합니다.
+                        <b>soom</b>은 보호자(Love)와 검증된 펫시터(Buddy)를 연결하는 서비스입니다. 본 문서에서는 기획
+                        배경과 컨셉, 문제 정의, 해결 전략을 요약하고 이후 UX 플로우, 기술 설계, 시연, 비지니스 모델,
+                        향후 개선을 차례로 제공합니다.
                     </p>
                 </Section>
                 <Divider />
@@ -80,8 +80,8 @@ export default function DocContent() {
                 <Section id="concept__about" title="숨이란?">
                     <p>
                         숨은 생명의 기본이자 반려동물과 사람이 함께 살아가는 리듬을 의미합니다.
-                        <br /> 러브 앤드 버디는 “숨결처럼 자연스럽고 따뜻한 연결”을 지향하며, 보호자와 버디가 서로의
-                        삶에 편안하게 녹아들 수 있는 공간을 만들고자 했습니다.
+                        <br /> 숨은 “숨결처럼 자연스럽고 따뜻한 연결”을 지향하며, 보호자와 버디가 서로의 삶에 편안하게
+                        녹아들 수 있는 공간을 만들고자 했습니다.
                     </p>
                 </Section>
                 <Divider />
@@ -512,9 +512,7 @@ export default function DocContent() {
                     <StackBadges />
                     <ul className="list-disc pl-5 mt-3 space-y-1">
                         <li>Frontend: Next.js (TypeScript), Tailwind CSS</li>
-                        <li>
-                            Backend: Supabase (Auth, DB, Realtime) — <i>현재는 mock API로 시연</i>
-                        </li>
+                        <li>Backend: Supabase (Auth, DB, Realtime)</li>
                         <li>Deployment: Vercel</li>
                         <li>Design Assets: ChatGPT 이미지 생성 + Figma</li>
                     </ul>
@@ -537,7 +535,7 @@ export default function DocContent() {
             <Card>
                 <Section id="demo__live" title="시연 (live/gif)">
                     {videoMap.map((item, i) => (
-                        <div className="border p-2 rounded-xl border-gray-200" key={i}>
+                        <div className="border p-2 rounded-xl border-gray-200 mb-3" key={i}>
                             <p className="mb-3">{item.label}</p>
                             <div className="aspect-video w-full rounded-2xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 grid place-items-center">
                                 <iframe
@@ -567,7 +565,11 @@ export default function DocContent() {
                             </a>
                         </li>
                         <li>
-                            <a className="underline hover:no-underline" href="#" aria-disabled>
+                            <a
+                                className="underline hover:no-underline"
+                                href="https://github.com/lalalalala00"
+                                aria-disabled
+                            >
                                 GitHub 저장소
                             </a>
                         </li>
@@ -961,7 +963,10 @@ export default function DocContent() {
                 <Section id="closing__role" title="본인 역할 & 기여">
                     <ul>
                         <li>End-to-End: 기획 · UX/UI · 프론트엔드 · DB 스키마 설계</li>
-                        <li>Auth: 이메일 로그인, 회원가입, 프로필(정보 수정) — Supabase Auth</li>
+                        <li>
+                            Auth: 이메일 로그인(현재 테스트 단계로 이메일 인증 절차는 임시 비활성화), 회원가입,
+                            프로필(정보 수정) — Supabase Auth
+                        </li>
                         <li>콘텐츠: Dear Love 피드 조회 — Supabase DB/Storage</li>
                         <li>실시간: 1:1 채팅 — Supabase Realtime</li>
                     </ul>
@@ -1060,7 +1065,6 @@ function ArchitectureDiagram() {
                     <ul className="list-disc pl-5 text-sm space-y-1">
                         <li>Postgres 스키마: users, animals, certificates, dear_love</li>
                         <li>RLS 정책 (owner 기반)</li>
-                        <li>초기엔 mock → 이후 실연결</li>
                     </ul>
                 </Box>
             </div>

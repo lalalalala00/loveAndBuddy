@@ -19,7 +19,7 @@ export default function DocHero() {
                             href="#links"
                             onClick={(e) => {
                                 e.preventDefault();
-                                scrollToId('demo__links');
+                                scrollToId('demo__live');
                             }}
                             className="inline-flex items-center justify-center h-11 px-4 rounded-xl custom-card custom-card-hover w-full"
                         >

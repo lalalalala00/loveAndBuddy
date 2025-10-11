@@ -1,18 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Active, scrollToId, SECTIONS } from '.';
 import cx from 'classnames';
 
 export default function Sidebar({ active, onNavigate }: { active: Active; onNavigate?: () => void }) {
     const [open, setOpen] = useState<Record<string, boolean>>({});
+    const navRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (active?.groupId) setOpen((o) => ({ ...o, [active.groupId]: true }));
     }, [active?.groupId]);
 
+    useEffect(() => {
+        if (!active) return;
+
+        const btnId = `sb-${active.groupId}__${active.itemId}`;
+        const el = document.getElementById(btnId);
+        if (!el) return;
+
+        const container = navRef.current;
+        if (container) {
+            const offset = el.getBoundingClientRect().top - container.getBoundingClientRect().top;
+            const targetTop = container.scrollTop + offset - 12;
+            container.scrollTo({ top: targetTop, behavior: 'smooth' });
+        } else {
+            el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }, [active]);
+
     const toggle = (gid: string) => setOpen((o) => ({ ...o, [gid]: !o[gid] }));
 
     return (
-        <nav className="bg-white dark:bg-neutral-900/60 backdrop-blur border border-neutral-200/70 dark:border-neutral-800 rounded-2xl p-3 shadow-sm max-h-[80vh] overflow-auto no-scrollbar">
+        <nav
+            ref={navRef}
+            className="bg-white dark:bg-neutral-900/60 backdrop-blur border border-neutral-200/70 dark:border-neutral-800 rounded-2xl p-3 shadow-sm max-h-[80vh] overflow-auto no-scrollbar"
+        >
             {SECTIONS.map((group) => {
                 const isGroupActive = active && active.groupId === group.id;
                 const isOpen = open[group.id] ?? true;
@@ -60,11 +81,13 @@ export default function Sidebar({ active, onNavigate }: { active: Active; onNavi
                             >
                                 {group.items.map((item) => {
                                     const isActive = active && active.groupId === group.id && active.itemId === item.id;
+                                    const btnId = `sb-${group.id}__${item.id}`;
                                     return (
                                         <li key={item.id}>
                                             <button
+                                                id={btnId}
                                                 className={cx(
-                                                    'w-full text-left px-2 py-1.5 rounded-lg transition focus:outline-none  dark:focus:ring-emerald-800/60',
+                                                    'w-full text-left px-2 py-1.5 rounded-lg transition focus:outline-none dark:focus:ring-emerald-800/60',
                                                     isActive
                                                         ? 'bg-[#e3ecdc] text-[#303d23] font-semibold dark:bg-emerald-900/40 dark:text-emerald-200'
                                                         : 'hover:bg-neutral-100 dark:hover:bg-neutral-800',

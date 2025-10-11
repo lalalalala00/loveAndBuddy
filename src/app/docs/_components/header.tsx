@@ -74,9 +74,12 @@ export default function Header({
                             />
                         </svg>
                     </button>
-                    <div className="flex items-center gap-2">
+                    <div
+                        className="flex items-center gap-2"
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    >
                         <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl custom-card shadow-inner">
-                            LB
+                            <img src="/buddy/buddy_back_none.png" className="w-8 h-8" alt="logo" />
                         </span>
                         <span className="font-semibold tracking-tight">soom — Docs</span>
                     </div>
@@ -129,38 +132,5 @@ export default function Header({
                 </div>
             </div>
         </header>
-    );
-}
-
-function DarkToggle() {
-    const [dark, setDark] = useState(false);
-    useEffect(() => {
-        const root = document.documentElement;
-        const isDark = root.classList.contains('dark');
-        setDark(isDark);
-    }, []);
-
-    const toggle = () => {
-        const root = document.documentElement;
-        const nowDark = !root.classList.contains('dark');
-        root.classList.toggle('dark', nowDark);
-        setDark(nowDark);
-    };
-
-    return (
-        <button
-            onClick={toggle}
-            className="inline-flex items-center justify-center h-10 px-3 rounded-xl border border-neutral-200 dark:border-neutral-700"
-            aria-pressed={dark}
-            aria-label="Toggle dark mode"
-        >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                    d="M12 3a9 9 0 1 0 9 9c0-.34-.02-.67-.06-1A7 7 0 0 1 12 3Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                />
-            </svg>
-        </button>
     );
 }
