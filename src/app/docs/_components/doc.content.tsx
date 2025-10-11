@@ -1,3 +1,4 @@
+import { videoMap } from '.';
 import { BuddyConcept, BuddyStory } from './buddy';
 import CaseStudy from './doc.case';
 import JoinWalkWhy from './doc.join.why';
@@ -535,10 +536,23 @@ export default function DocContent() {
 
             <Card>
                 <Section id="demo__live" title="시연 (live/gif)">
-                    <p className="mb-3">핵심 플로우: 회원가입 → 동물 등록 → 버디 리스트 확인</p>
-                    <div className="aspect-video w-full rounded-2xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 grid place-items-center">
-                        <span className="text-neutral-500">여기에 GIF/영상 또는 live iframe 삽입</span>
-                    </div>
+                    {videoMap.map((item, i) => (
+                        <div className="border p-2 rounded-xl border-gray-200" key={i}>
+                            <p className="mb-3">{item.label}</p>
+                            <div className="aspect-video w-full rounded-2xl bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 grid place-items-center">
+                                <iframe
+                                    className="w-full h-full border-0"
+                                    src={`${item.url}?rel=0&modestbranding=1&playsinline=1`}
+                                    // src=`https://www.youtube.com/embed/HecFFv5vio0?rel=0&modestbranding=1&playsinline=1`
+                                    title="YouTube video player"
+                                    loading="lazy"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                    referrerPolicy="strict-origin-when-cross-origin"
+                                />
+                            </div>
+                        </div>
+                    ))}
                 </Section>
                 <Divider />
                 <Section id="demo__case-study" title="기획서 요약 (Case Study)">

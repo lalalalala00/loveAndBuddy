@@ -4,6 +4,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import DocsSearchLight from './doc.search.light';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useUserState } from '@/context/useUserContext';
+import { supabase } from '@/lib/supabaseClient';
+
+const GUEST_EMAIL = process.env.NEXT_PUBLIC_GUEST_EMAIL as string;
+const GUEST_PASSWORD = process.env.NEXT_PUBLIC_GUEST_PASSWORD as string;
 
 export default function Header({
     setSidebarOpen,
@@ -15,6 +20,7 @@ export default function Header({
     setResume: Dispatch<SetStateAction<boolean>>;
 }) {
     const router = useRouter();
+    const { setUserState } = useUserState();
     const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -29,6 +35,26 @@ export default function Header({
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     }, []);
+
+    const continueAsGuest = async () => {
+        try {
+            setUserState('guest');
+
+            const { error } = await supabase.auth.signInWithPassword({
+                email: GUEST_EMAIL,
+                password: GUEST_PASSWORD,
+            });
+            if (error) throw error;
+            router.push('/');
+
+            //   if (GUEST_ROUTE) {
+            //     try { router.push(GUEST_ROUTE); } catch {}
+            //   }
+        } catch (e: any) {
+            console.log(e?.message ?? '게스트 로그인 중 오류가 발생했어요.');
+        } finally {
+        }
+    };
 
     return (
         <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:supports-[backdrop-filter]:bg-neutral-900/60 bg-[#f9fbf6] dark:bg-neutral-900/80 border-b border-[#c8d9b5]/70 dark:border-neutral-800">
@@ -59,7 +85,7 @@ export default function Header({
                 <div className="flex items-center gap-3">
                     <div className="hidden md:flex items-center gap-2">
                         <a
-                            href="/"
+                            onClick={continueAsGuest}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center h-10 px-3 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm"

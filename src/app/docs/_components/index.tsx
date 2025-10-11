@@ -238,3 +238,17 @@ function Footer() {
         </footer>
     );
 }
+
+export const videoMap = [
+    { label: '회원가입', url: 'https://www.youtube.com/embed/R81Pu8BLVAQ' },
+    {
+        label: '[find.myDearDay] 버디 찾기,조건 필터링, 시간, 스케줄 체크, 예약 보내기',
+        url: 'https://www.youtube.com/embed/h4XL4g13ohY',
+    },
+    {
+        label: '[find.myDearDay] 러브 찾기,조건 필터링, -> 버디가 러브에게 메세지 보내기 ',
+        url: 'https://www.youtube.com/embed/-b_zqKcrwB8',
+    },
+    { label: '[find.myDearDay] 러브 로그인 후 메세지(버디) 확인', url: 'https://www.youtube.com/embed/yJ6c1F2VQys' },
+    { label: '[dear.Love] - 캘린더, 러브 필터링, 디얼러브 등록', url: 'https://www.youtube.com/embed/HecFFv5vio0' },
+];
