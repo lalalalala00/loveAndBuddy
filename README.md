@@ -69,7 +69,7 @@ npm start
 
 Vercel → Project → Settings → Domains
 
-withsoom.app, www.withsoom.app, dev.withsoom.app 추가
+withsoom.app, www.withsoom.app, dev.withsoom.app
 
 가비아 DNS
 
@@ -112,6 +112,8 @@ import 'react-resizable/css/styles.css';
 이메일 인증 플로우 복구 / Magic Link
 
 디얼러브 Post / 러브 카드 Post / 버디 카드 Post
+
+모바일 UI/UX 최적화
 
 예약/결제 흐름(CTA: 산책 종료 후 재예약 유도)
 

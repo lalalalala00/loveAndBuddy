@@ -1022,6 +1022,20 @@ export default function DocContent() {
                         </li>
 
                         <li>
+                            <b>모바일 화면 최적화</b>
+                            <ul className="list-disc pl-5 mt-1 space-y-1">
+                                <li>반응형 그리드/브레이크포인트 정교화(Tailwind v4 기준, md/lg 전환 구간 보정)</li>
+                                <li>터치 UX: 드래그 핸들 명확화, 터치 타겟 최소 44px, 스와이프 제스처 충돌 방지</li>
+                                <li>
+                                    키보드/세이프에어리어 대응: iOS 키보드 오버레이, <code>env(safe-area-inset-*)</code>{' '}
+                                    적용
+                                </li>
+                                <li>성능: 이미지 lazy/priority 최적화, 리스트 가상화, 3G Throttling 기준 TTI 개선</li>
+                                <li>접근성: 명도 대비/포커스 링/스크린리더 라벨 점검(모바일 우선)</li>
+                            </ul>
+                        </li>
+
+                        <li>
                             <b>커뮤니티 오픈</b>
                             <ul className="list-disc pl-5 mt-1 space-y-1">
                                 <li>
