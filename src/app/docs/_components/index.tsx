@@ -240,6 +240,10 @@ function Footer() {
 export const videoMap = [
     { label: '회원가입', url: 'https://www.youtube.com/embed/R81Pu8BLVAQ' },
     {
+        label: '내 정보 수정 - 내 정보, 동물 정보, 자격증(현재는 인증 과정 x)',
+        url: 'https://www.youtube.com/embed/jHTAtXd9FkY',
+    },
+    {
         label: '[find.myDearDay] 버디 찾기,조건 필터링, 시간, 스케줄 체크, 예약 보내기',
         url: 'https://www.youtube.com/embed/h4XL4g13ohY',
     },

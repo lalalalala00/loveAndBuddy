@@ -74,7 +74,7 @@ export default function BuddyFilterBar({
                                         key={d.k}
                                         className={cx(
                                             'w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-50',
-                                            dateKey === d.k && 'bg-emerald-50 text-emerald-700',
+                                            dateKey === d.k && 'bg-[#ebf8e2] text-[#3f6a17]',
                                         )}
                                         onClick={() => {
                                             setDateKey(d.k as Filters['dateKey']);
@@ -92,14 +92,17 @@ export default function BuddyFilterBar({
                                 <div className="my-2 h-px bg-gray-100" />
                                 <div className="px-2 pb-2">
                                     <div className="text-xs text-gray-500 mb-2">직접 설정</div>
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            type="date"
-                                            className="border rounded-md px-2 py-1 text-sm"
-                                            value={dateFrom}
-                                            onChange={(e) => setDateFrom(e.target.value)}
-                                        />
-                                        <span className="text-gray-400">–</span>
+                                    <div className="flex items-start gap-2 flex-col">
+                                        <div className="flex items-center">
+                                            <input
+                                                type="date"
+                                                className="border rounded-md px-2 py-1 text-sm"
+                                                value={dateFrom}
+                                                onChange={(e) => setDateFrom(e.target.value)}
+                                            />
+                                            <span className="text-gray-400 ml-3">–</span>
+                                        </div>
+
                                         <input
                                             type="date"
                                             className="border rounded-md px-2 py-1 text-sm"
@@ -119,7 +122,7 @@ export default function BuddyFilterBar({
                                             초기화
                                         </button>
                                         <button
-                                            className="text-xs px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:opacity-40"
+                                            className="text-xs px-3 py-1.5 rounded-md bg-[#ebf8e2] text-[#3f6a17] hover:bg-green-50 disabled:opacity-40"
                                             disabled={!dateFrom || !dateTo || new Date(dateFrom) > new Date(dateTo)}
                                             onClick={() => {
                                                 setDateKey('custom');
