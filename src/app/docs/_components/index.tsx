@@ -122,15 +122,6 @@ export default function DocsPortfolio() {
                     </motion.div>
                 )}
             </AnimatePresence>
-            <ModalIos
-                isOpen={resume}
-                handleModalState={() => setResume(!resume)}
-                title="자기소개서"
-                width="700px"
-                height="810px"
-            >
-                <Resume />
-            </ModalIos>
 
             <Footer />
         </div>
@@ -230,14 +221,15 @@ function Footer() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-sm text-neutral-500 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
                 <div>© {new Date().getFullYear()} Love & Buddy</div>
                 <div className="flex items-center gap-4">
-                    <a className="hover:underline" href="#" aria-disabled>
+                    <a className="hover:underline" href="https://github.com/lalalalala00/loveAndBuddy" aria-disabled>
                         GitHub
                     </a>
-                    <a className="hover:underline" href="#" aria-disabled>
+                    <a
+                        className="hover:underline"
+                        href="https://www.notion.so/2851583f171480089ed0c43434f0529b?source=copy_link"
+                        aria-disabled
+                    >
                         Notion
-                    </a>
-                    <a className="hover:underline" href="#" aria-disabled>
-                        Vercel
                     </a>
                 </div>
             </div>

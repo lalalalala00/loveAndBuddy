@@ -986,6 +986,10 @@ export default function DocContent() {
                                     스토리지 버킷: <i>avatars / dearlove / certificates</i> + 퍼블릭/사인드 URL 정책
                                 </li>
                                 <li>SQL 마이그레이션 & 초기 시드 데이터(개발/스테이징 분리)</li>
+                                <li>
+                                    디얼러브, 러브 카드, 버디 카드 작성/업로드 구현(데모에서는 로컬 상태/Mock API로
+                                    동작)
+                                </li>
                             </ul>
                         </li>
 

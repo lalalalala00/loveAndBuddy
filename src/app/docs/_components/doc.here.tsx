@@ -7,7 +7,7 @@ export default function DocHero() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div>
                         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
-                            Love & Buddy – 프로젝트 문서
+                            soom [Love & Buddy] – 프로젝트 문서
                         </h1>
                         <p className="text-neutral-600 dark:text-neutral-300 mt-2 max-w-2xl">
                             반려동물 보호자(Love)와 검증된 버디(Buddy)를 연결하는 매칭 플랫폼의 기획·UX·설계·시연을
