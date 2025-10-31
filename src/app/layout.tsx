@@ -3,6 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { UserStateProvider } from '@/context/useUserContext';
 import { AuthProvider } from './providers/AuthProvider';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
     title: 'soom',
@@ -20,6 +21,7 @@ export default function RootLayout({
                 <div className={`max-w-[1280px]  m-auto`}>
                     <AuthProvider>
                         <UserStateProvider>{children}</UserStateProvider>
+                        <Analytics />
                     </AuthProvider>
                 </div>
             </body>
