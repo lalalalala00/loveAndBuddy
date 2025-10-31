@@ -155,25 +155,32 @@ const Header = () => {
                     </button>
 
                     <div className="flex ml-10 space-x-6">
-                        {typeMenu.map((item) => {
-                            const isActiveMenu = isActive(item.url);
-                            return (
-                                <button
-                                    key={item.url}
-                                    onClick={() => router.push(item.url)}
-                                    className={`relative px-3 py-2 text-[14px] font-semibold transition-all duration-200 cursor-pointer
+                        {typeMenu
+                            .filter((item) => {
+                                if (item.label === 'buddy.room') {
+                                    return getUser?.type === 'buddy' || getUser?.type === 'lovuddy';
+                                }
+                                return true;
+                            })
+                            .map((item) => {
+                                const isActiveMenu = isActive(item.url);
+                                return (
+                                    <button
+                                        key={item.url}
+                                        onClick={() => router.push(item.url)}
+                                        className={`relative px-3 py-2 text-[14px] font-semibold transition-all duration-200 cursor-pointer
           ${isActiveMenu ? 'text-[#7d9f68] scale-[1.02]' : 'text-[#aec399] hover:text-[#94b973]'}
           custom-card-hover-bg-white-only rounded-2xl
         `}
-                                >
-                                    {item.label}
+                                    >
+                                        {item.label}
 
-                                    {isActiveMenu && (
-                                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[85%] h-[5px] bg-[#f1f9e9] rounded-full custom-card" />
-                                    )}
-                                </button>
-                            );
-                        })}
+                                        {isActiveMenu && (
+                                            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[85%] h-[5px] bg-[#f1f9e9] rounded-full custom-card" />
+                                        )}
+                                    </button>
+                                );
+                            })}
                     </div>
                 </div>
 
@@ -319,6 +326,7 @@ const typeMenu = [
     { label: 'find.myDearDay', url: '/find' },
     { label: 'dear.Love', url: '/dearLove' },
     { label: 'our.dailyMoments', url: '/dailyMoments' },
+    { label: 'buddy.room', url: '/buddyRoom' },
 ];
 const mtypeMenu = [
     { label: 'home', url: '/' },

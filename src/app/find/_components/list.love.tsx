@@ -142,6 +142,21 @@ const LoveList = ({ list, onOpenChat }: Props) => {
                         <span>🏠 장소</span>
                         <span className="font-medium">{list?.place}</span>
                     </div>
+                    <div className=" w-full">
+                        <div className="flex items-center justify-between mb-1">
+                            <span>⚡️ 난이도</span>
+                            <span className="font-medium text-gray-800">
+                                {list.animals[0].level}
+                                <span className="ml-1 text-gray-500">/10</span>
+                            </span>
+                        </div>
+                        <div className="w-full h-2.5 rounded-full bg-[#e6efe0] overflow-hidden shadow-inner">
+                            <div
+                                className="h-full rounded-full bg-gradient-to-r from-[#f3ebd2] to-[#b2d2a4] transition-[width]"
+                                style={{ width: `${(+list.animals[0].level / 10) * 100}%` }}
+                            />
+                        </div>
+                    </div>
 
                     <div className="border-t w-full border-[#e6e6e6] py-0.5 mt-1" />
                     <span className="text-gray-800">

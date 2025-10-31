@@ -101,7 +101,10 @@ const WriteLove = () => {
                         </div>
                     </div>
                     <div className="h-[130px] shadow rounded-xl p-3 mb-3 bg-[#f5f7ee81] flex flex-col">
-                        <span>❀ {selectedAnimals?.map((item) => item.name).join(', ')}의 한마디 -`♡´-</span>
+                        <span>
+                            ❀ {/* {selectedAnimals?.map((item) => item.name).join(', ')} */}
+                            러브의 한마디 -`♡´-
+                        </span>
                         <textarea
                             className="w-full h-[100px] bg-white rounded-xl shadow mt-2 border-0 resize-none p-2 focus:outline-0 px-3"
                             onChange={(e) => setLoveComment(e.target.value)}

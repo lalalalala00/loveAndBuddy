@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tooltip from './tooltip';
 import { getAgeFromYear, getDecadeLabel } from '@/utils/date';
 import { Role } from '@/utils/type';
+import { useRouter } from 'next/navigation';
 
 type AnimalBrief = {
     img?: string | null;
@@ -70,7 +71,11 @@ const NameTag = ({
     asap?: boolean;
     user?: boolean;
 }) => {
+    const router = useRouter();
     const mannerEmoji = getMannerEmoji(4);
+
+    const rootRef = useRef<HTMLDivElement | null>(null);
+    const popoverRef = useRef<HTMLDivElement | null>(null);
 
     const [buddySelected, setBuddySelected] = useState(false);
     const [favorite, setFavorite] = useState<boolean>(false);
@@ -82,8 +87,65 @@ const NameTag = ({
             ? (info?.avatar_url && info.avatar_url.trim()) || undefined
             : (firstAnimal.img && firstAnimal.img.trim()) || '/project/buddy_sit_1.png';
 
+    useEffect(() => {
+        if (!buddySelected) return;
+
+        const onMouseDown = (e: MouseEvent) => {
+            const t = e.target as Node;
+            if (
+                rootRef.current &&
+                !rootRef.current.contains(t) &&
+                (!popoverRef.current || !popoverRef.current.contains(t))
+            ) {
+                setBuddySelected(false);
+            }
+        };
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setBuddySelected(false);
+        };
+
+        document.addEventListener('mousedown', onMouseDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', onMouseDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [buddySelected]);
+
+    const onRoom = () => {
+        if (!love) {
+            const payload = {
+                from: 'card',
+                name: info?.name ?? '',
+                avatar_url: info?.avatar_url ?? '',
+                heart: String(info?.heart ?? 4),
+                manner: String(info?.manner ?? 9),
+                dear_love: String(info?.dear_love ?? 0),
+                type: info?.type ?? '',
+                gender: info?.gender ?? '',
+                user_id: info?.user_id ?? '',
+                user_birth_year: String(info?.user_birth_year ?? ''),
+                user_comment: info?.user_comment ?? '',
+                animal_type: info?.animal_type ?? '',
+            };
+
+            const params = new URLSearchParams();
+            Object.entries(payload).forEach(([key, val]) => {
+                if (val !== undefined && val !== null && val !== '') {
+                    params.set(key, val.toString());
+                }
+            });
+
+            router.push(`/buddyRoom?${params.toString()}`);
+            return;
+        }
+
+        router.push('/dearLove');
+    };
+
     return (
-        <div className="flex flex-col items-center p-2 rounded-2xl w-full">
+        <div ref={rootRef} className="flex flex-col items-center p-2 rounded-2xl w-full">
             <div className="flex w-full justify-between">
                 <div className="flex-1 flex justify-start w-1/3" />
                 <img
@@ -117,81 +179,136 @@ const NameTag = ({
                 <span className="text-gray-400 text-[12px]">›</span>
 
                 {buddySelected && (
-                    <div className="absolute top-[45px] left-1/2 -translate-x-1/2 z-20 w-[200px] bg-white rounded-xl px-2 py-3 btn-card animate-fadeIn">
-                        <div className="px-2">
-                            <p className="text-[12px] text-gray-600 mb-1">
-                                ꯁꯧ 마음:{' '}
-                                <span className="font-medium">
-                                    {(info?.heart ?? firstAnimal.heart ?? 0).toString()}
+                    <div
+                        ref={popoverRef}
+                        role="dialog"
+                        aria-modal="true"
+                        className="absolute top-[45px] left-1/2 -translate-x-1/2 z-50 w-[260px] rounded-2xl
+               border border-[#eef3e6] bg-white/90 backdrop-blur-xl
+               shadow-[6px_6px_16px_#e8eee1,-6px_-6px_16px_#ffffff]
+               px-3 py-3 animate-[fadeInUp_180ms_ease-out]
+               before:content-[''] before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2
+               before:w-3 before:h-3 before:rotate-45 before:bg-white/90
+               before:border-l before:border-t before:border-[#eef3e6]"
+                    >
+                        <div className="space-y-1.5">
+                            <p className="text-[12px] text-gray-600">
+                                ꯁꯧ 마음:
+                                <span className="font-semibold ml-1">
+                                    {(info?.heart ?? firstAnimal?.heart ?? 0).toString()}
                                 </span>
                             </p>
-                            <p className="text-[12px] text-gray-600">
-                                {mannerEmoji} 매너 점수:{' '}
-                                <span className="font-medium">
-                                    {(info?.manner ?? firstAnimal.manner ?? 0).toString()} 점
-                                </span>
-                            </p>
-                            <p className="text-[12px] text-gray-600">
-                                ✎ꪑ 디얼 러브:{' '}
-                                <span className="font-medium">{(info?.dear_love ?? 0).toString()} 장</span>
-                            </p>
-                            {find && (
-                                <>
-                                    <div className="flex">
-                                        <p className="text-[12px] text-gray-600 mb-1">
-                                            <span className="font-medium">{info?.gender ?? '-'}</span>
-                                        </p>
-                                        <p className="text-[12px] text-gray-600 ml-2">
-                                            연령대: <span className="font-medium">{info?.user_birth_year ?? '-'}</span>
-                                        </p>
-                                    </div>
 
-                                    <p className="text-[12px] text-gray-600">
-                                        동물: <span className="font-medium">{info?.animal_type ?? 'dog'}</span>
-                                    </p>
-                                </>
-                            )}
-                            {love && (
-                                <>
-                                    <p className="text-[12px] text-gray-600 mb-1">
-                                        난이도 <span className="font-medium">{firstAnimal.level ?? '-'}</span>
-                                    </p>
-                                    <p className="text-[12px] text-gray-600">
-                                        반려동물 나이:{' '}
-                                        <span className="font-medium">
-                                            {getAgeFromYear(firstAnimal.birth_year ?? '0000') ?? '-'}살
-                                        </span>
-                                    </p>
-                                    <p className="text-[12px] text-gray-600">
-                                        동물: <span className="font-medium">{firstAnimal.animal_type ?? 'dog'}</span>
-                                    </p>
-                                </>
-                            )}
+                            <p className="text-[12px] text-gray-600">
+                                {mannerEmoji} 매너 점수:
+                                <span className="font-semibold ml-1">
+                                    {(info?.manner ?? firstAnimal?.manner ?? 0).toString()} 점
+                                </span>
+                            </p>
+
+                            <p className="text-[12px] text-gray-600">
+                                ✎ꪑ 디얼 러브:
+                                <span className="font-semibold ml-1">{(info?.dear_love ?? 0).toString()} 장</span>
+                            </p>
                         </div>
 
-                        <button className="cursor-pointer w-full mt-2 custom-card-hover custom-card rounded-lg">
-                            <span className="text-[14px]"> {love ? '디얼러브' : 'nickname 버디룸'} 보러가기</span>
+                        {(find || love) && (
+                            <div className="my-3 h-px bg-gradient-to-r from-transparent via-[#eef3e6] to-transparent" />
+                        )}
+
+                        {find && (
+                            <div className="grid grid-cols-2 gap-y-1">
+                                <p className="text-[12px] text-gray-600">
+                                    성별:
+                                    <span className="font-semibold ml-1">{info?.gender ?? '-'}</span>
+                                </p>
+                                <p className="text-[12px] text-gray-600">
+                                    연령대:
+                                    <span className="font-semibold ml-1">
+                                        {getDecadeLabel(info?.user_birth_year) ?? '-'}
+                                    </span>
+                                </p>
+                                <p className="text-[12px] text-gray-600 col-span-2">
+                                    동물:
+                                    <span className="font-semibold ml-1">{info?.animal_type ?? 'dog'}</span>
+                                </p>
+                            </div>
+                        )}
+
+                        {love && (
+                            <div className="grid grid-cols-2 gap-y-1">
+                                <p className="text-[12px] text-gray-600">
+                                    난이도:
+                                    <span className="font-semibold ml-1">{firstAnimal?.level ?? '-'}</span>
+                                </p>
+                                <p className="text-[12px] text-gray-600">
+                                    반려 나이:
+                                    <span className="font-semibold ml-1">
+                                        {getAgeFromYear(firstAnimal?.birth_year ?? '0000') ?? '-'}살
+                                    </span>
+                                </p>
+                                <p className="text-[12px] text-gray-600 col-span-2">
+                                    동물:
+                                    <span className="font-semibold ml-1">{firstAnimal?.animal_type ?? 'dog'}</span>
+                                </p>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={onRoom}
+                            className="cursor-pointer w-full mt-3 rounded-xl px-3 py-2 text-[13px] font-medium
+                 bg-gradient-to-b from-[#f9fcf4] to-[#eef4e7]
+                 border border-[#e7efe0]
+                 shadow-[2px_2px_8px_#e8eee1,-2px_-2px_8px_#ffffff]
+                 hover:shadow-[3px_3px_10px_#e6ede0,-3px_-3px_10px_#ffffff]
+                 transition-all"
+                        >
+                            {love ? '디얼러브 보러가기' : `버디룸 보러가기`}
                         </button>
                     </div>
                 )}
             </div>
 
             <div className={`${find || love ? 'flex' : ''} ${tagCss}`}>
-                <div className="flex items-center gap-1 text-[12px] text-[#666]">
-                    ꯁꯧ {(info?.heart ?? firstAnimal.heart ?? 10).toString()} · 🍃{' '}
-                    {(info?.manner ?? firstAnimal.manner ?? 9).toString()} · ✎ꪑ {(info?.dear_love ?? 0).toString()}
+                <div className="flex items-center gap-1 text-[11px] text-gray-700">
+                    ꯁꯧ{' '}
+                    <span className="font-semibold text-gray-800">
+                        {(info?.heart ?? firstAnimal.heart ?? 10).toString()}
+                    </span>
+                    <span className="text-gray-400">·</span>
+                    🍃{' '}
+                    <span className="font-semibold text-gray-800">
+                        {(info?.manner ?? firstAnimal.manner ?? 9).toString()}
+                    </span>
+                    <span className="text-gray-400">·</span>
+                    ✎ꪑ <span className="font-semibold text-gray-800">{(info?.dear_love ?? 0).toString()}</span>
                 </div>
+
                 {find && asap && !user && (
-                    <div className="flex items-center gap-1 text-[12px] text-[#666] ml-2">
-                        | {info?.gender ?? '-'} · {getDecadeLabel(info?.user_birth_year ?? undefined) ?? 30} ·{' '}
-                        {info?.animal_type ?? 'dog'}
+                    <div className="flex items-center gap-1 text-[11px] text-gray-700 ml-2">
+                        <span className="text-gray-400">|</span>
+                        <span className="text-gray-800">{info?.gender ?? '-'}</span>
+                        <span className="text-gray-400">·</span>
+                        <span className="text-gray-800">
+                            {getDecadeLabel(info?.user_birth_year ?? undefined) ?? 30}
+                        </span>
+                        <span className="text-gray-400">·</span>
+                        <span className="text-gray-800">{info?.animal_type ?? 'dog'}</span>
                     </div>
                 )}
+
                 {love && asap && !user && (
-                    <div className="flex items-center gap-1 text-[12px] text-[#666] ml-2">
-                        | {firstAnimal.level ?? '-'} ·{' '}
-                        {(getAgeFromYear(firstAnimal.birth_year ?? '0000') ?? 7).toString()}살 ·{' '}
-                        {firstAnimal.animal_type ?? 'dog'}
+                    <div className="flex items-center gap-1 text-[11px] text-gray-700 ml-2">
+                        <span className="text-gray-400">|</span>
+                        <span className="text-gray-500">Lv.</span>
+                        <span className="font-semibold text-gray-800">{firstAnimal.level ?? '-'}</span>
+                        <span className="text-gray-400">·</span>
+                        <span className="font-semibold text-gray-800">
+                            {(getAgeFromYear(firstAnimal.birth_year ?? '0000') ?? 7).toString()}{' '}
+                            <span className="text-gray-400">살 ·</span>
+                        </span>
+
+                        <span className="text-gray-800">{firstAnimal.animal_type ?? 'dog'}</span>
                     </div>
                 )}
             </div>

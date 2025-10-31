@@ -167,11 +167,11 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
             handleModalState={handleModalState}
             title="정보 수정하기"
             width="590px"
-            height="800px"
+            height="700px"
             leftAction={handleSave}
             leftComment={saving ? '저장 중…' : '정보 수정하기'}
         >
-            <div className="relative p-2 overflow-y-scroll no-scrollbar h-[685px]">
+            <div className="relative p-2 overflow-y-scroll no-scrollbar h-[585px]">
                 <div className="w-full rounded-2xl border border-[#e3ecdc] bg-gradient-to-br from-[#f3f7ee] to-white shadow-sm">
                     <div className="flex items-center justify-between px-3 py-2 border-b border-[#e3ecdc] rounded-t-2xl bg-white/60">
                         <h3 className="text-[13px] font-semibold text-[#3c5732]">정보 수정</h3>
@@ -282,7 +282,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                             </div>
                         </div>
 
-                        {/* 반려동물 */}
                         {getUser && _lov && (
                             <div className="rounded-xl border border-[#e3ecdc] bg-white px-3 py-2">
                                 <p className="text-[11px] text-gray-500 mb-1">반려동물</p>
@@ -320,7 +319,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                     </div>
                 </div>
                 {selectedAnimal && getUser && _lov && (
-                    //수정
                     <div className="relative mt-15">
                         <AnimalsForm
                             key={selectedAnimal.animal_uuid}
@@ -351,7 +349,6 @@ const SettingModal = ({ isOpen, handleModalState }: { isOpen: boolean; handleMod
                 )}
 
                 {!selectedAnimal && getUser && _lov && (
-                    //새로 추가
                     <div className="p-2 rounded-xl shadow">
                         <AnimalsForm
                             value={animals}

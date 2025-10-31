@@ -107,7 +107,7 @@ export default function LoginModal({
     }, [isOpen]);
 
     return (
-        <ModalIos isOpen={isOpen} handleModalState={onClose} title="로그인" width="480px" height="65%">
+        <ModalIos isOpen={isOpen} handleModalState={onClose} title="로그인" width="480px" height="600px">
             <div className="p-3 space-y-4">
                 <div className="grid grid-cols-1 gap-3">
                     <label className="text-[13px] text-gray-600">이메일</label>
